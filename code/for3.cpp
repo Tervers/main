@@ -4,6 +4,6 @@ int main()
 	int sum = 0;
 	for (int i = -100; i <= 100; ++i)
 		sum += i;
-	std::cout << "1 to 200 inclusive is " << sum << std::endl;
+	std::cout << "The sum of -100 to 100 recursive is " << sum << std::endl;
 	return 0;
 }
