@@ -1,0 +1,4 @@
+a. Valid. r2 binds 3.14159 to d, which is an appropriate type double.
+b. Invalid. References cannot bind references or other non-objects. //incorrect. Values will be converted.
+c. Valid. Value of r2 added to i. // Values will be truncated.
+d. Valid. Value of d added to r1. // Values will be truncated.
