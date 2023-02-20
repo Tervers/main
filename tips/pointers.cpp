@@ -6,6 +6,7 @@ p = &i;       	 // & is used in an expression as the address-of operator
 int *p = i;   	 /* invalid */
 int &r2 = *p; 	 // & is part of the declaration; * is the dereference operator
 int* p1, p2; 	 // p1 is a pointer to int; p2 is an int
-	int *p1, *p2;  // both p1 and p2 are pointers to int - \
-	int* p1;       // p1 is a pointer to int - - - - - - - - > both styles can define pointers/references
-	int* p2;       // p2 is a pointer to int - - - - - - - /
+int *p1, *p2;    // both p1 and p2 are pointers to int|
+int* p1;         // p1 is a pointer to int - - - - - -| > both styles can define pointers/references
+int* p2;         // p2 is a pointer to int - - - - - -|
+int i = 1024, *p = &i, &r = i;	   //i is an int; p is a pointer to int; r is a reference to int
