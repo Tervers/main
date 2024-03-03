@@ -1,1 +1,1 @@
-This project is just the work I've produced from learning C++. To learn C++, I have been reading "C++ Primer - 5th Edition" from Stanley B. Lippman. There is no need for any contribution to this project.
+This project is just the work I've produced from learning the C programming language. No contribution necessary.
