@@ -1,4 +1,0 @@
-a. VALID
-b.INVALID, must be bound to object, not a literal or other expression.
-c.VALID
-d.INVALID, unbound, references cannot be objects
