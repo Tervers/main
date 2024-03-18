@@ -24,11 +24,13 @@ main()
 
 
 
+/*
+
 //  //v.2 copy input to output
 
 #include <stdio.h>
 
-main()
+int main()
 
 {
     int c;
@@ -36,6 +38,24 @@ main()
     while ((c = getchar()) != EOF)
 
         putchar(c);
-        printf("%3d", EOF);
 
 }
+
+*/
+
+
+#include <stdio.h>
+
+int main()
+
+    int c;
+
+    for c != EOF{
+
+        while (getchar(c))
+        {
+            putchar(c);
+            printf("%d\n", c)
+        }
+
+    }
