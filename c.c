@@ -61,9 +61,9 @@ int main()
 
 #include <stdio.h>
 
- /* count characters in input; 1st version */
+ // count characters in input; 1st version
 
-int main()
+main()
 
  {
 
@@ -75,6 +75,27 @@ int main()
 
          ++nc;
 
-     printf("%d\n", nc);
+     printf("%ld\n", nc);
 
  }
+
+
+//#include <stdio.h>
+
+ // /* count characters, v.2 */
+
+/*
+ int main()
+
+ {
+
+    double nc;
+
+    for (nc = 0; getchar() != EOF; ++nc)
+
+    ;
+    printf("%.0f\n", nc);
+
+    }
+
+*/
