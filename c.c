@@ -75,6 +75,6 @@ int main()
 
          ++nc;
 
-     printf("%d\n", nc);
+     printf("%ld\n", nc);
 
  }
