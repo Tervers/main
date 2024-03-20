@@ -1,101 +1,37 @@
-//  //v.1 copy input to output
-/*
-#include <stdio.h>
-
-main()
-
-{
-
-	int c;
-
-	c = getchar();
-
-	while (c != EOF) {
-
-		putchar(c);
-
-		c = getchar();
-
-		}
-
-	}
-
-*/
-
-
-
 /*
 
-//  //v.2 copy input to output
+#include <stdio.h>         // # = Directive. Include = preprocessor type.
 
-#include <stdio.h>
-
-int main()
-
+int main(void)             // int = variable type. implies main returns an integer / status code.
+                           // void = main has no argument.
 {
-    int c;
-
-    while ((c = getchar()) != EOF)
-
-        putchar(c);
-
+printf("I love \n");       // printf = statement. library function call.
+printf("you Michelle.\n"); // statements end with a ;.
+return 0;                  // return = statement. value.
 }
 
 */
 
-/* invalid code
-#include <stdio.h>
+// gcc -o c c.c            // -o = rename a.out to ...
 
-int main()
-
-    int c;
-
-    for c != EOF{
-
-        while (getchar(c))
-        {
-            putchar(c);
-            printf("%d\n", c)
-        }
-*/
-
-#include <stdio.h>
-
- // count characters in input; 1st version
-
-main()
-
- {
-
-     long nc;
-
-     nc = 0;
-
-     while (getchar() != EOF)
-
-         ++nc;
-
-     printf("%ld\n", nc);
-
- }
-
-
-//#include <stdio.h>
-
- // /* count characters, v.2 */
+// Preprocessing adds directives (usually handled by compiler)
+// Compiles into machine (object) code
+// Links code with library functions
 
 /*
- int main()
-
- {
-
-    double nc;
-
-    for (nc = 0; getchar() != EOF; ++nc)
-
-    ;
-    printf("%.0f\n", nc);
-
-    }
-
+*
+* #directives
+*
+* int main(void)
+*
+* {
+*
+*   declarations;          // int a;
+*   initialization;        // int a = 1, b = 2;
+*   assignments;           // a = 1; b = 2;
+*
+*   statements;            // printf("abc\n");
+*
+* }
+*
 */
