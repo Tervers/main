@@ -128,7 +128,6 @@ int main(void)
 
 // printf("Height: %d\n", height); // contains 7 'TOKENS'
 // 1: printf  2: (  3: "Height: %d\n"  4: ,  5: height  6: )  7: ;
-
 // preprocessing directives require a separate line each.
 // entire main() function can be on one line.
 
@@ -140,3 +139,34 @@ int main(void)
 int main(void){float fahrenheit,celsius;printf("Enter Fahrenheit temperature: ");scanf("%f", &fahrenheit);celsius=(fahrenheit-FREEZING_PT)*SCALE_FACTOR;printf("Celcius equivalent: %.1f\n", celsius);return 0;}
 
 */
+
+
+// SECTION 2 EXERCISES
+
+
+// 2a - Identify the directives and statements in this program:
+// 2b - What output does the program produce?
+
+/*
+
+#include <stdio.h>	// include directive
+
+int main(void)
+
+{
+        printf("Parkinson's Law:\nWork expands so as to ");	// printf statement
+        printf("fill the time\n");	// printf statement
+	printf("available for its completion.\n");	// printf statement
+
+      	return 0;	// return statement
+	
+}
+
+*/
+
+// Parkinson's Law:
+// Work expands so as to fill the time
+// available for its completion.
+
+
+// 3a - Condense 'dweight.c' by replacing assignments with initializers and by removing the weight variable // with an inline printf expression. ? printf("Weight: %d\n", height * length * width); ?
