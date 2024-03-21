@@ -112,13 +112,13 @@ int main(void)
 {
 	float fahrenheit, celsius;
 
-	printf("Enter Fahrenheit temperature: ");
+		printf("Enter Fahrenheit temperature: ");
 
-	scanf("%f", &fahrenheit);
+		scanf("%f", &fahrenheit);
 
 	celsius = (fahrenheit - FREEZING_PT) * SCALE_FACTOR;
 
-	printf("Celcius equivalent: %.1f\n", celsius);
+		printf("Celcius equivalent: %.1f\n", celsius);
 
 	return 0;
 
@@ -126,4 +126,17 @@ int main(void)
 
 */
 
+// printf("Height: %d\n", height); // contains 7 'TOKENS'
+// 1: printf  2: (  3: "Height: %d\n"  4: ,  5: height  6: )  7: ;
 
+// preprocessing directives require a separate line each.
+// entire main() function can be on one line.
+
+/*
+
+#include <stdio.h>
+#define FREEZING_PT 32.0f
+#define SCALE_FACTOR (5.0f / 9.0f)
+int main(void){float fahrenheit,celsius;printf("Enter Fahrenheit temperature: ");scanf("%f", &fahrenheit);celsius=(fahrenheit-FREEZING_PT)*SCALE_FACTOR;printf("Celcius equivalent: %.1f\n", celsius);return 0;}
+
+*/
