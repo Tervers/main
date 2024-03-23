@@ -228,9 +228,13 @@ int main(void)
 	scanf("%d", &price);
 
 	printf("$20 bills: %d\n", price / 20);
-	printf("$10 bills: %d\n", ((price - (20 * (price / 20))) / 10));
-	printf("$5 bills: %d\n", (((price - (20 * (price / 20))) / 10) / 5));
-	printf("$1 bills: %d\n", ((((price - (20 * (price / 20))) / 10) / 5) / 1));
+	price = price - (20 * (price / 20));
+	printf("$10 bills: %d\n", price / 10);
+	price = price - (10 * (price / 10));
+	printf("$5 bills: %d\n", price / 5);
+	price = price - (5 * (price / 5));
+	printf("$1 bills: %d\n", price / 1);
+
 
 	return 0;
 }
