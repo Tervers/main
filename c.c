@@ -172,4 +172,45 @@ int main(void)
 // 3a - Condense 'dweight.c' by replacing assignments with initializers and by removing the weight variable // with an inline printf expression.
 // printf("Weight: %d\n", (volume + 165) / 166);
 
+/*
 
+#include <stdio.h>
+
+int main()
+{
+	int radius;
+	float equation = (4.0f / 3.0f);
+	float pi = 3.1415;
+
+	printf("Enter radius (meters): \n");
+	scanf("%d", &radius);
+
+	printf("The volume of a sphere with radius of %d meters is %f.\n", radius, (pi * equation * (radius * radius * radius)));
+
+	return 0;
+
+}
+
+*/
+
+/*
+
+#include <stdio.h>
+
+int main(void)
+{
+	int x = 0;
+
+	printf("((((3x + 2)x - 5)x - 1)x + 7)x - 6\n");
+	printf("Enter value for 'x' to solve:\n");
+	scanf("%d", &x);
+
+	printf("The answer is: %d\n",
+			((((3 * x + 2) * x - 5 ) * x - 1 ) * x + 7 ) * x - 6);
+
+
+	return 0;
+
+}
+
+*/
