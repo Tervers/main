@@ -214,3 +214,23 @@ int main(void)
 }
 
 */
+
+
+
+#include <stdio.h>
+
+int main(void)
+
+{
+	int price = 0;
+
+	printf("Enter dollar amount to pay: \n");
+	scanf("%d", &price);
+
+	printf("$20 bills: %d\n", price / 20);
+	printf("$10 bills: %d\n", ((price - (20 * (price / 20))) / 10));
+	printf("$5 bills: %d\n", (((price - (20 * (price / 20))) / 10) / 5));
+	printf("$1 bills: %d\n", ((((price - (20 * (price / 20))) / 10) / 5) / 1));
+
+	return 0;
+}
