@@ -112,7 +112,7 @@ int main(void)
 {
 	float fahrenheit, celsius;
 
-		printf("Enter Fahrenheit temperature: ");
+		printf("Enter Fahrenheit temperature: \n");
 
 		scanf("%f", &fahrenheit);
 
@@ -215,7 +215,7 @@ int main(void)
 
 */
 
-
+/*
 
 #include <stdio.h>
 
@@ -237,4 +237,33 @@ int main(void)
 
 
 	return 0;
+}
+
+*/
+
+
+
+#include <stdio.h>
+
+int main(void)
+
+{
+	float loan = 0.0, interest = 0.0, payment= 0.0;
+
+	printf("Enter amount of loan: \n");
+	scanf("%f", &loan);
+
+	printf("Enter interest rate: \n");
+	scanf("%f", &interest);
+
+	printf("Enter monthly payment: \n");
+	scanf("%f", &payment);
+
+	loan = loan - payment;
+	loan = loan * ((interest / 100.0f) / 12.0f);
+
+	printf("Balance remaining after first payment: %f\n", loan);
+
+	return 0;
+
 }
