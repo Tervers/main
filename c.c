@@ -309,8 +309,8 @@ int main(void)
 //f = fixed-decimal float. p = # of digits after decimal. 0 = no decimal
 //e = exponential float. p = # of digits after decimal. 0 = no decimal
 //g = displays float in either fixed or exponential format depending
-//      on number size. p = maximum # of significant digits. Doesn't
-//      show trailing numbers
+//   on number size. p = maximum # of significant digits. Doesn't
+//   show trailing numbers
 
 /*
 
@@ -353,4 +353,19 @@ int main(void)
 //scanf read float order = + or -, digits possibly with ., e, + or -, digits until nondigit
 //%e, %f, %g are interchangeable with scanf
 //1-20.3-4.0e3
+//1|-20|0.3|-4.0e3
+//scanf will process characters in a format string depending if its a white-space character or
+//   other character
+//with one or more consecutive white-spaces, scanf repeatedly reads until non-space character
+//one space in the 'format string' will match any number of spaces from user input
+//a space in scanf doesn't actually make a space
 //
+//suppose a format string is "%d/%d"
+//if user input is ' 5/ 96', scanf skips first space, matches %d with 5, matches / with /,
+//   skips a space looking for integer, then matches %d with 96
+//if user input is ' 5 / 96' instead, scanf skips one space, matches %d with 5, attempts to
+//   match a space with /. there is no match, scanf puts space back; ' / 96' remain to be
+//   read by next scanf.
+//allow spaces after first number by adding a space into format string:
+//   "%d /%d"
+
