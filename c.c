@@ -1,3 +1,9 @@
+/*************************************************
+*                                                *
+*                   Chapter 3                    *
+*                                                *
+*************************************************/
+
 // Wherever a value is needed, any expression of the same type will do.
 
 /*
@@ -159,7 +165,7 @@ int main(void)
 	printf("available for its completion.\n");	// printf statement
 
       	return 0;	// return statement
-	
+
 }
 
 */
@@ -241,7 +247,7 @@ int main(void)
 
 */
 
-
+/*
 
 #include <stdio.h>
 
@@ -259,11 +265,83 @@ int main(void)
 	printf("Enter monthly payment: \n");
 	scanf("%f", &payment);
 
-	loan = loan - payment;
-	loan = (interest / 100.0f) / 12.0f * loan + loan;
+	loan = ((interest / 100.0f) / 12.0f) * loan + loan;
+	loan = loan - payment;              // loan =- payment;
 
 	printf("Balance remaining after first payment: %.2f\n", loan);
+
+    loan = ((interest / 100.0f) / 12.0f) * loan + loan;
+	loan = loan - payment;
+
+	printf("Balance remaining after second payment: %.2f\n", loan);
+
+    loan = ((interest / 100.0f) / 12.0f) * loan + loan;
+	loan = loan - payment;
+
+	printf("Balance remaining after third payment: %.2f\n", loan);
 
 	return 0;
 
 }
+
+*/
+
+/*************************************************
+*                                                *
+*                   Chapter 3                    *
+*                                                *
+*************************************************/
+
+
+/*   3.1 The printf Function   */
+
+
+//printf displays 'format string.' printf(string, expr1, expr2, ...)
+//% = conversion specifications (converts from binary to printed)
+//%m.pX %-m.pX  = conversion specification formats
+//m = minimum field width = number of characters to print
+//fewer than m characters, the value is right-justified
+//-m causes left-justification
+//p = precision = depends on choice of X
+//X = conversion specifier = indicates which conversion to apply
+//common specifiers:
+//d = decimal. p = minimum # of digits to display
+//f = fixed-decimal float. p = # of digits after decimal. 0 = no decimal
+//e = exponential float. p = # of digits after decimal. 0 = no decimal
+//g = displays float in either fixed or exponential format depending
+//      on number size. p = maximum # of significant digits. Doesn't
+//      show trailing numbers
+
+/*
+
+#include <stdio.h>
+
+int main(void)
+{
+    int i;
+    float x;
+
+    i = 40;
+    x = 839.21f;
+
+    printf("|%d|%5d|%-5d|%5.3d|\n", i, i, i, i);    //|40|   40|40   |  040|
+    printf("|%10.3f|%10.3e|%-10g|\n", x, x, x);     //|   839.210| 8.392e+02|839.21   |
+
+    return 0;
+
+}
+
+*/
+
+//Alert (bell)   \a
+//Backspace   \b
+//New line   \n
+//Horizontal tab   \t
+//Double quote   \"
+//Double backslash   \\
+
+
+/*   3.1 The scanf Function   */
+
+
+//
