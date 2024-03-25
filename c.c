@@ -265,17 +265,17 @@ int main(void)
 	printf("Enter monthly payment: \n");
 	scanf("%f", &payment);
 
-	loan = ((interest / 100.0f) / 12.0f) * loan + loan;
+	loan = ((((interest / 100.0f) / 12.0f) * loan) + loan);
 	loan = loan - payment;              // loan =- payment;
 
 	printf("Balance remaining after first payment: %.2f\n", loan);
 
-    loan = ((interest / 100.0f) / 12.0f) * loan + loan;
+    loan = ((((interest / 100.0f) / 12.0f) * loan) + loan);
 	loan = loan - payment;
 
 	printf("Balance remaining after second payment: %.2f\n", loan);
 
-    loan = ((interest / 100.0f) / 12.0f) * loan + loan;
+    loan = ((((interest / 100.0f) / 12.0f) * loan) + loan);
 	loan = loan - payment;
 
 	printf("Balance remaining after third payment: %.2f\n", loan);
@@ -368,4 +368,27 @@ int main(void)
 //   read by next scanf.
 //allow spaces after first number by adding a space into format string:
 //   "%d /%d"
+
+/*
+
+#include <stdio.h>
+
+int main(void)
+{
+    int num1, denom1, num2, denom2, result_num, result_denom;
+
+    printf("Enter first fraction: ");
+    scanf("%d/%d", &num1, &denom1);
+
+    printf("Enter second fraction: ");
+    scanf("%d/%d", &num2, &denom2);
+
+    result_num = num1 * denom2 + num2 * denom1;
+    result_denom = denom1 * denom2;
+    printf("The sum is %d/%d\n", result_num, result_denom);
+
+    return 0;
+}
+
+*/
 
