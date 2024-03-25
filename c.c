@@ -1,6 +1,6 @@
 /*************************************************
 *                                                *
-*                   Chapter 3                    *
+*                   Chapter 2                    *
 *                                                *
 *************************************************/
 
@@ -341,7 +341,16 @@ int main(void)
 //Double backslash   \\
 
 
-/*   3.1 The scanf Function   */
+/*   3.2 The scanf Function   */
 
 
+//scanf conversions are essentially the same as printf
+//scanf often only contains conversion specifications
+//scanf("%d%d%f%f", &i, &j, &x, &y);
+//scanf ignores 'white-space characters'
+//space, horizontal and vertical tab, form-feed, new-line
+//scanf read integer order = digit, +, -, digits until nondigit
+//scanf read float order = + or -, digits possibly with ., e, + or -, digits until nondigit
+//%e, %f, %g are interchangeable with scanf
+//1-20.3-4.0e3
 //
