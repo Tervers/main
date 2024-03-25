@@ -260,9 +260,9 @@ int main(void)
 	scanf("%f", &payment);
 
 	loan = loan - payment;
-	loan = loan * ((interest / 100.0f) / 12.0f);
+	loan = (interest / 100.0f) / 12.0f * loan + loan;
 
-	printf("Balance remaining after first payment: %f\n", loan);
+	printf("Balance remaining after first payment: %.2f\n", loan);
 
 	return 0;
 
