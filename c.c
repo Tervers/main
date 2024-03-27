@@ -302,6 +302,8 @@ int main(void)
 //m = minimum field width = number of characters to print
 //fewer than m characters, the value is right-justified
 //-m causes left-justification
+//field width expands if more than m characters required:
+//   ("%4d", 12345) would show 12345
 //p = precision = depends on choice of X
 //X = conversion specifier = indicates which conversion to apply
 //common specifiers:
@@ -325,7 +327,7 @@ int main(void)
     x = 839.21f;
 
     printf("|%d|%5d|%-5d|%5.3d|\n", i, i, i, i);    //|40|   40|40   |  040|
-    printf("|%10.3f|%10.3e|%-10g|\n", x, x, x);     //|   839.210| 8.392e+02|839.21   |
+    printf("|%10.3f|%10.3e|%-10g|\n", x, x, x);     //|   839.210| 8.392e+02|839.21    |
 
     return 0;
 
@@ -343,30 +345,53 @@ int main(void)
 
 /*   3.2 The scanf Function   */
 
-
+//scanf handles Conversion Specifications, white-space characters, and
+//   'ordinary' characters differently
+//scanf attempts to match input characters with conversion specifications
 //scanf conversions are essentially the same as printf
+//scanf READs a character when it matches format
 //scanf often only contains conversion specifications
+//starting from the left, scanf tries to find each *conversion specification*
+//   with an item of appropriate type from input data, *skipping blank space
+//   when necessary*
+//stops reading when encountering a character that can't possibly match
+//continues if the item was read successfully
+//scanf returns if item was not read successfully
+
 //scanf("%d%d%f%f", &i, &j, &x, &y);
+
+//  1           //
+//-20   .3      //user input
+//   -4.0e3     //
+
+//scanf sees 1-20.3-4.0e3
+
 //scanf ignores 'white-space characters': space, horizontal and vertical tab,
 //   form-feed, new-line
 //scanf read integer order = digit, +, -, digits until nondigit
 //scanf read float order = + or -, digits possibly with ., e, + or -, digits
 //   until nondigit
 //%e, %f, %g are interchangeable with scanf
-//1-20.3-4.0e3
 //1|-20|0.3|-4.0e3
-//scanf will process characters in a format string depending if its a
-//   white-space character or other character
+//scanf will process characters in a format string differently depending if
+//its a white-space character or other character
 //with one or more consecutive white-spaces, scanf repeatedly reads until
-//   non-space character
-//one space in the 'format string' will match any number of spaces from user
-//   input
-//a space in scanf doesn't actually make a space
+//   non-white-space character
+
+
+//'Ordinary characters in format strings'
+//white-space characters read from input until non-white-space character,
+//   which is 'put back'
+//number of white-space chars in format string irrelevant; it will match
+//   ANY number of white-space chars, including NONE
+//if non-white-space chars match, scanf continues
+//if no match, scanf aborts
 //suppose a format string is "%d/%d"
 //if user input is ' 5/ 96', scanf skips first space, matches %d with 5,
 //   matches / with /, skips a space looking for integer, then matches %d
 //   with 96
-//if user input is ' 5 / 96' instead, scanf skips one space, matches %d with 5,//   attempts to match a space with /. There is no match, scanf puts space
+//if user input is ' 5 / 96' instead, scanf skips one space, matches %d with 5,
+//   attempts to match a space with /. There is no match, scanf puts space
 //   back; ' / 96' remain to be read by next scanf.
 //allow spaces after first number by adding a space into format string:
 //   "%d /%d"
@@ -394,4 +419,45 @@ int main(void)
 
 */
 
-9.97e10
+
+/*   Chapter 3 exercises   */
+
+
+//1. What output do the following calls of printf produce?
+                                   /*123456789012       123456789012*/
+//printf("%6d, %4d\n", 86, 1040);   '    86', '1040'   '   86, 1040'
+//printf("%12.5e\n", 30.253);       '   3.0253e-1'     '3.02530e+001'
+//printf("%.4f\n", 83.162);         '83.1620'          '83.1620'
+//printf("%-6.2g\n", .0000009979);  '9.9e10'           '1e-006'
+
+
+//2. Write calls of printf that display a float variable x int the following formats.
+
+//printf("%-8.e", 8.47);
+//printf("%10.6e", 8.47);
+//printf("%-8.3f", 8.47);
+//printf("%6.0f", 8.47);
+
+
+//3. Indicate whether the 2 strings are equivalent. If not, show how.
+
+//3a - "%d" vs " %d" : equivalent
+//3b - "%d-%d-%d" vs "%d -%d -%d" : equivalent
+//3c - "%f" vs "%f " : unequal - 1st string "%f "
+//3d - "%f,%f" vs "%f, %f" : equivalent
+
+
+//4. Suppose scanf("%d%f%d", &i, &x, &j); User enters 10.3 5 6, what values will show?
+
+//10 5 6
+
+
+//5. Suppose scanf("%f%d%f", &x, &i, &y); User enters 12.3 45.6 789, what values?
+
+//12.3 45 789
+
+
+//6. Show how to modify addfrac.c so that user can enter fractions that contain
+//     spaces before and after each / character.
+
+//scanf("%d/%d") : scanf("%d / %d")
