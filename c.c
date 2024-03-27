@@ -347,25 +347,27 @@ int main(void)
 //scanf conversions are essentially the same as printf
 //scanf often only contains conversion specifications
 //scanf("%d%d%f%f", &i, &j, &x, &y);
-//scanf ignores 'white-space characters'
-//space, horizontal and vertical tab, form-feed, new-line
+//scanf ignores 'white-space characters': space, horizontal and vertical tab,
+//   form-feed, new-line
 //scanf read integer order = digit, +, -, digits until nondigit
-//scanf read float order = + or -, digits possibly with ., e, + or -, digits until nondigit
+//scanf read float order = + or -, digits possibly with ., e, + or -, digits
+//   until nondigit
 //%e, %f, %g are interchangeable with scanf
 //1-20.3-4.0e3
 //1|-20|0.3|-4.0e3
-//scanf will process characters in a format string depending if its a white-space character or
-//   other character
-//with one or more consecutive white-spaces, scanf repeatedly reads until non-space character
-//one space in the 'format string' will match any number of spaces from user input
+//scanf will process characters in a format string depending if its a
+//   white-space character or other character
+//with one or more consecutive white-spaces, scanf repeatedly reads until
+//   non-space character
+//one space in the 'format string' will match any number of spaces from user
+//   input
 //a space in scanf doesn't actually make a space
-//
 //suppose a format string is "%d/%d"
-//if user input is ' 5/ 96', scanf skips first space, matches %d with 5, matches / with /,
-//   skips a space looking for integer, then matches %d with 96
-//if user input is ' 5 / 96' instead, scanf skips one space, matches %d with 5, attempts to
-//   match a space with /. there is no match, scanf puts space back; ' / 96' remain to be
-//   read by next scanf.
+//if user input is ' 5/ 96', scanf skips first space, matches %d with 5,
+//   matches / with /, skips a space looking for integer, then matches %d
+//   with 96
+//if user input is ' 5 / 96' instead, scanf skips one space, matches %d with 5,//   attempts to match a space with /. There is no match, scanf puts space
+//   back; ' / 96' remain to be read by next scanf.
 //allow spaces after first number by adding a space into format string:
 //   "%d /%d"
 
@@ -392,3 +394,4 @@ int main(void)
 
 */
 
+9.97e10
