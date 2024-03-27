@@ -424,7 +424,7 @@ int main(void)
 
 
 //1. What output do the following calls of printf produce?
-                                   /*123456789012       123456789012*/
+                                   //123456789012       123456789012
 //printf("%6d, %4d\n", 86, 1040);   '    86', '1040'   '   86, 1040'
 //printf("%12.5e\n", 30.253);       '   3.0253e-1'     '3.02530e+001'
 //printf("%.4f\n", 83.162);         '83.1620'          '83.1620'
@@ -433,7 +433,7 @@ int main(void)
 
 //2. Write calls of printf that display a float variable x int the following formats.
 
-//printf("%-8.e", 8.47);
+//printf("%-8.1e", 8.47);
 //printf("%10.6e", 8.47);
 //printf("%-8.3f", 8.47);
 //printf("%6.0f", 8.47);
@@ -443,7 +443,8 @@ int main(void)
 
 //3a - "%d" vs " %d" : equivalent
 //3b - "%d-%d-%d" vs "%d -%d -%d" : equivalent
-//3c - "%f" vs "%f " : unequal - 1st string "%f "
+//3c - "%f" vs "%f " : unequal - "%f " won't finish until a non-white-space
+//        character is entered
 //3d - "%f,%f" vs "%f, %f" : equivalent
 
 
