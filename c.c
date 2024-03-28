@@ -1,6 +1,6 @@
 /*************************************************
 *                                                *
-*                   Chapter 2                    *
+*                   CHAPTER 2                    *
 *                                                *
 *************************************************/
 
@@ -147,7 +147,7 @@ int main(void){float fahrenheit,celsius;printf("Enter Fahrenheit temperature: ")
 */
 
 
-// SECTION 2 EXERCISES
+/*   CHAPTER 2 EXERCISES   */
 
 
 // 2a - Identify the directives and statements in this program:
@@ -288,26 +288,28 @@ int main(void)
 
 /*************************************************
 *                                                *
-*                   Chapter 3                    *
+*                   CHAPTER 3                    *
 *                                                *
 *************************************************/
 
 
-/*   3.1 The printf Function   */
+/*   3.1 THE printf FUNCTION   */
 
 
-//printf displays 'format string.' printf(string, expr1, expr2, ...)
+//printf displays 'format string.' printf("string", expr1, expr2, ...)
 //% = conversion specifications (converts from binary to printed)
 //%m.pX %-m.pX  = conversion specification formats
 //m = minimum field width = number of characters to print
 //fewer than m characters, the value is right-justified
+//"%4d" user enters 123 = ' 123'
 //-m causes left-justification
+//"%-4d" user enters 123 = '123 '
 //field width expands if more than m characters required:
 //   ("%4d", 12345) would show 12345
 //p = precision = depends on choice of X
 //X = conversion specifier = indicates which conversion to apply
 //common specifiers:
-//d = decimal. p = minimum # of digits to display
+//d = decimal. p = minimum # of digits to display (extra zeros if necessary)
 //f = fixed-decimal float. p = # of digits after decimal. 0 = no decimal
 //e = exponential float. p = # of digits after decimal. 0 = no decimal
 //g = displays float in either fixed or exponential format depending
@@ -343,7 +345,7 @@ int main(void)
 //Double backslash   \\
 
 
-/*   3.2 The scanf Function   */
+/*   3.2 THE scanf FUNCTION   */
 
 //scanf handles Conversion Specifications, white-space characters, and
 //   'ordinary' characters differently
@@ -419,7 +421,7 @@ int main(void)
 */
 
 
-/*   Chapter 3 exercises   */
+/*   CHAPTER 3 EXERCISES   */
 
 
 //1. What output do the following calls of printf produce?
@@ -447,17 +449,44 @@ int main(void)
 //3d - "%f,%f" vs "%f, %f" : equivalent
 
 
-//4. Suppose scanf("%d%f%d", &i, &x, &j); User enters 10.3 5 6, what values will show?
+//4. Suppose scanf("%d%f%d", &i, &x, &j); User enters '10.3 5 6', what values will show?
 
 //10 5 6
 
 
-//5. Suppose scanf("%f%d%f", &x, &i, &y); User enters 12.3 45.6 789, what values?
+//5. Suppose scanf("%f%d%f", &x, &i, &y); User enters '12.3 45.6 789', what values?
 
-//12.3 45 789
+//12.3 45 0.6
 
 
 //6. Show how to modify addfrac.c so that user can enter fractions that contain
 //     spaces before and after each / character.
 
-//scanf("%d/%d") : scanf("%d / %d")
+//scanf("%d/%d") : scanf("%d /%d")
+
+
+/*   CHAPTER 3 PROGRAMMING PROJECTS   */
+
+
+//1.
+
+/*
+
+#include <stdio.h>
+
+int main(void)
+{
+    int mm = 0, dd = 0, yyyy = 0;
+
+    printf("Please enter a date in the format of mm/dd/yyyy. For example, February 7, 2005 would be 02/07/2005\n");
+    scanf("%d/%d/%d", &mm, &dd, &yyyy);
+    printf("You have entered %2.2d/%2.2d/%4.4d", mm, dd, yyyy);
+
+    return 0;
+}
+
+*/
+
+
+//2.
+
