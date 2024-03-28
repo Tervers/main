@@ -352,11 +352,11 @@ int main(void)
 //scanf READs a character when it matches format
 //scanf often only contains conversion specifications
 //starting from the left, scanf tries to find each *conversion specification*
-//   with an item of appropriate type from input data, *skipping blank space
+//   with an item of appropriate type from *input* data, *skipping blank space
 //   when necessary*
-//stops reading when encountering a character that can't possibly match
-//continues if the item was read successfully
-//scanf returns if item was not read successfully
+//STOPs reading when encountering a character that can't possibly match
+//PUTs BACK if the item was read successfully
+//scanf RETURNs if item was not read successfully
 
 //scanf("%d%d%f%f", &i, &j, &x, &y);
 
@@ -364,8 +364,7 @@ int main(void)
 //-20   .3      //user input
 //   -4.0e3     //
 
-//scanf sees 1-20.3-4.0e3
-
+//is equivalent to 1-20.3-4.0e3
 //scanf ignores 'white-space characters': space, horizontal and vertical tab,
 //   form-feed, new-line
 //scanf read integer order = digit, +, -, digits until nondigit
@@ -376,7 +375,7 @@ int main(void)
 //scanf will process characters in a format string differently depending if
 //its a white-space character or other character
 //with one or more consecutive white-spaces, scanf repeatedly reads until
-//   non-white-space character
+//   non-white-space character encountered
 
 
 //'Ordinary characters in format strings'
