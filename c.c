@@ -7,24 +7,30 @@
 // Wherever a value is needed, any expression of the same type will do.
 
 /*
-*
-* #include <stdio.h>        // # = Directive. Include = preprocessor type.
-*
-* int main(void)            // int = variable type. implies main returns an integer / status code.
-*                           // void = main has no argument.
-* {
-* printf("I love \n");      // printf = 'print formatted' statement. library function call.
-* printf("you Michelle.\n");// statements end with a ;.
-* return 0;                 // return = statement. value.
-* }
-*
+
+#include <stdio.h>
+// # = Directive. Include = preprocessor type.
+
+int main(void)
+// int = variable type. implies main returns an integer / status code.
+// void = main has no argument.
+{
+    printf("I love \n");
+// printf = 'print formatted' statement. library function call.
+    printf("you Michelle.\n");
+// statements end with a ;.
+    return 0;
+// return = statement. value.
+}
+
 */
 
 // gcc -o c c.c             // -o = rename a.out to c
 
-// Preprocessing adds directives (usually handled by compiler) ?preprocessing connects header files to source files?
-// Compiles human code into machine (object) code ?human code into binary / assembly?
-// Links code with library functions ?links functions from headers to object code?
+//Preprocessing adds directives (usually handled by compiler)
+//?preprocessing connects header files to source files?
+//Compiles human code into machine (object) code ?human code into binary / assembly?
+//Links code with library functions ?links functions from headers to object code?
 
 /*
 *
@@ -39,6 +45,8 @@
 *   assignments;            // a = 1; b = 2;
 *
 *   statements;             // printf("abc\n");
+
+    return 0;
 *
 * }
 *
@@ -490,3 +498,18 @@ int main(void)
 
 //2.
 
+#include <stdio.h>
+
+int main(void)
+
+{
+    int item = 0, mm = 0, dd = 0, yyyy = 0;
+    float price = 0.0f;
+
+    printf("Enter item number: \n");
+    scanf("%d", &item);
+    printf("Enter unit price: \n");
+    scanf("%f", &price);
+    printf("Enter purchase date (mm/dd/yyyy): \n");
+    scanf
+}
