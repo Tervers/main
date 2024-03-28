@@ -498,6 +498,8 @@ int main(void)
 
 //2.
 
+/*
+
 #include <stdio.h>
 
 int main(void)
@@ -506,10 +508,69 @@ int main(void)
     int item = 0, mm = 0, dd = 0, yyyy = 0;
     float price = 0.0f;
 
-    printf("Enter item number: \n");
+    printf("Enter item number: ");
     scanf("%d", &item);
-    printf("Enter unit price: \n");
+    printf("Enter unit price: ");
     scanf("%f", &price);
-    printf("Enter purchase date (mm/dd/yyyy): \n");
-    scanf
+    printf("Enter purchase date (mm/dd/yyyy): ");
+    scanf("%d/%d/%d", &mm, &dd, &yyyy);
+
+    printf("Item\t\tUnit\t\tPurchase\n");
+    printf("\t\tPrice\t\tDate\n");
+    printf("%d\t\t$%6.2f\t%d/%d/%d\n", item, price, mm, dd, yyyy);
+
+    return 0;
+
+}
+
+*/
+
+
+//3.
+
+/*
+
+#include <stdio.h>
+
+int main(void)
+
+{
+	int gs1 = 0, group = 0, pub =0, item = 0, check = 0;
+
+	printf("Enter ISBN: ");
+
+	scanf("%d-%d-%d-%d-%d", &gs1, &group, &pub, &item, &check);
+
+	printf("GS1 prefix: %d\n", gs1);
+        printf("Group identifier: %d\n", group);
+	printf("Publisher code: %d\n", pub);
+	printf("Item number: %d\n", item);
+	printf("Check digit: %d\n", check);
+
+	return 0;
+
+
+}
+
+*/
+
+
+//4.
+
+#include <stdio.h>
+
+int main(void)
+
+{
+
+	int area = 0, pre = 0, suf = 0;
+
+	printf("Enter phone number (xxx) xxx-xxxx: \n");
+
+	scanf("(%d) %d-%d", &area, &pre, &suf);
+
+	printf("You entered %d.%d.%d\n", area, pre, suf);
+
+	return 0;
+
 }
