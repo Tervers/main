@@ -4,6 +4,7 @@
 *                                                *
 *************************************************/
 
+
 // Wherever a value is needed, any expression of the same type will do.
 
 /*
@@ -294,6 +295,7 @@ int main(void)
 
 */
 
+
 /*************************************************
 *                                                *
 *                   CHAPTER 3                    *
@@ -557,6 +559,8 @@ int main(void)
 
 //4.
 
+/*
+
 #include <stdio.h>
 
 int main(void)
@@ -574,3 +578,93 @@ int main(void)
 	return 0;
 
 }
+
+*/
+
+
+//5.
+
+/*
+
+#include <stdio.h>
+
+int main(void)
+
+{
+    int a1 = 0, a2 = 0, a3 = 0, a4 = 0;
+    int b1 = 0, b2 = 0, b3 = 0, b4 = 0;
+    int c1 = 0, c2 = 0, c3 = 0, c4 = 0;
+    int d1 = 0, d2 = 0, d3 = 0, d4 = 0;
+
+    int rowa = 0, rowb = 0, rowc = 0, rowd = 0;
+    int col1 = 0, col2 = 0, col3 = 0, col4 = 0;
+    int diag1 = 0, diag2 = 0;
+
+    printf("Enter the numbers from 1 to 16 in any order: \n");
+
+    scanf("%d %d %d %d", &a1, &a2, &a3, &a4);
+    scanf(" %d %d %d %d", &b1, &b2, &b3, &b4);
+    scanf(" %d %d %d %d", &c1, &c2, &c3, &c4);
+    scanf(" %d %d %d %d", &d1, &d2, &d3, &d4);
+
+    rowa = a1+a2+a3+a4, rowb = b1+b2+b3+b4, rowc = c1+c2+c3+c4, rowd = d1+d2+d3+d4,
+    col1 = a1+b1+c1+d1, col2 = a2+b2+c2+d2, col3 = a3+b3+c3+d3, col4 = a4+b4+c4+d4,
+    diag1 = a1+b2+c3+d4, diag2 = a4+b3+c2+d1;
+
+    printf("Row sums: %d %d %d %d\n", rowa, rowb, rowc, rowd);
+    printf("Column sums: %d %d %d %d\n", col1, col2, col3, col4);
+    printf("Diagonal sums: %d %d\n", diag1, diag2);
+
+    return 0;
+
+}
+
+*/
+
+
+//6.
+
+/*
+
+#include <stdio.h>
+
+int main(void)
+{
+    int num1, denom1, num2, denom2, result_num, result_denom;
+
+    printf("Enter two fractions separated by a plus sign: ");
+    scanf("%d/%d+%d/%d", &num1, &denom1, &num2, &denom2);
+
+    result_num = num1 * denom2 + num2 * denom1;
+    result_denom = denom1 * denom2;
+    printf("The sum is %d/%d\n", result_num, result_denom);
+
+    return 0;
+}
+
+*/
+
+
+/*************************************************
+*                                                *
+*   CHAPTER 4           -          EXPRESSIONS   *
+*                                                *
+*************************************************/
+
+
+//Expressions are formulas that show how to compute a value
+//the simplest expressions are variables and constants
+//variables represent values that are computed at runtime
+//constants represent values that don't change
+//complex expressions apply operators to operands
+//operands are themselves expressions
+//a + (b * c)
+//a is an operand; + is an operator; (b * c) is an operand;
+//arithmetic operators; +, -, *, /
+//relational operators; <, >, <=
+//logical operators; x < 0 && x > -10;     //&& possibly wrong
+
+
+/*   CHAPTER 4 ARITHMETIC OPERATORS   */
+
+
