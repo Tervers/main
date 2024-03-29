@@ -184,8 +184,9 @@ int main(void)
 // available for its completion.
 
 
-// 3a - Condense 'dweight.c' by replacing assignments with initializers and by removing the weight variable // with an inline printf expression.
-// printf("Weight: %d\n", (volume + 165) / 166);
+//3a - Condense 'dweight.c' by replacing assignments with initializers and by
+//   removing the weight variable // with an inline printf expression.
+//   printf("Weight: %d\n", (volume + 165) / 166);
 
 /*
 
@@ -195,7 +196,7 @@ int main()
 {
 	int radius;
 	float equation = (4.0f / 3.0f);
-	float pi = 3.1415;
+	float pi = 3.1415f;
 
 	printf("Enter radius (meters): \n");
 	scanf("%d", &radius);
@@ -669,3 +670,15 @@ int main(void)
 
 
 //arithmetic operators come in two forms; unary and binary
+//unary operators require one operand (u-nary)
+//+ = unary plus; - = unary minus
+//unary + / - used to emphasize positive / negative numbers
+//binary operators require two operands (bi-nary)
+//additive binary: + = binary addition; - = binary subtraction
+//multiplicative binary: * = multiplication; / = division; % = remainder
+//the value of i % j is the remainder of i / j
+//10 % 3 = 1; 12 % 4 = 0
+//+, -, *, / operators allow either integer or float, with mixing
+//mixing int and float creates a float
+//the / operator will truncate results if both operands are integers
+//1 / 2 = 0, not 0.5
