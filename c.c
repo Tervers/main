@@ -1,6 +1,6 @@
 /*************************************************
 *                                                *
-*                   CHAPTER 2                    *
+*   CHAPTER          2          C FUNDAMENTALS   *
 *                                                *
 *************************************************/
 
@@ -298,7 +298,7 @@ int main(void)
 
 /*************************************************
 *                                                *
-*                   CHAPTER 3                    *
+*   CHAPTER      3      FORMATTED INPUT/OUTPUT   *
 *                                                *
 *************************************************/
 
@@ -647,7 +647,7 @@ int main(void)
 
 /*************************************************
 *                                                *
-*   CHAPTER 4           -          EXPRESSIONS   *
+*   CHAPTER           4            EXPRESSIONS   *
 *                                                *
 *************************************************/
 
@@ -668,4 +668,4 @@ int main(void)
 /*   CHAPTER 4 ARITHMETIC OPERATORS   */
 
 
-//arithmatic operators come in two forms; unary and binary
+//arithmetic operators come in two forms; unary and binary
