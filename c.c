@@ -1,8 +1,9 @@
-/*************************************************
-*                                                *
-*   CHAPTER          2          C FUNDAMENTALS   *
-*                                                *
-*************************************************/
+/************************************************************************
+*                                                                       *
+*   CHAPTER                      2                     C FUNDAMENTALS   *
+*                                                                       *
+************************************************************************/
+
 
 
 // Wherever a value is needed, any expression of the same type will do.
@@ -10,21 +11,26 @@
 /*
 
 #include <stdio.h>
-// # = Directive. Include = preprocessor type.
 
 int main(void)
-// int = variable type. implies main returns an integer / status code.
-// void = main has no argument.
+
 {
+
     printf("I love \n");
-// printf = 'print formatted' statement. library function call.
     printf("you Michelle.\n");
-// statements end with a ;.
+
     return 0;
-// return = statement. value.
+
 }
 
 */
+
+//# = directive. include = preprocessor type.
+//int = variable type. implies main returns an integer / status code.
+//void = main has no argument.
+//return = statement with a value.
+//statements end with a ;
+//printf = 'print formatted' statement. library function call.
 
 // gcc -o c c.c             // -o = rename a.out to c
 
@@ -37,7 +43,7 @@ int main(void)
 
 #directives
 
-int main(void)
+type main(void)
 
 {
 
@@ -138,26 +144,31 @@ int main(void)
 
 */
 
-// printf("Height: %d\n", height); // contains 7 'TOKENS'
-// 1: printf  2: (  3: "Height: %d\n"  4: ,  5: height  6: )  7: ;
-// preprocessing directives require a separate line each.
-// entire main() function can be on one line.
+//printf("Height: %d\n", height); // contains 7 'TOKENS'
+//1: printf  2: (  3: "Height: %d\n"  4: ,  5: height  6: )  7: ;
+//preprocessing directives require a separate line each.
+//entire main() function can be on one line.
 
 /*
 
 #include <stdio.h>
 #define FREEZING_PT 32.0f
 #define SCALE_FACTOR (5.0f / 9.0f)
-int main(void){float fahrenheit,celsius;printf("Enter Fahrenheit temperature: ");scanf("%f", &fahrenheit);celsius=(fahrenheit-FREEZING_PT)*SCALE_FACTOR;printf("Celcius equivalent: %.1f\n", celsius);return 0;}
+int main(void){float fahrenheit,celsius;printf("Enter Fahrenheit ");
+printf("temperature: ");scanf("%f", &fahrenheit);
+celsius=(fahrenheit-FREEZING_PT)*SCALE_FACTOR;printf("Celcius ");
+printf("equivalent: %.1f\n", celsius);return 0;}
 
 */
 
 
-/*   CHAPTER 2 EXERCISES   */
+
+/*   CHAPTER                       2                       EXERCISES   */
 
 
-// 2a - Identify the directives and statements in this program:
-// 2b - What output does the program produce?
+
+//2a - Identify the directives and statements in this program:
+//2b - What output does the program produce?
 
 /*
 
@@ -176,9 +187,9 @@ return 0;	                                        // return statement
 
 */
 
-// Parkinson's Law:
-// Work expands so as to fill the time
-// available for its completion.
+//Parkinson's Law:
+//Work expands so as to fill the time
+//available for its completion.
 
 
 //3a - Condense 'dweight.c' by replacing assignments with initializers
@@ -191,7 +202,9 @@ return 0;	                                        // return statement
 #include <stdio.h>
 
 int main()
+
 {
+
 	int radius;
 	float equation = (4.0f / 3.0f);
 	float pi = 3.1415f;
@@ -221,9 +234,9 @@ int main(void)
 	printf("Enter value for 'x' to solve:\n");
 	scanf("%d", &x);
 
-	printf("The answer is: %d\n",
-			((((3 * x + 2) * x - 5 ) * x - 1 ) * x + 7 ) * x - 6);
-
+	printf("The answer is: ");
+	printf("%d", ((((3 * x + 2) * x - 5 ) * x - 1 ) * x + 7 ) * x - 6);
+    printf("\n");
 
 	return 0;
 
@@ -297,14 +310,17 @@ int main(void)
 */
 
 
-/*************************************************
-*                                                *
-*   CHAPTER      3      FORMATTED INPUT/OUTPUT   *
-*                                                *
-*************************************************/
+
+/************************************************************************
+*                                                                       *
+*   CHAPTER                  3                 FORMATTED INPUT/OUTPUT   *
+*                                                                       *
+************************************************************************/
 
 
-/*   3.1 THE printf FUNCTION   */
+
+/*   CHAPTER                 3.1                 THE printf FUNCTION   */
+
 
 
 //printf displays 'format string.' printf("string", expr1, expr2, ...)
@@ -359,11 +375,15 @@ int main(void)
 //Double backslash   \\
 
 
-/*   3.2 THE scanf FUNCTION   */
+
+/*   CHAPTER                  3.2                 THE scanf FUNCTION   */
+
+
 
 //scanf handles Conversion Specifications, white-space characters, and
 //   'ordinary' characters differently
-//scanf attempts to match input characters with conversion specifications
+//scanf attempts to match input characters with conversion
+//   specifications
 //scanf conversions are essentially the same as printf
 //scanf READs a character when it matches format
 //scanf often only contains conversion specifications
@@ -390,12 +410,12 @@ int main(void)
 //1|-20|0.3|-4.0e3
 //scanf will process characters in a format string differently depending
 //   if its a white-space character or other character
-//with one or more consecutive white-spaces, scanf repeatedly reads until
-//   non-white-space character encountered
+//with one or more consecutive white-spaces, scanf repeatedly reads
+//   until non-white-space character encountered
 
 
 //'Ordinary characters in format strings'
-//white-space characters read from input until non-white-space character,
+//white-space chars read from input until non-white-space character,
 //   which is 'put back'
 //number of white-space chars in format string irrelevant; it will match
 //   ANY number of white-space chars, including NONE
@@ -435,7 +455,7 @@ int main(void)
 */
 
 
-/*   CHAPTER 3 EXERCISES   */
+/*   CHAPTER                       3                       EXERCISES   */
 
 
 //1. What output do the following calls of printf produce?
@@ -482,7 +502,9 @@ int main(void)
 //scanf("%d/%d") : scanf("%d /%d")
 
 
-/*   CHAPTER 3 PROGRAMMING PROJECTS   */
+
+/*   CHAPTER                  3                 PROGRAMMING PROJECTS   */
+
 
 
 //1.
@@ -654,11 +676,13 @@ int main(void)
 */
 
 
-/*************************************************
-*                                                *
-*   CHAPTER           4            EXPRESSIONS   *
-*                                                *
-*************************************************/
+
+/************************************************************************
+*                                                                       *
+*   CHAPTER                       4                       EXPRESSIONS   *
+*                                                                       *
+************************************************************************/
+
 
 
 //Expressions are formulas that show how to compute a value
@@ -674,7 +698,9 @@ int main(void)
 //logical operators; x < 0 && x > -10;     //&& possibly wrong
 
 
-/*   CHAPTER 4 ARITHMETIC OPERATORS   */
+
+/*   CHAPTER                 4.1                ARITHMETIC OPERATORS   */
+
 
 
 //arithmetic operators come in two forms; unary and binary
@@ -713,3 +739,61 @@ int main(void)
 //right associative operators group from right to left, unary arithmetic
 //   operators are right associative:
 //   - + i       is equivalent to   -(+i)
+
+
+//upc.c - Computes a Universal Product Code check digit
+
+/*
+
+#include <stdio.h>
+
+int main(void)
+{
+    int d, i1, i2, i3, i4, i5, j1, j2, j3, j4, j5,
+        first_sum, second_sum, total;
+
+    printf("Enter the first (single) digit: ");
+    scanf("%1d", &d);
+    printf("Enter first group of five digits: ");
+    scanf("%1d%1d%1d%1d%1d", &i1, &i2, &i3, &i4, &i5);
+    printf("Enter second group of five digits: ");
+    scanf("%1d%1d%1d%1d%1d", &j1, &j2, &j3, &j4, &j5);
+
+    first_sum = d + i2 + i4 + j1 + j3 + j5;
+    second_sum = i1 + i3 + i5 + j2 + j4;
+    total = 3 * first_sum + second_sum;
+
+    printf("Check digit: %d/n", 9 - ((total - 1) % 10));
+
+    return 0;
+}
+
+*/
+
+//%1d allows you to store a five-digit number as five one-digit numbers
+//some older compilers limit maximum value of int variable to 32,767
+
+
+
+/*   CHAPTER                 4.2                ASSIGNMENT OPERATORS   */
+
+
+
+//= is a simple assignment operator that can be used to store a variable
+//assignment v = e
+//evaluate expression e and copy its value to v
+//e can be a constant, variable, or a more complicated expression:
+//i = 5;            i is now 5
+//j = i;            j is now 5
+//k = 10 * i + j;   k is now 55
+//if v and e don't share the same type, then e is converted to the type
+//   of v as the assignment takes place:
+//int i;
+//float f;
+//i = 72.99f;   i is now 72
+//f = 136;      f is now 136.0
+//assignment is an operator, like +, *, >
+//the value of assignment v = e is the value of v after assignment
+//thus the value of i = 72.99f is 72
+//most C operators don't modify their operands; = is one that does
+//modifying an operand is known as a side effect
