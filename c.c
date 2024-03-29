@@ -682,3 +682,6 @@ int main(void)
 //mixing int and float creates a float
 //the / operator will truncate results if both operands are integers
 //1 / 2 = 0, not 0.5
+//% operator requires two int operands or program won't compile
+//using 0 as right operand of / or % causes undefined behavior
+//
