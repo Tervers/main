@@ -668,3 +668,4 @@ int main(void)
 /*   CHAPTER 4 ARITHMETIC OPERATORS   */
 
 
+//arithmatic operators come in two forms; unary and binary
