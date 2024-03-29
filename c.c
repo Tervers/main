@@ -30,27 +30,27 @@ int main(void)
 
 //Preprocessing adds directives (usually handled by compiler)
 //?preprocessing connects header files to source files?
-//Compiles human code into machine (object) code ?human code into binary / assembly?
-//Links code with library functions ?links functions from headers to object code?
+//Compiles human code into machine (object) code
+//Links code with library functions
 
 /*
-*
-* #directives
-*
-* int main(void)
-*
-* {
-*
-*   declarations;           // int a;
-*   initialization;         // int a = 1, b = 2;
-*   assignments;            // a = 1; b = 2;
-*
-*   statements;             // printf("abc\n");
 
-    return 0;
-*
-* }
-*
+#directives
+
+int main(void)
+
+{
+
+   declarations;           // int a;
+   initialization;         // int a = 1, b = 2;
+   assignments;            // a = 1; b = 2;
+
+   statements;             // printf("abc\n");
+
+   return 0;
+
+}
+
 */
 
 /*
@@ -59,48 +59,45 @@ int main(void)
 
 int main(void)
 
-
 {
-*
-*int height, length, width, volume, weight;
-*
-*height = 8;
-*length = 12;
-*width = 10;
-*volume = height * length * width;
-*weight = (volume + 165) / 166;
-*
-*printf("Dimensions: %dx%dx%d\n", length, width, height);
-*printf("Volume (cubic inches): %d\n", volume);
-*printf("Dimensional weight (pounds): %d\n", weight);
-*
-*return 0;
-*
-*}
-*
+
+int height, length, width, volume, weight;
+
+height = 8;
+length = 12;
+width = 10;
+volume = height * length * width;
+weight = (volume + 165) / 166;
+
+printf("Dimensions: %dx%dx%d\n", length, width, height);
+printf("Volume (cubic inches): %d\n", volume);
+printf("Dimensional weight (pounds): %d\n", weight);
+
+return 0;
+
+}
+
 */
 
 // volume = height * length * width;
 // printf("%d\n", volume);
-
 // can also be written as:
-
 // printf("%d\n", height * length * width);
 
 /*
 
- #include <stdio.h>
+#include <stdio.h>
 
- int main(void)
+int main(void)
 
 {
 
    int height, length, width, volume, weight;
 
    printf("Enter height of box: ");
-   scanf("%d", &height);   // 'scan formatted' function to accept user input.
+   scanf("%d", &height);   //'scan formatted' function
    printf("Enter length of box: ");
-   scanf("%d", &length);
+   scanf("%d", &length);   //scanf receives user input
    printf("Enter width of box: ");
    scanf("%d", &width);
    volume = height * length * width;
@@ -169,11 +166,11 @@ int main(void){float fahrenheit,celsius;printf("Enter Fahrenheit temperature: ")
 int main(void)
 
 {
-        printf("Parkinson's Law:\nWork expands so as to ");	// printf statement
-        printf("fill the time\n");	// printf statement
-	printf("available for its completion.\n");	// printf statement
+printf("Parkinson's Law:\nWork expands so as to "); // printf statement
+printf("fill the time\n");	                        // printf statement
+printf("available for its completion.\n");	        // printf statement
 
-      	return 0;	// return statement
+return 0;	                                        // return statement
 
 }
 
@@ -184,9 +181,10 @@ int main(void)
 // available for its completion.
 
 
-//3a - Condense 'dweight.c' by replacing assignments with initializers and by
-//   removing the weight variable // with an inline printf expression.
-//   printf("Weight: %d\n", (volume + 165) / 166);
+//3a - Condense 'dweight.c' by replacing assignments with initializers
+//   and by removing the weight variable // with an inline printf
+//   expression.
+//printf("Weight: %d\n", (volume + 165) / 166);
 
 /*
 
@@ -201,7 +199,9 @@ int main()
 	printf("Enter radius (meters): \n");
 	scanf("%d", &radius);
 
-	printf("The volume of a sphere with radius of %d meters is %f.\n", radius, (pi * equation * (radius * radius * radius)));
+	printf("The volume of a sphere with radius of %d meters is ");
+	printf("%f.", radius, (pi * equation * (radius * radius * radius)));
+	printf("\n");
 
 	return 0;
 
@@ -320,7 +320,8 @@ int main(void)
 //p = precision = depends on choice of X
 //X = conversion specifier = indicates which conversion to apply
 //common specifiers:
-//d = decimal. p = minimum # of digits to display (extra zeros if necessary)
+//d = decimal. p = minimum # of digits to display (extra zeros
+//      if necessary)
 //f = fixed-decimal float. p = # of digits after decimal. 0 = no decimal
 //e = exponential float. p = # of digits after decimal. 0 = no decimal
 //g = displays float in either fixed or exponential format depending
@@ -339,8 +340,10 @@ int main(void)
     i = 40;
     x = 839.21f;
 
-    printf("|%d|%5d|%-5d|%5.3d|\n", i, i, i, i);    //|40|   40|40   |  040|
-    printf("|%10.3f|%10.3e|%-10g|\n", x, x, x);     //|   839.210| 8.392e+02|839.21    |
+    printf("|%d|%5d|%-5d|%5.3d|\n", i, i, i, i);
+          //|40|   40|40   |  040|
+    printf("|%10.3f|%10.3e|%-10g|\n", x, x, x);
+          //|   839.210| 8.392e+02|839.21    |
 
     return 0;
 
@@ -364,9 +367,9 @@ int main(void)
 //scanf conversions are essentially the same as printf
 //scanf READs a character when it matches format
 //scanf often only contains conversion specifications
-//starting from the left, scanf tries to find each *conversion specification*
-//   with an item of appropriate type from *input* data, *skipping blank space
-//   when necessary*
+//starting from the left, scanf tries to find each *conversion
+//   specification* with an item of appropriate type from *input* data,
+//   *skipping blank space when necessary*
 //STOPs reading when encountering a character that can't possibly match
 //PUTs BACK if the item was read successfully
 //scanf RETURNs if item was not read successfully
@@ -378,15 +381,15 @@ int main(void)
 //   -4.0e3     //
 
 //is equivalent to 1-20.3-4.0e3
-//scanf ignores 'white-space characters': space, horizontal and vertical tab,
-//   form-feed, new-line
+//scanf ignores 'white-space characters': space, horizontal and vertical
+//   tab, form-feed, new-line
 //scanf read integer order = digit, +, -, digits until nondigit
-//scanf read float order = + or -, digits possibly with ., e, + or -, digits
-//   until nondigit
+//scanf read float order = + or -, digits possibly with ., e, + or -,
+//   digits until nondigit
 //%e, %f, %g are interchangeable with scanf
 //1|-20|0.3|-4.0e3
-//scanf will process characters in a format string differently depending if
-//its a white-space character or other character
+//scanf will process characters in a format string differently depending
+//   if its a white-space character or other character
 //with one or more consecutive white-spaces, scanf repeatedly reads until
 //   non-white-space character encountered
 
@@ -400,11 +403,11 @@ int main(void)
 //if no match, scanf aborts
 //suppose a format string is "%d/%d"
 //if user input is ' 5/ 96', scanf skips first space, matches %d with 5,
-//   matches / with /, skips a space looking for integer, then matches %d
-//   with 96
-//if user input is ' 5 / 96' instead, scanf skips one space, matches %d with 5,
-//   attempts to match a space with /. There is no match, scanf puts space
-//   back; ' / 96' remain to be read by next scanf.
+//   matches / with /, skips a space looking for integer, then matches
+//   %d with 96
+//if user input is ' 5 / 96' instead, scanf skips one space, matches %d
+//   with 5, attempts to match a space with /. There is no match, scanf
+//   puts space back; ' / 96' remain to be read by next scanf.
 //allow spaces after first number by adding a space into format string:
 //   "%d /%d"
 
@@ -443,7 +446,8 @@ int main(void)
 //printf("%-6.2g\n", .0000009979);  '9.9e10'           '1e-006'
 
 
-//2. Write calls of printf that display a float variable x int the following formats.
+//2. Write calls of printf that display a float variable x int the
+//     following formats.
 
 //printf("%-8.1e", 8.47);
 //printf("%10.6e", 8.47);
@@ -455,23 +459,25 @@ int main(void)
 
 //3a - "%d" vs " %d" : equivalent
 //3b - "%d-%d-%d" vs "%d -%d -%d" : equivalent
-//3c - "%f" vs "%f " : unequal - "%f " won't finish until a non-white-space
-//        character is entered
+//3c - "%f" vs "%f " : unequal - "%f " won't finish until a
+//       non-white-space character is entered
 //3d - "%f,%f" vs "%f, %f" : equivalent
 
 
-//4. Suppose scanf("%d%f%d", &i, &x, &j); User enters '10.3 5 6', what values will show?
+//4. Suppose scanf("%d%f%d", &i, &x, &j); User enters '10.3 5 6',
+//     what values will show?
 
 //10 5 6
 
 
-//5. Suppose scanf("%f%d%f", &x, &i, &y); User enters '12.3 45.6 789', what values?
+//5. Suppose scanf("%f%d%f", &x, &i, &y); User enters '12.3 45.6 789',
+//     what values will show?
 
 //12.3 45 0.6
 
 
-//6. Show how to modify addfrac.c so that user can enter fractions that contain
-//     spaces before and after each / character.
+//6. Show how to modify addfrac.c so that user can enter fractions that
+//     contain spaces before and after each / character.
 
 //scanf("%d/%d") : scanf("%d /%d")
 
@@ -489,7 +495,8 @@ int main(void)
 {
     int mm = 0, dd = 0, yyyy = 0;
 
-    printf("Please enter a date in the format of mm/dd/yyyy. For example, February 7, 2005 would be 02/07/2005\n");
+    printf("Please enter a date in the format of mm/dd/yyyy.")
+    printf(" For example, February 7, 2005 would be 02/07/2005\n");
     scanf("%d/%d/%d", &mm, &dd, &yyyy);
     printf("You have entered %2.2d/%2.2d/%4.4d", mm, dd, yyyy);
 
@@ -545,7 +552,7 @@ int main(void)
 	scanf("%d-%d-%d-%d-%d", &gs1, &group, &pub, &item, &check);
 
 	printf("GS1 prefix: %d\n", gs1);
-        printf("Group identifier: %d\n", group);
+    printf("Group identifier: %d\n", group);
 	printf("Publisher code: %d\n", pub);
 	printf("Item number: %d\n", item);
 	printf("Check digit: %d\n", check);
@@ -608,9 +615,10 @@ int main(void)
     scanf(" %d %d %d %d", &c1, &c2, &c3, &c4);
     scanf(" %d %d %d %d", &d1, &d2, &d3, &d4);
 
-    rowa = a1+a2+a3+a4, rowb = b1+b2+b3+b4, rowc = c1+c2+c3+c4, rowd = d1+d2+d3+d4,
-    col1 = a1+b1+c1+d1, col2 = a2+b2+c2+d2, col3 = a3+b3+c3+d3, col4 = a4+b4+c4+d4,
-    diag1 = a1+b2+c3+d4, diag2 = a4+b3+c2+d1;
+    rowa = a1+a2+a3+a4, rowb = b1+b2+b3+b4, rowc = c1+c2+c3+c4,
+    rowd = d1+d2+d3+d4, col1 = a1+b1+c1+d1, col2 = a2+b2+c2+d2,
+    col3 = a3+b3+c3+d3, col4 = a4+b4+c4+d4, diag1 = a1+b2+c3+d4,
+    diag2 = a4+b3+c2+d1;
 
     printf("Row sums: %d %d %d %d\n", rowa, rowb, rowc, rowd);
     printf("Column sums: %d %d %d %d\n", col1, col2, col3, col4);
@@ -684,4 +692,24 @@ int main(void)
 //1 / 2 = 0, not 0.5
 //% operator requires two int operands or program won't compile
 //using 0 as right operand of / or % causes undefined behavior
-//
+//in C89, if either operand is negative, division results can be rounded
+//   up or down, depending on implementation
+//(-9 / 7) may yield -1 or -2 depending on cpu
+//in C99, division is always truncated towards 0
+//implementation-defined behavior arises from purposely unspecified
+//   C language (the idea is to match the way hardware behaves)
+
+//arithmetic operator precedence:
+//Highest: + - (unary)
+//         * / %
+//Lowest:  + - (binary)
+//   i + j * k   is equivalent to   i + (j * k)
+//     -i * -j   is equivalent to   (-i) * (-j)
+//  +i + j / k   is equivalent to   (+i) + (j / k)
+//left associative operators group from left to right, binary arithmetic
+//   operators are left associative:
+//   i - j - k   is equivalent to   (i - j) - k
+//   i * j / k   is equivalent to   (i * j) / k
+//right associative operators group from right to left, unary arithmetic
+//   operators are right associative:
+//   - + i       is equivalent to   -(+i)
