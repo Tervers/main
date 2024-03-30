@@ -1190,4 +1190,39 @@ int main(void)
 
 
 
-//
+//C doesn't define the order in which subexpressions are evaluated (the
+//   exceptions being 'logical and', 'logical or', conditional, and comma
+//   operators
+
+//(a + b) * (c - d)
+
+//we don't know whether (a + b) or (c - d) will evaluate first
+//most expressions will have the same value regardless of subexpression order
+//this won't be true if a subexpression modifies an operand
+
+//a = 5;
+//c = (b = a + 2) - (a = 1);
+
+//the answer can be either 6 or 2 depending on compiler
+//tobprevent problems, use a series of separate assignments
+
+//a = 5;
+//b = a + 2;
+//a = 1;
+//c = b - a;
+
+//the value of c is now always 6
+
+//= (assignment), ++ (increment) and -- (decrement) are the only operators
+//   that modify their operands
+
+//i = 2;
+//j = i * i++;
+
+//j could be 4 or 6
+//this unknown behavior should be avoided at all costs
+
+
+
+/*   CHAPTER                   4.5                   EXPRESSION STATEMENTS   */
+
