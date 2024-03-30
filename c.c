@@ -1,8 +1,8 @@
-/************************************************************************
-*                                                                       *
-*   CHAPTER                      2                     C FUNDAMENTALS   *
-*                                                                       *
-************************************************************************/
+/******************************************************************************
+*                                                                             *
+*   CHAPTER                         2                        C FUNDAMENTALS   *
+*                                                                             *
+******************************************************************************/
 
 
 
@@ -163,7 +163,7 @@ printf("equivalent: %.1f\n", celsius);return 0;}
 
 
 
-/*   CHAPTER                       2                       EXERCISES   */
+/*   CHAPTER                          2                          EXERCISES   */
 
 
 
@@ -192,9 +192,9 @@ return 0;	                                        // return statement
 //available for its completion.
 
 
-//3a - Condense 'dweight.c' by replacing assignments with initializers
-//   and by removing the weight variable // with an inline printf
-//   expression.
+//3a - Condense 'dweight.c' by replacing assignments with initializers and by
+//   removing the weight variable // with an inline printf expression.
+
 //printf("Weight: %d\n", (volume + 165) / 166);
 
 /*
@@ -311,15 +311,15 @@ int main(void)
 
 
 
-/************************************************************************
-*                                                                       *
-*   CHAPTER                  3                 FORMATTED INPUT/OUTPUT   *
-*                                                                       *
-************************************************************************/
+/******************************************************************************
+*                                                                             *
+*   CHAPTER                     3                    FORMATTED INPUT/OUTPUT   *
+*                                                                             *
+******************************************************************************/
 
 
 
-/*   CHAPTER                 3.1                 THE printf FUNCTION   */
+/*   CHAPTER                    3.1                    THE printf FUNCTION   */
 
 
 
@@ -336,13 +336,11 @@ int main(void)
 //p = precision = depends on choice of X
 //X = conversion specifier = indicates which conversion to apply
 //common specifiers:
-//d = decimal. p = minimum # of digits to display (extra zeros
-//      if necessary)
+//d = decimal. p = minimum # of digits to display (extra zeros if necessary)
 //f = fixed-decimal float. p = # of digits after decimal. 0 = no decimal
 //e = exponential float. p = # of digits after decimal. 0 = no decimal
-//g = displays float in either fixed or exponential format depending
-//   on number size. p = maximum # of significant digits. Doesn't
-//   show trailing numbers
+//g = displays float in either fixed or exponential format depending on number
+//   size. p = maximum # of significant digits. Doesn't show trailing numbers
 
 /*
 
@@ -376,20 +374,19 @@ int main(void)
 
 
 
-/*   CHAPTER                  3.2                 THE scanf FUNCTION   */
+/*   CHAPTER                     3.2                    THE scanf FUNCTION   */
 
 
 
 //scanf handles Conversion Specifications, white-space characters, and
 //   'ordinary' characters differently
-//scanf attempts to match input characters with conversion
-//   specifications
+//scanf attempts to match input characters with conversion specifications
 //scanf conversions are essentially the same as printf
 //scanf READs a character when it matches format
 //scanf often only contains conversion specifications
-//starting from the left, scanf tries to find each *conversion
-//   specification* with an item of appropriate type from *input* data,
-//   *skipping blank space when necessary*
+//starting from the left, scanf tries to find each *conversion specification*
+//   with an item of appropriate type from *input* data, *skipping blank space
+//   when necessary*
 //STOPs reading when encountering a character that can't possibly match
 //PUTs BACK if the item was read successfully
 //scanf RETURNs if item was not read successfully
@@ -401,35 +398,34 @@ int main(void)
 //   -4.0e3     //
 
 //is equivalent to 1-20.3-4.0e3
-//scanf ignores 'white-space characters': space, horizontal and vertical
-//   tab, form-feed, new-line
+//scanf ignores 'white-space characters': space, horizontal and vertical tab,
+//   form-feed, new-line
 //scanf read integer order = digit, +, -, digits until nondigit
-//scanf read float order = + or -, digits possibly with ., e, + or -,
-//   digits until nondigit
+//scanf read float order = + or -, digits possibly with ., e, + or -, digits
+//   until nondigit
 //%e, %f, %g are interchangeable with scanf
 //1|-20|0.3|-4.0e3
-//scanf will process characters in a format string differently depending
-//   if its a white-space character or other character
-//with one or more consecutive white-spaces, scanf repeatedly reads
-//   until non-white-space character encountered
+//scanf will process characters in a format string differently depending if
+//   its a white-space character or other character
+//with one or more consecutive white-spaces, scanf repeatedly reads until
+//   non-white-space character encountered
 
 
 //'Ordinary characters in format strings'
-//white-space chars read from input until non-white-space character,
-//   which is 'put back'
-//number of white-space chars in format string irrelevant; it will match
-//   ANY number of white-space chars, including NONE
+//white-space chars read from input until non-white-space character, which is
+//   'put back'
+//number of white-space chars in format string irrelevant; it will match ANY
+//   number of white-space chars, including NONE
 //if non-white-space chars match, scanf continues
 //if no match, scanf aborts
 //suppose a format string is "%d/%d"
 //if user input is ' 5/ 96', scanf skips first space, matches %d with 5,
-//   matches / with /, skips a space looking for integer, then matches
-//   %d with 96
-//if user input is ' 5 / 96' instead, scanf skips one space, matches %d
-//   with 5, attempts to match a space with /. There is no match, scanf
-//   puts space back; ' / 96' remain to be read by next scanf.
-//allow spaces after first number by adding a space into format string:
-//   "%d /%d"
+//   matches / with /, skips a space looking for integer, then matches %d with
+//   96
+//if user input is ' 5 / 96' instead, scanf skips one space, matches %d with 5,
+//   attempts to match a space with /. There is no match, scanf puts the space
+//   back; ' / 96' remain to be read by next scanf.
+//allow spaces after first number by adding a space into string: "%d /%d"
 
 /*
 
@@ -455,7 +451,7 @@ int main(void)
 */
 
 
-/*   CHAPTER                       3                       EXERCISES   */
+/*   CHAPTER                          3                          EXERCISES   */
 
 
 //1. What output do the following calls of printf produce?
@@ -466,8 +462,8 @@ int main(void)
 //printf("%-6.2g\n", .0000009979);  '9.9e10'           '1e-006'
 
 
-//2. Write calls of printf that display a float variable x int the
-//     following formats.
+//2. Write calls of printf that display a float variable x int the following
+//     formats.
 
 //printf("%-8.1e", 8.47);
 //printf("%10.6e", 8.47);
@@ -479,31 +475,31 @@ int main(void)
 
 //3a - "%d" vs " %d" : equivalent
 //3b - "%d-%d-%d" vs "%d -%d -%d" : equivalent
-//3c - "%f" vs "%f " : unequal - "%f " won't finish until a
-//       non-white-space character is entered
+//3c - "%f" vs "%f " : unequal - "%f " won't finish until a non-white-space
+//     character is entered
 //3d - "%f,%f" vs "%f, %f" : equivalent
 
 
-//4. Suppose scanf("%d%f%d", &i, &x, &j); User enters '10.3 5 6',
-//     what values will show?
+//4. Suppose scanf("%d%f%d", &i, &x, &j); User enters '10.3 5 6', what values
+//     will show?
 
 //10 5 6
 
 
-//5. Suppose scanf("%f%d%f", &x, &i, &y); User enters '12.3 45.6 789',
-//     what values will show?
+//5. Suppose scanf("%f%d%f", &x, &i, &y); User enters '12.3 45.6 789', what
+//     values will show?
 
 //12.3 45 0.6
 
 
-//6. Show how to modify addfrac.c so that user can enter fractions that
-//     contain spaces before and after each / character.
+//6. Show how to modify addfrac.c so that user can enter fractions that contain
+//     spaces before and after each / character.
 
 //scanf("%d/%d") : scanf("%d /%d")
 
 
 
-/*   CHAPTER                  3                 PROGRAMMING PROJECTS   */
+/*   CHAPTER                     3                    PROGRAMMING PROJECTS   */
 
 
 
@@ -574,7 +570,7 @@ int main(void)
 	scanf("%d-%d-%d-%d-%d", &gs1, &group, &pub, &item, &check);
 
 	printf("GS1 prefix: %d\n", gs1);
-    printf("Group identifier: %d\n", group);
+    	printf("Group identifier: %d\n", group);
 	printf("Publisher code: %d\n", pub);
 	printf("Item number: %d\n", item);
 	printf("Check digit: %d\n", check);
@@ -677,11 +673,11 @@ int main(void)
 
 
 
-/************************************************************************
-*                                                                       *
-*   CHAPTER                       4                       EXPRESSIONS   *
-*                                                                       *
-************************************************************************/
+/******************************************************************************
+*                                                                             *
+*   CHAPTER                          4                          EXPRESSIONS   *
+*                                                                             *
+******************************************************************************/
 
 
 
@@ -699,7 +695,7 @@ int main(void)
 
 
 
-/*   CHAPTER                 4.1                ARITHMETIC OPERATORS   */
+/*   CHAPTER                    4.1                   ARITHMETIC OPERATORS   */
 
 
 
@@ -718,12 +714,12 @@ int main(void)
 //1 / 2 = 0, not 0.5
 //% operator requires two int operands or program won't compile
 //using 0 as right operand of / or % causes undefined behavior
-//in C89, if either operand is negative, division results can be rounded
-//   up or down, depending on implementation
+//in C89, if either operand is negative, division results can be rounded up or
+//   down, depending on implementation
 //(-9 / 7) may yield -1 or -2 depending on cpu
 //in C99, division is always truncated towards 0
-//implementation-defined behavior arises from purposely unspecified
-//   C language (the idea is to match the way hardware behaves)
+//implementation-defined behavior arises from purposely unspecified C language
+//   details (the idea is to match the way hardware behaves)
 
 //arithmetic operator precedence:
 //Highest: + - (unary)
@@ -775,7 +771,7 @@ int main(void)
 
 
 
-/*   CHAPTER                 4.2                ASSIGNMENT OPERATORS   */
+/*   CHAPTER                    4.2                   ASSIGNMENT OPERATORS   */
 
 
 
@@ -786,8 +782,8 @@ int main(void)
 //i = 5;            i is now 5
 //j = i;            j is now 5
 //k = 10 * i + j;   k is now 55
-//if v and e don't share the same type, then e is converted to the type
-//   of v as the assignment takes place:
+//if v and e don't share the same type, then e is converted to the type of v
+//   as the assignment takes place:
 //int i;
 //float f;
 //i = 72.99f;   i is now 72
