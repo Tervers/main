@@ -1065,7 +1065,8 @@ int main(void)
 
 
 
-//= is a simple assignment operator that can be used to store a variable
+//= simple assignment operator
+//= can be used to store a variable
 //assignment v = e
 //evaluate expression e and copy its value to v
 //e can be a constant, variable, or a more complicated expression:
@@ -1091,6 +1092,101 @@ int main(void)
 
 
 //LVALUES
+
+
+
+//Most C operators allow operands to be variables, constants, or expressions
+//= requires its left operand to be an lvalue
+//lvalues represent objects stored in memory
+//variables are lvalues
+//constants or computational results are not lvalues
+
+
+
+//COMPOUND ASSIGNMENT
+
+
+
+//assignments often use their old value to compute their new value
+
+//i = i + 2;     /* add 2 to the value of i */
+
+//compound assignment operators allow us to shorten these types of statements
+
+//i += 2;     /* same as i = i + 2; */
+
+//v += e   adds e to v, storing the result in v
+//v -= e   subtracts e from v, storing the result in v
+//v *= e   multiplies v by e, storing the result in v
+//v /= e   divides v by e, storing the result in v
+//v %= e   computes remainder of v divided by e, storing the result in v
+
+//v += e is not exactly equivalent to v = v + e
+//i *= j + k isn't the same as i = i * j + k due to operator precedence
+//v may also have a side effect
+//compound operators are right-associative
+
+//i += j += k;   means   i += (j += k);
+
+
+
+/*   CHAPTER             4.3            INCREMENT AND DECREMENT OPERATORS   */
+
+
+
+//i = i + 1;
+//j = j - 1;
+
+//i += 1;
+//j -= 1;
+
+//++ increment adds 1 to operand; --decrement subtracts 1 from operand
+//can be used as prefix (++i) or postfix (i--)
+//++ and -- have side effects by modifying the values of their operands
+
+//evaluating ++i (a pre-increment) yields i + 1 and increments i (side effect)
+
+//i = 1;
+//printf("i is %d\n", ++i);     /* prints "i is 2" */
+//printf("i is %d\n), i);       /* prints "i is 2" */
+
+//evaluating i++ (a post-increment) yields i, but causes i to increment later
+
+//i = 1;
+//printf("i is %d\n", i++);     /* prints "i is 1" */
+//printf("i is %d\n), i);       /* prints "i is 2" */
+
+//++i increment immediately, i++ increment later
+//C standard doesn't specify how much later, but its safe to assume its before
+//   the next statement is executed
+
+//i = 1;
+//j = 2;
+//k = ++i + j++;     k = 4
+
+//i = 1;
+//j = 2;
+//k = i++ + j++;     k = 3
+
+//postfix ++ -- are higher precedence than unary + - and are left-associative
+//prefix ++ -- are same precedence as unary + - and are right-associative
+
+
+
+/*   CHAPTER                   4.4                  EXPRESSION EVALUATION   */
+
+
+
+//a = b += c++ - d + --e / -f                     /* precedence */
+//a = b += (c++) - d + --e / -f                   postfix increment
+//a = b += (c++) - d + (--e) / (-f)               prefix increment, unary minus
+//a = b += (c++) - d + ((--e) / (-f))             multiplicative (division)
+//a = b += (((c++) - d) + ((--e) / (-f)))         additive
+//(a = (b += (((c++) - d) + ((--e) / (-f)))))     assignment
+
+
+
+//ORDER OF SUBEXPRESSION EVALUATION
 
 
 
