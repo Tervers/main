@@ -10,7 +10,7 @@
 
 
 
-//pun.c - displays a message when run
+//pun.c - DISPLAYS A MESSAGE WHEN RUN
 
 
 /*
@@ -41,7 +41,9 @@ int main(void)
 //printf = 'print formatted' statement. library function call from stdio.h
 
 
+
 //COMPILING AND LINKING
+
 
 
 //Preprocessing adds directives (usually handled by compiler)
@@ -55,6 +57,12 @@ int main(void)
 /*   CHAPTER            2.2           THE GENERAL FORM OF A SIMPLE PROGRAM   */
 
 
+
+//#include <stdio.h>
+//int main(void)
+//{
+//   statements
+//}
 
 //C programs rely on three key language features:
 //directives - editing commands that modifty program prior to compilation
@@ -83,7 +91,9 @@ int main(void)
 */
 
 
+
 //DIRECTIVES
+
 
 
 //a preprocessor first edits a program before the program  is compiled
@@ -97,7 +107,9 @@ int main(void)
 //directives are one line long and the line ends with no special marker
 
 
+
 //FUNCTIONS
+
 
 
 //in C, a function is a series of statements that have been given a name
@@ -111,18 +123,20 @@ int main(void)
 //int main(void)
 //return 0;
 
-//'int' indicates 'main' function returns an integer value
-//'main' returns a status code that is given to the OS when the program ends
-//'void' indicates main has no arguments
+//int indicates main function returns an integer value
+//main returns a status code that is given to the OS when the program ends
+//void indicates main has no arguments
 //return 0 causes main to terminate (which ends the program) and indicates
 //   main to return a value of 0
+
 
 
 //STATEMENTS
 
 
+
 //statements are commands to be executed when the program runs
-//'return' is a statement
+//return is a statement
 //printf is a statement and also a function call
 //asking a function to perform its task is known as 'calling the function'
 
@@ -137,12 +151,18 @@ int main(void)
 
 
 
+//VARIABLES
+
+
+
 //most programs need to perform calculations before producing output
 //so they need to store data temporarily during program execution
 //variables are storage locations for temporary data
 
 
+
 //TYPES
+
 
 
 //every variable must have a type
@@ -150,13 +170,50 @@ int main(void)
 //type affects how the variable is stored and what operations can be performed
 //int can store whole numbers (0, 1,392, -2553)
 //largest int value is typically 2,147,483,647 but can be as small as 32,767
+
 //float can store much larger numbers
 //float can store numbers with digits after the decimal point (379.125)
 //float arithmetic may be slower than arithmetic on int numbers
 //float values are often approximations
 
 
+
 //DECLARATIONS
+
+
+
+//variables must be declared
+//to declare a variable, specify its type, then name it
+
+//int height;         /* variable 'height' of type 'int' */
+//float profit;       /* variable 'profit' of type 'float' */
+//int height, length, width, volume;
+
+//#include <stdio.h>
+//int main(void)
+//{
+//   declarations
+//   statements
+//}
+
+//in c99, declarations do not have to be placed before statements
+
+
+
+//ASSIGNMENT
+
+
+
+//assignment is giving a variable a value
+//constants are values assigned to variables
+//float constants should end with 'f' to avoid compiler warnings
+
+//height = 8;       /* variable = constant */
+//length = 10;      /* length   = 10       */
+//pi = 3.14f;
+
+
+//dweight.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
 
 
 /*
@@ -185,10 +242,23 @@ return 0;
 
 */
 
-// volume = height * length * width;
-// printf("%d\n", volume);
-// can also be written as:
-// printf("%d\n", height * length * width);
+
+
+//INITIALIZATION
+
+
+
+//a variable that doesn't have a default value is uninitialized
+//initialization happens when you give a variable a value during declaration
+
+//int height;       /* declaration */
+//height = 10;      /* assignment */
+//int height = 10;  /* initialization */
+//type variable = initializer
+
+
+//dweight2.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
+
 
 /*
 
@@ -218,6 +288,27 @@ int main(void)
 
 */
 
+
+
+/*   CHAPTER               2.6               DEFINING NAMES FOR CONSTANTS   */
+
+
+
+//when a program contains constants, ideally they should be given names
+//a macro definition is used to name constants
+
+//#define INCHES_PER_POUND 166
+
+//#define is a preprocessor like #include, no ; goes at the end of the line
+//macro values can be expressions
+//enclose the expression with parenthesis if it contains operators
+
+//#define RECIPROCAL_OF_PI (1.0f / 3.14159f)
+
+
+//celcius.c - CONVERTS A FAHRENHEIT TEMPERATURE TO CELSIUS
+
+
 /*
 
 #include <stdio.h>
@@ -244,21 +335,66 @@ int main(void)
 
 */
 
-//printf("Height: %d\n", height); // contains 7 'TOKENS'
+
+
+/*   CHAPTER                        2.7                       IDENTIFIERS   */
+
+
+
+//identifiers are names for variables, functions, macros, and other entities
+//may contain letters, digits, and underscores
+//must begin with a letter or underscore
+//case-sensitive
+
+//times10  get_next_char  _done  currentPage  nameAndAddress  SymbolTable
+
+
+
+//KEYWORDS
+
+
+
+//some words have special significance in C and cannot be used as identifiers
+//these keywords are also case-sensitive
+//names of functions in the standard library contain only lower-case letters
+
+
+
+/*   CHAPTER                     2.8                     LAYOUT OF A C PROGRAM
+
+
+
+//tokens are groups of characters that can't be split up without changing their
+//   meaning
+
+//printf("Height: %d\n", height);   /* contains 7 'TOKENS' */
+
 //1: printf  2: (  3: "Height: %d\n"  4: ,  5: height  6: )  7: ;
-//preprocessing directives require a separate line each.
-//entire main() function can be on one line.
+
+//amount of space between tokens isn't usually critical
+//space between tokens can make it easier on the eyes to read
+//preprocessing directives require a separate line each
+//entire main() function can be on one line, but difficult to read this way
+//indentation can make nesting easier to spot (declarations inside main)
+//blank lines can divide a program into logical units
+
 
 /*
 
 #include <stdio.h>
 #define FREEZING_PT 32.0f
 #define SCALE_FACTOR (5.0f / 9.0f)
-int main(void){float fahrenheit,celsius;printf("Enter Fahrenheit ");
-printf("temperature: ");scanf("%f", &fahrenheit);
-celsius=(fahrenheit-FREEZING_PT)*SCALE_FACTOR;printf("Celcius ");
-printf("equivalent: %.1f\n", celsius);return 0;}
+int main(void){float fahrenheit,celsius;printf("Enter Fahrenheit temperature: ");scanf("%f", &fahrenheit);celsius=(fahrenheit-FREEZING_PT)*SCALE_FACTOR;printf("Celsius equivalent: %.1f\n", celsius);return 0;}
 
+*/
+
+
+//statements can be divided over any number of lines
+
+
+/*
+    printf("Dimensional weight (pounds): %d\n",
+           (volume + INCHES_PER_POUND - 1) / INCHES_PER_POUND);
 */
 
 
@@ -423,9 +559,20 @@ int main(void)
 
 
 
-//printf displays 'format string.' printf("string", expr1, expr2, ...)
+//printf displays a format string
+
+//printf("string", expr1, expr2, ...)
+
+
+
+//CONVERSION SPECIFICATIONS
+
+
+
 //% = conversion specifications (converts from binary to printed)
+//%d converts binary int value to a string of digits
 //%m.pX %-m.pX  = conversion specification formats
+
 //m = minimum field width = number of characters to print
 //fewer than m characters, the value is right-justified
 //"%4d" user enters 123 = ' 123'
@@ -433,6 +580,7 @@ int main(void)
 //"%-4d" user enters 123 = '123 '
 //field width expands if more than m characters required:
 //   ("%4d", 12345) would show 12345
+
 //p = precision = depends on choice of X
 //X = conversion specifier = indicates which conversion to apply
 //common specifiers:
@@ -441,6 +589,10 @@ int main(void)
 //e = exponential float. p = # of digits after decimal. 0 = no decimal
 //g = displays float in either fixed or exponential format depending on number
 //   size. p = maximum # of significant digits. Doesn't show trailing numbers
+
+
+//tprintf.c - PRINTS INT AND FLOAT VALUES IN VARIOUS FORMATS
+
 
 /*
 
@@ -464,6 +616,12 @@ int main(void)
 }
 
 */
+
+
+
+//ESCAPE SEQUENCES
+
+
 
 //Alert (bell)   \a
 //Backspace   \b
@@ -511,13 +669,18 @@ int main(void)
 //   non-white-space character encountered
 
 
-//'Ordinary characters in format strings'
+
+//ORDINARY CHARACTERS IN FORMAT STRINGS
+
+
+
 //white-space chars read from input until non-white-space character, which is
 //   'put back'
 //number of white-space chars in format string irrelevant; it will match ANY
 //   number of white-space chars, including NONE
 //if non-white-space chars match, scanf continues
 //if no match, scanf aborts
+
 //suppose a format string is "%d/%d"
 //if user input is ' 5/ 96', scanf skips first space, matches %d with 5,
 //   matches / with /, skips a space looking for integer, then matches %d with
@@ -526,6 +689,10 @@ int main(void)
 //   attempts to match a space with /. There is no match, scanf puts the space
 //   back; ' / 96' remain to be read by next scanf.
 //allow spaces after first number by adding a space into string: "%d /%d"
+
+
+//addfrac.c - ADDS TWO FRACTIONS
+
 
 /*
 
@@ -551,7 +718,9 @@ int main(void)
 */
 
 
+
 /*   CHAPTER                          3                          EXERCISES   */
+
 
 
 //1. What output do the following calls of printf produce?
@@ -787,7 +956,9 @@ int main(void)
 //constants represent values that don't change
 //complex expressions apply operators to operands
 //operands are themselves expressions
+
 //a + (b * c)
+
 //a is an operand; + is an operator; (b * c) is an operand;
 //arithmetic operators; +, -, *, /
 //relational operators; <, >, <=
@@ -800,20 +971,24 @@ int main(void)
 
 
 //arithmetic operators come in two forms; unary and binary
+
 //unary operators require one operand (u-nary)
 //+ = unary plus; - = unary minus
 //unary + / - used to emphasize positive / negative numbers
+
 //binary operators require two operands (bi-nary)
 //additive binary: + = binary addition; - = binary subtraction
 //multiplicative binary: * = multiplication; / = division; % = remainder
 //the value of i % j is the remainder of i / j
 //10 % 3 = 1; 12 % 4 = 0
+
 //+, -, *, / operators allow either integer or float, with mixing
 //mixing int and float creates a float
 //the / operator will truncate results if both operands are integers
 //1 / 2 = 0, not 0.5
 //% operator requires two int operands or program won't compile
 //using 0 as right operand of / or % causes undefined behavior
+
 //in C89, if either operand is negative, division results can be rounded up or
 //   down, depending on implementation
 //(-9 / 7) may yield -1 or -2 depending on cpu
@@ -821,23 +996,34 @@ int main(void)
 //implementation-defined behavior arises from purposely unspecified C language
 //   details (the idea is to match the way hardware behaves)
 
+
+//OPRATOR PRECEDENCE AND ASSOCIATIVITY
+
+
 //arithmetic operator precedence:
+
 //Highest: + - (unary)
 //         * / %
 //Lowest:  + - (binary)
+
 //   i + j * k   is equivalent to   i + (j * k)
 //     -i * -j   is equivalent to   (-i) * (-j)
 //  +i + j / k   is equivalent to   (+i) + (j / k)
+
 //left associative operators group from left to right, binary arithmetic
 //   operators are left associative:
+
 //   i - j - k   is equivalent to   (i - j) - k
 //   i * j / k   is equivalent to   (i * j) / k
+
 //right associative operators group from right to left, unary arithmetic
 //   operators are right associative:
+
 //   - + i       is equivalent to   -(+i)
 
 
-//upc.c - Computes a Universal Product Code check digit
+//upc.c - COMPUTES A UNIVERSAL PRODUCT CODE CHECK DIGIT
+
 
 /*
 
@@ -875,21 +1061,37 @@ int main(void)
 
 
 
+//SIMPLE ASSIGNMENT
+
+
+
 //= is a simple assignment operator that can be used to store a variable
 //assignment v = e
 //evaluate expression e and copy its value to v
 //e can be a constant, variable, or a more complicated expression:
+
 //i = 5;            i is now 5
 //j = i;            j is now 5
+
 //k = 10 * i + j;   k is now 55
 //if v and e don't share the same type, then e is converted to the type of v
 //   as the assignment takes place:
+
 //int i;
 //float f;
 //i = 72.99f;   i is now 72
 //f = 136;      f is now 136.0
+
 //assignment is an operator, like +, *, >
 //the value of assignment v = e is the value of v after assignment
 //thus the value of i = 72.99f is 72
 //most C operators don't modify their operands; = is one that does
-//modifying an operand is known as a side effect
+//an operator modifying an operand is known as a side effect
+
+
+
+//LVALUES
+
+
+
+//
