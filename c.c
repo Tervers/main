@@ -6,7 +6,12 @@
 
 
 
-// Wherever a value is needed, any expression of the same type will do.
+/*   CHAPTER                  2.1                 WRITING A SIMPLE PROGRAM   */
+
+
+
+//pun.c - displays a message when run
+
 
 /*
 
@@ -25,25 +30,43 @@ int main(void)
 
 */
 
-//# = directive. include = preprocessor type.
-//int = variable type. implies main returns an integer / status code.
-//void = main has no argument.
-//return = statement with a value.
-//statements end with a ;
-//printf = 'print formatted' statement. library function call.
 
-// gcc -o c c.c             // -o = rename a.out to c
+//# = directive. include = preprocessor type.
+//stdio.h = standard input/output library
+//main = program's executable code which represents the main program
+//int = variable type. implies main returns an integer / status code
+//void = main has no argument
+//return 0 = tells program to return the value 0 to OS when program terminates
+//statements end with a ;
+//printf = 'print formatted' statement. library function call from stdio.h
+
+
+//COMPILING AND LINKING
+
 
 //Preprocessing adds directives (usually handled by compiler)
 //?preprocessing connects header files to source files?
 //Compiles human code into machine (object) code
 //Links code with library functions
+//gcc -o c c.c   // -o = rename a.out to c
+
+
+
+/*   CHAPTER            2.2           THE GENERAL FORM OF A SIMPLE PROGRAM   */
+
+
+
+//C programs rely on three key language features:
+//directives - editing commands that modifty program prior to compilation
+//functions - named blocks of executable code (main)
+//statements - commands to be performed when the program runs
+
 
 /*
 
 #directives
 
-type main(void)
+int main(void)
 
 {
 
@@ -58,6 +81,83 @@ type main(void)
 }
 
 */
+
+
+//DIRECTIVES
+
+
+//a preprocessor first edits a program before the program  is compiled
+//directives are commands intended for the preprocessor
+//#include <stdio.h> says that information inside stdio.h should be included
+//   into the program before compilation
+//headers (.h) contain information about some part of the standard library
+//C has no built-in read and write commands, functions in the standard library
+//   supply these (printf)
+//directives always begin with a #
+//directives are one line long and the line ends with no special marker
+
+
+//FUNCTIONS
+
+
+//in C, a function is a series of statements that have been given a name
+//there are also functions provided by the C language called library functions
+//some functions compute a value; some don't
+//a function that computes a value uses the return statement to specify what
+//   value it returns
+//'main' function is mandatory, it gets called automatically when program
+//   is executed
+
+//int main(void)
+//return 0;
+
+//'int' indicates 'main' function returns an integer value
+//'main' returns a status code that is given to the OS when the program ends
+//'void' indicates main has no arguments
+//return 0 causes main to terminate (which ends the program) and indicates
+//   main to return a value of 0
+
+
+//STATEMENTS
+
+
+//statements are commands to be executed when the program runs
+//'return' is a statement
+//printf is a statement and also a function call
+//asking a function to perform its task is known as 'calling the function'
+
+//printf("To C, or not to C: that is the question.\n");
+
+//pun.c calls the printf function to display a string on the screen
+//statements end with a ; (except compound statements)
+
+
+
+/*   CHAPTER                  2.4                 VARIABLES AND ASSIGNMENT   */
+
+
+
+//most programs need to perform calculations before producing output
+//so they need to store data temporarily during program execution
+//variables are storage locations for temporary data
+
+
+//TYPES
+
+
+//every variable must have a type
+//type specifies what kind of data it will hold
+//type affects how the variable is stored and what operations can be performed
+//int can store whole numbers (0, 1,392, -2553)
+//largest int value is typically 2,147,483,647 but can be as small as 32,767
+//float can store much larger numbers
+//float can store numbers with digits after the decimal point (379.125)
+//float arithmetic may be slower than arithmetic on int numbers
+//float values are often approximations
+
+
+//DECLARATIONS
+
 
 /*
 
