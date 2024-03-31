@@ -7,8 +7,8 @@
 //                    pun.c - DISPLAYS A MESSAGE WHEN RUN
 
 /*
-
 #include <stdio.h>
+
 int main(void)
 {
 
@@ -17,7 +17,6 @@ int main(void)
 
     return 0;
 }
-
 */
 
 //# = directive. include = preprocessor type.
@@ -51,11 +50,10 @@ int main(void)
 //statements - commands to be performed when the program runs
 
 /*
-
 #directives
+
 int main(void)
 {
-
    declarations;           // int a;
    initialization;         // int a = 1, b = 2;
    assignments;            // a = 1; b = 2;
@@ -64,7 +62,6 @@ int main(void)
 
    return 0;
 }
-
 */
 
 //                    DIRECTIVES
@@ -162,11 +159,10 @@ int main(void)
 //                    dweight.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
 
 /*
-
 #include <stdio.h>
+
 int main(void)
 {
-
 int height, length, width, volume, weight;
 
 height = 8;
@@ -181,7 +177,6 @@ printf("Dimensional weight (pounds): %d\n", weight);
 
 return 0;
 }
-
 */
 
 //                    INITIALIZATION
@@ -197,11 +192,10 @@ return 0;
 //                    dweight2.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
 
 /*
-
 #include <stdio.h>
+
 int main(void)
 {
-
    int height, length, width, volume, weight;
 
    printf("Enter height of box: ");
@@ -210,6 +204,7 @@ int main(void)
    scanf("%d", &length);   //scanf receives user input
    printf("Enter width of box: ");
    scanf("%d", &width);
+
    volume = height * length * width;
    weight = (volume + 165) / 166;
 
@@ -218,7 +213,6 @@ int main(void)
 
    return 0;
 }
-
 */
 
 /*   CHAPTER               2.6               DEFINING NAMES FOR CONSTANTS   */
@@ -237,7 +231,6 @@ int main(void)
 //                    celcius.c - CONVERTS A FAHRENHEIT TEMPERATURE TO CELSIUS
 
 /*
-
 #include <stdio.h>
 
 #define FREEZING_PT 32.0f
@@ -247,17 +240,15 @@ int main(void)
 {
 	float fahrenheit, celsius;
 
-		printf("Enter Fahrenheit temperature: \n");
-
-		scanf("%f", &fahrenheit);
+	printf("Enter Fahrenheit temperature: \n");
+	scanf("%f", &fahrenheit);
 
 	celsius = (fahrenheit - FREEZING_PT) * SCALE_FACTOR;
 
-		printf("Celcius equivalent: %.1f\n", celsius);
+	printf("Celcius equivalent: %.1f\n", celsius);
 
 	return 0;
 }
-
 */
 
 /*   CHAPTER                        2.7                       IDENTIFIERS   */
@@ -292,12 +283,10 @@ int main(void)
 //blank lines can divide a program into logical units
 
 /*
-
 #include <stdio.h>
 #define FREEZING_PT 32.0f
 #define SCALE_FACTOR (5.0f / 9.0f)
 int main(void){float fahrenheit,celsius;printf("Enter Fahrenheit temperature: ");scanf("%f", &fahrenheit);celsius=(fahrenheit-FREEZING_PT)*SCALE_FACTOR;printf("Celsius equivalent: %.1f\n", celsius);return 0;}
-
 */
 
 //statements can be divided over any number of lines
@@ -313,26 +302,21 @@ int main(void){float fahrenheit,celsius;printf("Enter Fahrenheit temperature: ")
 //2b - What output does the program produce?
 
 /*
-
 #include <stdio.h>	// include directive
 
 int main(void)
-
 {
 printf("Parkinson's Law:\nWork expands so as to "); // printf statement
-printf("fill the time\n");	                        // printf statement
-printf("available for its completion.\n");	        // printf statement
+printf("fill the time\n");	                    // printf statement
+printf("available for its completion.\n");          // printf statement
 
-return 0;	                                        // return statement
-
+return 0;	                                    // return statement
 }
-
 */
 
 //Parkinson's Law:
 //Work expands so as to fill the time
 //available for its completion.
-
 
 //3a - Condense 'dweight.c' by replacing assignments with initializers and by
 //   removing the weight variable // with an inline printf expression.
@@ -340,11 +324,10 @@ return 0;	                                        // return statement
 //printf("Weight: %d\n", (volume + 165) / 166);
 
 /*
-
 #include <stdio.h>
+
 int main()
 {
-
 	int radius;
 	float equation = (4.0f / 3.0f);
 	float pi = 3.1415f;
@@ -358,12 +341,11 @@ int main()
 
 	return 0;
 }
-
 */
 
 /*
-
 #include <stdio.h>
+
 int main(void)
 {
 	int x = 0;
@@ -378,12 +360,11 @@ int main(void)
 
 	return 0;
 }
-
 */
 
 /*
-
 #include <stdio.h>
+
 int main(void)
 {
 	int price = 0;
@@ -401,12 +382,11 @@ int main(void)
 
 	return 0;
 }
-
 */
 
 /*
-
 #include <stdio.h>
+
 int main(void)
 {
 	float loan = 0.0, interest = 0.0, payment= 0.0;
@@ -437,7 +417,6 @@ int main(void)
 
 	return 0;
 }
-
 */
 
 /******************************************************************************
@@ -473,11 +452,11 @@ int main(void)
 //g = displays float in either fixed or exponential format depending on number
 //   size. p = maximum # of significant digits. Doesn't show trailing numbers
 
-//                    tprintf.c - PRINTS INT AND FLOAT VALUES IN VARIOUS FORMATS
+//                   tprintf.c - PRINTS INT AND FLOAT VALUES IN VARIOUS FORMATS
 
 /*
-
 #include <stdio.h>
+
 int main(void)
 {
     int i;
@@ -493,7 +472,6 @@ int main(void)
 
     return 0;
 }
-
 */
 
 //                    ESCAPE SEQUENCES
@@ -560,8 +538,8 @@ int main(void)
 //                    addfrac.c - ADDS TWO FRACTIONS
 
 /*
-
 #include <stdio.h>
+
 int main(void)
 {
     int num1, denom1, num2, denom2, result_num, result_denom;
@@ -578,7 +556,6 @@ int main(void)
 
     return 0;
 }
-
 */
 
 /*   CHAPTER                          3                          EXERCISES   */
@@ -626,8 +603,8 @@ int main(void)
 //1.
 
 /*
-
 #include <stdio.h>
+
 int main(void)
 {
     int mm = 0, dd = 0, yyyy = 0;
@@ -639,14 +616,13 @@ int main(void)
 
     return 0;
 }
-
 */
 
 //2.
 
 /*
-
 #include <stdio.h>
+
 int main(void)
 {
     int item = 0, mm = 0, dd = 0, yyyy = 0;
@@ -665,14 +641,13 @@ int main(void)
 
     return 0;
 }
-
 */
 
 //3.
 
 /*
-
 #include <stdio.h>
+
 int main(void)
 {
 	int gs1 = 0, group = 0, pub =0, item = 0, check = 0;
@@ -689,14 +664,13 @@ int main(void)
 
 	return 0;
 }
-
 */
 
 //4.
 
 /*
-
 #include <stdio.h>
+
 int main(void)
 {
 
@@ -710,16 +684,14 @@ int main(void)
 
 	return 0;
 }
-
 */
 
 //5.
 
 /*
-
 #include <stdio.h>
-int main(void)
 
+int main(void)
 {
     int a1 = 0, a2 = 0, a3 = 0, a4 = 0;
     int b1 = 0, b2 = 0, b3 = 0, b4 = 0;
@@ -748,14 +720,13 @@ int main(void)
 
     return 0;
 }
-
 */
 
 //6.
 
 /*
-
 #include <stdio.h>
+
 int main(void)
 {
     int num1, denom1, num2, denom2, result_num, result_denom;
@@ -769,7 +740,6 @@ int main(void)
 
     return 0;
 }
-
 */
 
 /******************************************************************************
@@ -846,8 +816,8 @@ int main(void)
 //          upc.c - COMPUTES A UNIVERSAL PRODUCT CODE CHECK DIGIT
 
 /*
-
 #include <stdio.h>
+
 int main(void)
 {
     int d, i1, i2, i3, i4, i5, j1, j2, j3, j4, j5,
@@ -868,7 +838,6 @@ int main(void)
 
     return 0;
 }
-
 */
 
 //%1d allows you to store a five-digit number as five one-digit numbers
@@ -1076,13 +1045,12 @@ int main(void)
 //yes, they have the same value
 
 /*
-
 #include <stdio.h>
 
 int main(void)
 {
-    printf("Does (-i) / j always have the same value as -(i/j) when you use two");
-    printf(" positive integers?\nEnter two positive integers to find out...\n");
+    printf("Does (-i) / j always have the same value as -(i/j) when you use");
+    printf("two positive integers?\nEnter two positive integers to find out.");
 
     int n1 = 0, n2 = 0;
 
@@ -1093,8 +1061,7 @@ int main(void)
 
     return 0;
 }
-
-/*
+*/
 
 //3. What is the value of each of the following expressions in C89? (give all
 //     possible values if an expression may have more than one value)
@@ -1198,7 +1165,6 @@ int main(void)
 //     prints the number with its digits reversed.
 
 /*
-
 #include <stdio.h>
 
 int main(void)
@@ -1215,13 +1181,11 @@ int main(void)
 
     return 0;
 }
-
 */
 
 //2. Extend the program in project 1 to handle three-digit numbers.
 
 /*
-
 #include <stdio.h>
 
 int main(void)
@@ -1239,7 +1203,6 @@ int main(void)
 
     return 0;
 }
-
 */
 
 //3. Rewrite the program in Programming Project 2 so that it prints the
@@ -1247,7 +1210,6 @@ int main(void)
 //     number into digits.
 
 /*
-
 #include <stdio.h>
 
 int main(void)
@@ -1261,7 +1223,6 @@ int main(void)
 
     return 0;
 }
-
 */
 
 //4. Write a program that reads an interger entered by the user and displays it
