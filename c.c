@@ -1122,6 +1122,13 @@ int main(void)
 //v %= e   computes remainder of v divided by e, storing the result in v
 
 //v += e is not exactly equivalent to v = v + e
+//v += e evaluates v once; v = v + e evaluates v twice
+//thus any evaluation of v is multiplied
+
+//a[i++] += 2;     i is incremented once
+//a[i++] = a[i++] + 2;     i is modified as well as used elsewhere in the
+//   statement, so the effect of executing the statement is undefined
+
 //i *= j + k isn't the same as i = i * j + k due to operator precedence
 //v may also have a side effect
 //compound operators are right-associative
@@ -1238,3 +1245,43 @@ int main(void)
 //   fetched (as though to be used in an enclosing expression)
 //++i; isn't part of a larger expression here, so it becomes discarded (the
 //   change to i is permanent)
+//since its value is discarded, there's little use in using an expression
+//   as a statement unless the expression has a side effect
+
+//i = 1;     1 is stored in i, then new value of i is fetched but not used
+//i--;     value of i is fetched but not used, though i is decremented after
+//i * j - 1;     value of expression is computed then discarded
+//i and j aren't changed, so previous statement has no effect and no purpose
+
+
+
+//ADDITIONAL NOTES
+
+
+
+//an lvalue is an expression on the left side of an assignment
+//therefore an rvalue is an expression that can appear on the right side
+//rvalues can be variables, constants, or more complex expressions
+//rvalues are essentially expressions
+
+//++ -- work with float variables
+
+//"discarding a value"
+//by definition, expressions represent a value; if the expression is i = 5,
+//   then evaluating the expression i + 1 produces the value 6
+//turn the expression i + 1 into a statement
+//i + 1; when this statement is executed, the value of i + 1 is computed
+//since this computed value was not saved or used in some way, it is lost
+//even when i = 1; i is assigned the value of 1
+//?lvalue has been modified, and the rvalue has been discarded?
+
+
+
+/*   CHAPTER                          4                          EXERCISES   */
+
+
+
+//1. Show the output produced by each of the following program fragments.
+//     Assume that i, j, and k are int variables.
+
+//(a) 
