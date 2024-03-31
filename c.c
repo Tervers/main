@@ -1197,3 +1197,72 @@ int main(void)
 //1. Write a program that asks the user to enter a two-digit number, then
 //     prints the number with its digits reversed.
 
+/*
+
+#include <stdio.h>
+
+int main(void)
+{
+    int n = 0, d1 = 0, d2 = 0;
+
+    printf("Enter a two-digit number: ");
+    scanf("%d", &n);
+
+    d1 = (n / 10);
+    d2 = (n % 10);
+
+    printf("The reversal is: %d%d\n", d2, d1);
+
+    return 0;
+}
+
+*/
+
+//2. Extend the program in project 1 to handle three-digit numbers.
+
+/*
+
+#include <stdio.h>
+
+int main(void)
+{
+    int n = 0, d1 = 0, d2 = 0, d3 = 0;
+
+    printf("Enter a three-digit number: ");
+    scanf("%d", &n);
+
+    d1 = (n / 100);
+    d2 = ((n / 10) % 10);
+    d3 = (n % 10);
+
+    printf("The reversal is: %d%d%d\n", d3, d2, d1);
+
+    return 0;
+}
+
+*/
+
+//3. Rewrite the program in Programming Project 2 so that it prints the
+//     reversal of a three-digit number without using arithmetic to split the
+//     number into digits.
+
+/*
+
+#include <stdio.h>
+
+int main(void)
+{
+    int n1 = 0, n2 = 0, n3 = 0;
+
+    printf("Enter a three-digit number: ");
+    scanf("%1d%1d%1d", &n1, &n2, &n3);
+
+    printf("The reversal is: %d%d%d\n", n3, n2, n1);
+
+    return 0;
+}
+
+*/
+
+//4. Write a program that reads an interger entered by the user and displays it
+//     in octal (base 8):
