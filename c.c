@@ -1226,3 +1226,15 @@ int main(void)
 
 /*   CHAPTER                   4.5                   EXPRESSION STATEMENTS   */
 
+
+
+//C has the rule that ANY expression can be used as a statement
+//any expression can be turned into a statement by appending a ;
+
+//++i      expression
+//++i;     statement
+
+//when ++i; is executed, i is first incremented, then the new i value is
+//   fetched (as though to be used in an enclosing expression)
+//++i; isn't part of a larger expression here, so it becomes discarded (the
+//   change to i is permanent)
