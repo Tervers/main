@@ -1,35 +1,24 @@
 /******************************************************************************
-*                                                                             *
 *   CHAPTER                         2                        C FUNDAMENTALS   *
-*                                                                             *
 ******************************************************************************/
-
-
 
 /*   CHAPTER                  2.1                 WRITING A SIMPLE PROGRAM   */
 
-
-
-//pun.c - DISPLAYS A MESSAGE WHEN RUN
-
+//          pun.c - DISPLAYS A MESSAGE WHEN RUN
 
 /*
 
 #include <stdio.h>
-
 int main(void)
-
 {
 
     printf("I love \n");
     printf("you Michelle.\n");
 
     return 0;
-
 }
 
 */
-
 
 //# = directive. include = preprocessor type.
 //stdio.h = standard input/output library
@@ -40,11 +29,7 @@ int main(void)
 //statements end with a ;
 //printf = 'print formatted' statement. library function call from stdio.h
 
-
-
-//COMPILING AND LINKING
-
-
+//          COMPILING AND LINKING
 
 //Preprocessing adds directives (usually handled by compiler)
 //?preprocessing connects header files to source files?
@@ -52,11 +37,7 @@ int main(void)
 //Links code with library functions
 //gcc -o c c.c   // -o = rename a.out to c
 
-
-
 /*   CHAPTER            2.2           THE GENERAL FORM OF A SIMPLE PROGRAM   */
-
-
 
 //#include <stdio.h>
 //int main(void)
@@ -69,13 +50,10 @@ int main(void)
 //functions - named blocks of executable code (main)
 //statements - commands to be performed when the program runs
 
-
 /*
 
 #directives
-
 int main(void)
-
 {
 
    declarations;           // int a;
@@ -85,16 +63,11 @@ int main(void)
    statements;             // printf("abc\n");
 
    return 0;
-
 }
 
 */
 
-
-
-//DIRECTIVES
-
-
+//          DIRECTIVES
 
 //a preprocessor first edits a program before the program  is compiled
 //directives are commands intended for the preprocessor
@@ -106,11 +79,7 @@ int main(void)
 //directives always begin with a #
 //directives are one line long and the line ends with no special marker
 
-
-
-//FUNCTIONS
-
-
+//          FUNCTIONS
 
 //in C, a function is a series of statements that have been given a name
 //there are also functions provided by the C language called library functions
@@ -129,11 +98,7 @@ int main(void)
 //return 0 causes main to terminate (which ends the program) and indicates
 //   main to return a value of 0
 
-
-
-//STATEMENTS
-
-
+//          STATEMENTS
 
 //statements are commands to be executed when the program runs
 //return is a statement
@@ -145,25 +110,15 @@ int main(void)
 //pun.c calls the printf function to display a string on the screen
 //statements end with a ; (except compound statements)
 
-
-
 /*   CHAPTER                  2.4                 VARIABLES AND ASSIGNMENT   */
 
-
-
-//VARIABLES
-
-
+//          VARIABLES
 
 //most programs need to perform calculations before producing output
 //so they need to store data temporarily during program execution
 //variables are storage locations for temporary data
 
-
-
-//TYPES
-
-
+//          TYPES
 
 //every variable must have a type
 //type specifies what kind of data it will hold
@@ -176,11 +131,7 @@ int main(void)
 //float arithmetic may be slower than arithmetic on int numbers
 //float values are often approximations
 
-
-
-//DECLARATIONS
-
-
+//          DECLARATIONS
 
 //variables must be declared
 //to declare a variable, specify its type, then name it
@@ -198,11 +149,7 @@ int main(void)
 
 //in c99, declarations do not have to be placed before statements
 
-
-
-//ASSIGNMENT
-
-
+//          ASSIGNMENT
 
 //assignment is giving a variable a value
 //constants are values assigned to variables
@@ -212,16 +159,12 @@ int main(void)
 //length = 10;      /* length   = 10       */
 //pi = 3.14f;
 
-
-//dweight.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
-
+//          dweight.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
 
 /*
 
 #include <stdio.h>
-
 int main(void)
-
 {
 
 int height, length, width, volume, weight;
@@ -237,16 +180,11 @@ printf("Volume (cubic inches): %d\n", volume);
 printf("Dimensional weight (pounds): %d\n", weight);
 
 return 0;
-
 }
 
 */
 
-
-
-//INITIALIZATION
-
-
+//          INITIALIZATION
 
 //a variable that doesn't have a default value is uninitialized
 //initialization happens when you give a variable a value during declaration
@@ -256,16 +194,12 @@ return 0;
 //int height = 10;  /* initialization */
 //type variable = initializer
 
-
-//dweight2.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
-
+//          dweight2.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
 
 /*
 
 #include <stdio.h>
-
 int main(void)
-
 {
 
    int height, length, width, volume, weight;
@@ -283,16 +217,11 @@ int main(void)
    printf("Dimensional weight (pounds): %d\n", weight);
 
    return 0;
-
 }
 
 */
 
-
-
 /*   CHAPTER               2.6               DEFINING NAMES FOR CONSTANTS   */
-
-
 
 //when a program contains constants, ideally they should be given names
 //a macro definition is used to name constants
@@ -305,9 +234,7 @@ int main(void)
 
 //#define RECIPROCAL_OF_PI (1.0f / 3.14159f)
 
-
-//celcius.c - CONVERTS A FAHRENHEIT TEMPERATURE TO CELSIUS
-
+//          celcius.c - CONVERTS A FAHRENHEIT TEMPERATURE TO CELSIUS
 
 /*
 
@@ -317,7 +244,6 @@ int main(void)
 #define SCALE_FACTOR (5.0f / 9.0f)
 
 int main(void)
-
 {
 	float fahrenheit, celsius;
 
@@ -330,16 +256,11 @@ int main(void)
 		printf("Celcius equivalent: %.1f\n", celsius);
 
 	return 0;
-
 }
 
 */
 
-
-
 /*   CHAPTER                        2.7                       IDENTIFIERS   */
-
-
 
 //identifiers are names for variables, functions, macros, and other entities
 //may contain letters, digits, and underscores
@@ -348,21 +269,13 @@ int main(void)
 
 //times10  get_next_char  _done  currentPage  nameAndAddress  SymbolTable
 
-
-
-//KEYWORDS
-
-
+//          KEYWORDS
 
 //some words have special significance in C and cannot be used as identifiers
 //these keywords are also case-sensitive
 //names of functions in the standard library contain only lower-case letters
 
-
-
 /*   CHAPTER                     2.8                     LAYOUT OF A C PROGRAM
-
-
 
 //tokens are groups of characters that can't be split up without changing their
 //   meaning
@@ -378,7 +291,6 @@ int main(void)
 //indentation can make nesting easier to spot (declarations inside main)
 //blank lines can divide a program into logical units
 
-
 /*
 
 #include <stdio.h>
@@ -388,20 +300,14 @@ int main(void){float fahrenheit,celsius;printf("Enter Fahrenheit temperature: ")
 
 */
 
-
 //statements can be divided over any number of lines
-
 
 /*
     printf("Dimensional weight (pounds): %d\n",
            (volume + INCHES_PER_POUND - 1) / INCHES_PER_POUND);
 */
 
-
-
 /*   CHAPTER                          2                          EXERCISES   */
-
-
 
 //2a - Identify the directives and statements in this program:
 //2b - What output does the program produce?
@@ -436,9 +342,7 @@ return 0;	                                        // return statement
 /*
 
 #include <stdio.h>
-
 int main()
-
 {
 
 	int radius;
@@ -453,7 +357,6 @@ int main()
 	printf("\n");
 
 	return 0;
-
 }
 
 */
@@ -461,7 +364,6 @@ int main()
 /*
 
 #include <stdio.h>
-
 int main(void)
 {
 	int x = 0;
@@ -472,10 +374,9 @@ int main(void)
 
 	printf("The answer is: ");
 	printf("%d", ((((3 * x + 2) * x - 5 ) * x - 1 ) * x + 7 ) * x - 6);
-    printf("\n");
+    	printf("\n");
 
 	return 0;
-
 }
 
 */
@@ -483,9 +384,7 @@ int main(void)
 /*
 
 #include <stdio.h>
-
 int main(void)
-
 {
 	int price = 0;
 
@@ -500,7 +399,6 @@ int main(void)
 	price = price - (5 * (price / 5));
 	printf("$1 bills: %d\n", price / 1);
 
-
 	return 0;
 }
 
@@ -509,9 +407,7 @@ int main(void)
 /*
 
 #include <stdio.h>
-
 int main(void)
-
 {
 	float loan = 0.0, interest = 0.0, payment= 0.0;
 
@@ -529,45 +425,32 @@ int main(void)
 
 	printf("Balance remaining after first payment: %.2f\n", loan);
 
-    loan = ((((interest / 100.0f) / 12.0f) * loan) + loan);
+    	loan = ((((interest / 100.0f) / 12.0f) * loan) + loan);
 	loan = loan - payment;
 
 	printf("Balance remaining after second payment: %.2f\n", loan);
 
-    loan = ((((interest / 100.0f) / 12.0f) * loan) + loan);
+    	loan = ((((interest / 100.0f) / 12.0f) * loan) + loan);
 	loan = loan - payment;
 
 	printf("Balance remaining after third payment: %.2f\n", loan);
 
 	return 0;
-
 }
 
 */
 
-
-
 /******************************************************************************
-*                                                                             *
 *   CHAPTER                     3                    FORMATTED INPUT/OUTPUT   *
-*                                                                             *
 ******************************************************************************/
 
-
-
 /*   CHAPTER                    3.1                    THE printf FUNCTION   */
-
-
 
 //printf displays a format string
 
 //printf("string", expr1, expr2, ...)
 
-
-
-//CONVERSION SPECIFICATIONS
-
-
+//          CONVERSION SPECIFICATIONS
 
 //% = conversion specifications (converts from binary to printed)
 //%d converts binary int value to a string of digits
@@ -590,14 +473,11 @@ int main(void)
 //g = displays float in either fixed or exponential format depending on number
 //   size. p = maximum # of significant digits. Doesn't show trailing numbers
 
-
-//tprintf.c - PRINTS INT AND FLOAT VALUES IN VARIOUS FORMATS
-
+//          tprintf.c - PRINTS INT AND FLOAT VALUES IN VARIOUS FORMATS
 
 /*
 
 #include <stdio.h>
-
 int main(void)
 {
     int i;
@@ -612,16 +492,11 @@ int main(void)
           //|   839.210| 8.392e+02|839.21    |
 
     return 0;
-
 }
 
 */
 
-
-
-//ESCAPE SEQUENCES
-
-
+//          ESCAPE SEQUENCES
 
 //Alert (bell)   \a
 //Backspace   \b
@@ -630,11 +505,7 @@ int main(void)
 //Double quote   \"
 //Double backslash   \\
 
-
-
 /*   CHAPTER                     3.2                    THE scanf FUNCTION   */
-
-
 
 //scanf handles Conversion Specifications, white-space characters, and
 //   'ordinary' characters differently
@@ -668,11 +539,7 @@ int main(void)
 //with one or more consecutive white-spaces, scanf repeatedly reads until
 //   non-white-space character encountered
 
-
-
-//ORDINARY CHARACTERS IN FORMAT STRINGS
-
-
+//          ORDINARY CHARACTERS IN FORMAT STRINGS
 
 //white-space chars read from input until non-white-space character, which is
 //   'put back'
@@ -690,14 +557,11 @@ int main(void)
 //   back; ' / 96' remain to be read by next scanf.
 //allow spaces after first number by adding a space into string: "%d /%d"
 
-
-//addfrac.c - ADDS TWO FRACTIONS
-
+//          addfrac.c - ADDS TWO FRACTIONS
 
 /*
 
 #include <stdio.h>
-
 int main(void)
 {
     int num1, denom1, num2, denom2, result_num, result_denom;
@@ -717,11 +581,7 @@ int main(void)
 
 */
 
-
-
 /*   CHAPTER                          3                          EXERCISES   */
-
-
 
 //1. What output do the following calls of printf produce?
                                    //123456789012       123456789012
@@ -729,7 +589,6 @@ int main(void)
 //printf("%12.5e\n", 30.253);       '   3.0253e-1'     '3.02530e+001'
 //printf("%.4f\n", 83.162);         '83.1620'          '83.1620'
 //printf("%-6.2g\n", .0000009979);  '9.9e10'           '1e-006'
-
 
 //2. Write calls of printf that display a float variable x int the following
 //     formats.
@@ -739,7 +598,6 @@ int main(void)
 //printf("%-8.3f", 8.47);
 //printf("%6.0f", 8.47);
 
-
 //3. Indicate whether the 2 strings are equivalent. If not, show how.
 
 //3a - "%d" vs " %d" : equivalent
@@ -748,36 +606,28 @@ int main(void)
 //     character is entered
 //3d - "%f,%f" vs "%f, %f" : equivalent
 
-
 //4. Suppose scanf("%d%f%d", &i, &x, &j); User enters '10.3 5 6', what values
 //     will show?
 
 //10 5 6
-
 
 //5. Suppose scanf("%f%d%f", &x, &i, &y); User enters '12.3 45.6 789', what
 //     values will show?
 
 //12.3 45 0.6
 
-
 //6. Show how to modify addfrac.c so that user can enter fractions that contain
 //     spaces before and after each / character.
 
 //scanf("%d/%d") : scanf("%d /%d")
 
-
-
 /*   CHAPTER                     3                    PROGRAMMING PROJECTS   */
-
-
 
 //1.
 
 /*
 
 #include <stdio.h>
-
 int main(void)
 {
     int mm = 0, dd = 0, yyyy = 0;
@@ -792,15 +642,12 @@ int main(void)
 
 */
 
-
 //2.
 
 /*
 
 #include <stdio.h>
-
 int main(void)
-
 {
     int item = 0, mm = 0, dd = 0, yyyy = 0;
     float price = 0.0f;
@@ -817,20 +664,16 @@ int main(void)
     printf("%d\t\t$%6.2f\t%d/%d/%d\n", item, price, mm, dd, yyyy);
 
     return 0;
-
 }
 
 */
-
 
 //3.
 
 /*
 
 #include <stdio.h>
-
 int main(void)
-
 {
 	int gs1 = 0, group = 0, pub =0, item = 0, check = 0;
 
@@ -845,21 +688,16 @@ int main(void)
 	printf("Check digit: %d\n", check);
 
 	return 0;
-
-
 }
 
 */
-
 
 //4.
 
 /*
 
 #include <stdio.h>
-
 int main(void)
-
 {
 
 	int area = 0, pre = 0, suf = 0;
@@ -871,18 +709,15 @@ int main(void)
 	printf("You entered %d.%d.%d\n", area, pre, suf);
 
 	return 0;
-
 }
 
 */
-
 
 //5.
 
 /*
 
 #include <stdio.h>
-
 int main(void)
 
 {
@@ -912,18 +747,15 @@ int main(void)
     printf("Diagonal sums: %d %d\n", diag1, diag2);
 
     return 0;
-
 }
 
 */
-
 
 //6.
 
 /*
 
 #include <stdio.h>
-
 int main(void)
 {
     int num1, denom1, num2, denom2, result_num, result_denom;
@@ -940,15 +772,9 @@ int main(void)
 
 */
 
-
-
 /******************************************************************************
-*                                                                             *
 *   CHAPTER                          4                          EXPRESSIONS   *
-*                                                                             *
 ******************************************************************************/
-
-
 
 //Expressions are formulas that show how to compute a value
 //the simplest expressions are variables and constants
@@ -964,11 +790,7 @@ int main(void)
 //relational operators; <, >, <=
 //logical operators; x < 0 && x > -10;     //&& possibly wrong
 
-
-
 /*   CHAPTER                    4.1                   ARITHMETIC OPERATORS   */
-
-
 
 //arithmetic operators come in two forms; unary and binary
 
@@ -996,9 +818,7 @@ int main(void)
 //implementation-defined behavior arises from purposely unspecified C language
 //   details (the idea is to match the way hardware behaves)
 
-
-//OPRATOR PRECEDENCE AND ASSOCIATIVITY
-
+//          OPRATOR PRECEDENCE AND ASSOCIATIVITY
 
 //arithmetic operator precedence:
 
@@ -1021,14 +841,11 @@ int main(void)
 
 //   - + i       is equivalent to   -(+i)
 
-
-//upc.c - COMPUTES A UNIVERSAL PRODUCT CODE CHECK DIGIT
-
+//          upc.c - COMPUTES A UNIVERSAL PRODUCT CODE CHECK DIGIT
 
 /*
 
 #include <stdio.h>
-
 int main(void)
 {
     int d, i1, i2, i3, i4, i5, j1, j2, j3, j4, j5,
@@ -1055,15 +872,9 @@ int main(void)
 //%1d allows you to store a five-digit number as five one-digit numbers
 //some older compilers limit maximum value of int variable to 32,767
 
-
-
 /*   CHAPTER                    4.2                   ASSIGNMENT OPERATORS   */
 
-
-
-//SIMPLE ASSIGNMENT
-
-
+//          SIMPLE ASSIGNMENT
 
 //= simple assignment operator
 //= can be used to store a variable
@@ -1089,11 +900,7 @@ int main(void)
 //most C operators don't modify their operands; = is one that does
 //an operator modifying an operand is known as a side effect
 
-
-
-//LVALUES
-
-
+//          LVALUES
 
 //Most C operators allow operands to be variables, constants, or expressions
 //= requires its left operand to be an lvalue
@@ -1101,11 +908,7 @@ int main(void)
 //variables are lvalues
 //constants or computational results are not lvalues
 
-
-
-//COMPOUND ASSIGNMENT
-
-
+//          COMPOUND ASSIGNMENT
 
 //assignments often use their old value to compute their new value
 
@@ -1135,11 +938,7 @@ int main(void)
 
 //i += j += k;   means   i += (j += k);
 
-
-
 /*   CHAPTER             4.3            INCREMENT AND DECREMENT OPERATORS   */
-
-
 
 //i = i + 1;
 //j = j - 1;
@@ -1178,11 +977,7 @@ int main(void)
 //postfix ++ -- are higher precedence than unary + - and are left-associative
 //prefix ++ -- are same precedence as unary + - and are right-associative
 
-
-
 /*   CHAPTER                   4.4                  EXPRESSION EVALUATION   */
-
-
 
 //a = b += c++ - d + --e / -f                     /* precedence */
 //a = b += (c++) - d + --e / -f                   postfix increment
@@ -1191,11 +986,7 @@ int main(void)
 //a = b += (((c++) - d) + ((--e) / (-f)))         additive
 //(a = (b += (((c++) - d) + ((--e) / (-f)))))     assignment
 
-
-
-//ORDER OF SUBEXPRESSION EVALUATION
-
-
+//          ORDER OF SUBEXPRESSION EVALUATION
 
 //C doesn't define the order in which subexpressions are evaluated (the
 //   exceptions being 'logical and', 'logical or', conditional, and comma
@@ -1229,11 +1020,7 @@ int main(void)
 //j could be 4 or 6
 //this unknown behavior should be avoided at all costs
 
-
-
 /*   CHAPTER                   4.5                   EXPRESSION STATEMENTS   */
-
-
 
 //C has the rule that ANY expression can be used as a statement
 //any expression can be turned into a statement by appending a ;
@@ -1253,11 +1040,7 @@ int main(void)
 //i * j - 1;     value of expression is computed then discarded
 //i and j aren't changed, so previous statement has no effect and no purpose
 
-
-
-//ADDITIONAL NOTES
-
-
+//          ADDITIONAL NOTES
 
 //an lvalue is an expression on the left side of an assignment
 //therefore an rvalue is an expression that can appear on the right side
@@ -1275,11 +1058,7 @@ int main(void)
 //even when i = 1; i is assigned the value of 1
 //?lvalue has been modified, and the rvalue has been discarded?
 
-
-
 /*   CHAPTER                          4                          EXERCISES   */
-
-
 
 //1. Show the output produced by each of the following program fragments.
 //     Assume that i, j, and k are int variables.
