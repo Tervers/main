@@ -4,7 +4,7 @@
 
 /*   CHAPTER                  2.1                 WRITING A SIMPLE PROGRAM   */
 
-//          pun.c - DISPLAYS A MESSAGE WHEN RUN
+//                    pun.c - DISPLAYS A MESSAGE WHEN RUN
 
 /*
 
@@ -29,7 +29,7 @@ int main(void)
 //statements end with a ;
 //printf = 'print formatted' statement. library function call from stdio.h
 
-//          COMPILING AND LINKING
+//                    COMPILING AND LINKING
 
 //Preprocessing adds directives (usually handled by compiler)
 //?preprocessing connects header files to source files?
@@ -67,7 +67,7 @@ int main(void)
 
 */
 
-//          DIRECTIVES
+//                    DIRECTIVES
 
 //a preprocessor first edits a program before the program  is compiled
 //directives are commands intended for the preprocessor
@@ -79,7 +79,7 @@ int main(void)
 //directives always begin with a #
 //directives are one line long and the line ends with no special marker
 
-//          FUNCTIONS
+//                    FUNCTIONS
 
 //in C, a function is a series of statements that have been given a name
 //there are also functions provided by the C language called library functions
@@ -98,7 +98,7 @@ int main(void)
 //return 0 causes main to terminate (which ends the program) and indicates
 //   main to return a value of 0
 
-//          STATEMENTS
+//                    STATEMENTS
 
 //statements are commands to be executed when the program runs
 //return is a statement
@@ -112,13 +112,13 @@ int main(void)
 
 /*   CHAPTER                  2.4                 VARIABLES AND ASSIGNMENT   */
 
-//          VARIABLES
+//                    VARIABLES
 
 //most programs need to perform calculations before producing output
 //so they need to store data temporarily during program execution
 //variables are storage locations for temporary data
 
-//          TYPES
+//                    TYPES
 
 //every variable must have a type
 //type specifies what kind of data it will hold
@@ -131,7 +131,7 @@ int main(void)
 //float arithmetic may be slower than arithmetic on int numbers
 //float values are often approximations
 
-//          DECLARATIONS
+//                    DECLARATIONS
 
 //variables must be declared
 //to declare a variable, specify its type, then name it
@@ -149,7 +149,7 @@ int main(void)
 
 //in c99, declarations do not have to be placed before statements
 
-//          ASSIGNMENT
+//                    ASSIGNMENT
 
 //assignment is giving a variable a value
 //constants are values assigned to variables
@@ -159,7 +159,7 @@ int main(void)
 //length = 10;      /* length   = 10       */
 //pi = 3.14f;
 
-//          dweight.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
+//                    dweight.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
 
 /*
 
@@ -184,7 +184,7 @@ return 0;
 
 */
 
-//          INITIALIZATION
+//                    INITIALIZATION
 
 //a variable that doesn't have a default value is uninitialized
 //initialization happens when you give a variable a value during declaration
@@ -194,7 +194,7 @@ return 0;
 //int height = 10;  /* initialization */
 //type variable = initializer
 
-//          dweight2.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
+//                    dweight2.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
 
 /*
 
@@ -234,7 +234,7 @@ int main(void)
 
 //#define RECIPROCAL_OF_PI (1.0f / 3.14159f)
 
-//          celcius.c - CONVERTS A FAHRENHEIT TEMPERATURE TO CELSIUS
+//                    celcius.c - CONVERTS A FAHRENHEIT TEMPERATURE TO CELSIUS
 
 /*
 
@@ -269,7 +269,7 @@ int main(void)
 
 //times10  get_next_char  _done  currentPage  nameAndAddress  SymbolTable
 
-//          KEYWORDS
+//                    KEYWORDS
 
 //some words have special significance in C and cannot be used as identifiers
 //these keywords are also case-sensitive
@@ -450,7 +450,7 @@ int main(void)
 
 //printf("string", expr1, expr2, ...)
 
-//          CONVERSION SPECIFICATIONS
+//                    CONVERSION SPECIFICATIONS
 
 //% = conversion specifications (converts from binary to printed)
 //%d converts binary int value to a string of digits
@@ -473,7 +473,7 @@ int main(void)
 //g = displays float in either fixed or exponential format depending on number
 //   size. p = maximum # of significant digits. Doesn't show trailing numbers
 
-//          tprintf.c - PRINTS INT AND FLOAT VALUES IN VARIOUS FORMATS
+//                    tprintf.c - PRINTS INT AND FLOAT VALUES IN VARIOUS FORMATS
 
 /*
 
@@ -496,7 +496,7 @@ int main(void)
 
 */
 
-//          ESCAPE SEQUENCES
+//                    ESCAPE SEQUENCES
 
 //Alert (bell)   \a
 //Backspace   \b
@@ -539,7 +539,7 @@ int main(void)
 //with one or more consecutive white-spaces, scanf repeatedly reads until
 //   non-white-space character encountered
 
-//          ORDINARY CHARACTERS IN FORMAT STRINGS
+//                    ORDINARY CHARACTERS IN FORMAT STRINGS
 
 //white-space chars read from input until non-white-space character, which is
 //   'put back'
@@ -557,7 +557,7 @@ int main(void)
 //   back; ' / 96' remain to be read by next scanf.
 //allow spaces after first number by adding a space into string: "%d /%d"
 
-//          addfrac.c - ADDS TWO FRACTIONS
+//                    addfrac.c - ADDS TWO FRACTIONS
 
 /*
 
@@ -815,10 +815,12 @@ int main(void)
 //   down, depending on implementation
 //(-9 / 7) may yield -1 or -2 depending on cpu
 //in C99, division is always truncated towards 0
+//the value of i % j has the same unary operator as i
+//(-9 % 7) is -2; (9 % -7) is 2
 //implementation-defined behavior arises from purposely unspecified C language
 //   details (the idea is to match the way hardware behaves)
 
-//          OPRATOR PRECEDENCE AND ASSOCIATIVITY
+//                    OPRATOR PRECEDENCE AND ASSOCIATIVITY
 
 //arithmetic operator precedence:
 
@@ -874,7 +876,7 @@ int main(void)
 
 /*   CHAPTER                    4.2                   ASSIGNMENT OPERATORS   */
 
-//          SIMPLE ASSIGNMENT
+//                    SIMPLE ASSIGNMENT
 
 //= simple assignment operator
 //= can be used to store a variable
@@ -900,7 +902,7 @@ int main(void)
 //most C operators don't modify their operands; = is one that does
 //an operator modifying an operand is known as a side effect
 
-//          LVALUES
+//                    LVALUES
 
 //Most C operators allow operands to be variables, constants, or expressions
 //= requires its left operand to be an lvalue
@@ -908,7 +910,7 @@ int main(void)
 //variables are lvalues
 //constants or computational results are not lvalues
 
-//          COMPOUND ASSIGNMENT
+//                    COMPOUND ASSIGNMENT
 
 //assignments often use their old value to compute their new value
 
@@ -986,7 +988,7 @@ int main(void)
 //a = b += (((c++) - d) + ((--e) / (-f)))         additive
 //(a = (b += (((c++) - d) + ((--e) / (-f)))))     assignment
 
-//          ORDER OF SUBEXPRESSION EVALUATION
+//                    ORDER OF SUBEXPRESSION EVALUATION
 
 //C doesn't define the order in which subexpressions are evaluated (the
 //   exceptions being 'logical and', 'logical or', conditional, and comma
@@ -1040,7 +1042,7 @@ int main(void)
 //i * j - 1;     value of expression is computed then discarded
 //i and j aren't changed, so previous statement has no effect and no purpose
 
-//          ADDITIONAL NOTES
+//                    ADDITIONAL NOTES
 
 //an lvalue is an expression on the left side of an assignment
 //therefore an rvalue is an expression that can appear on the right side
@@ -1063,4 +1065,135 @@ int main(void)
 //1. Show the output produced by each of the following program fragments.
 //     Assume that i, j, and k are int variables.
 
-//(a) 
+//(a) 1 2
+//(b) 12 0
+//(c) 1
+//(d) 0
+
+//2. if i and j are positive integers, does (-i) / j always have the same value
+//     as -(i/j)? Justify your answer.
+
+//yes, they have the same value
+
+/*
+
+#include <stdio.h>
+
+int main(void)
+{
+    printf("Does (-i) / j always have the same value as -(i/j) when you use two");
+    printf(" positive integers?\nEnter two positive integers to find out...\n");
+
+    int n1 = 0, n2 = 0;
+
+    scanf("%d %d", &n1, &n2);
+
+    printf("(-i) / j = %d\n", ((-n1) / n2));
+    printf("-(i / j) = %d\n", (-(n1 / n2)));
+
+    return 0;
+}
+
+/*
+
+//3. What is the value of each of the following expressions in C89? (give all
+//     possible values if an expression may have more than one value)
+
+//*(a) 1 or 2         /* answer is only 1. C89 implementation only results */
+//(b) -1 or -2         /* when an operand is negative */
+//(c) -1 or -2
+//(d) 1 or 2
+
+//4. Repeat exercise 3 for C99.
+
+//(a) 1
+//(b) -1
+//(c) -1
+//(d) 1
+
+//5. What is the value of each of the following expression in C89? (give all
+//     possible values if an expression may have more than one value)
+
+//(a) 3
+//(b) -3 or -2
+//(c) -3 or -2
+//*(d) 3 or 2
+
+//6. Repeat exercise 3 for C99.
+
+//(a) 3
+//(b) -3
+//(c) 3
+//(d) -3
+
+//7. Why doesn't changing the algorithm for computing the UPC check digit work?
+
+//changing the algorithm affects the answer you get while dividing, which also
+//   changes the final check digit after subtracting from 9
+
+//8. Would the upc.c program still work if the expression
+//     9 - ((total - 1) % 10) were replaced by (10 - (total % 10)) % 10?
+
+//yes, the program would still work, and would produce identical values
+
+//9. Show the output produced by each of the following program fragments.
+//     Assume that i, j, and k are int variables.
+
+//(a) 63, 8
+//(b) 3, 2, 1
+//(c) 2, -1, 3
+//(d) 0, 0, 0
+
+//10. Show the output produced by each of the following program fragments.
+//     Assume that i, j, and k are int variables.
+
+//(a) 12, 12
+//(b) 3, 4
+//(c) 2, 8
+//(d) 6, 9
+
+//11. Show the output produced by each of the following program fragments.
+//     Assume that i, j, and k are int variables.
+
+//(a) 0; 2
+//(b) 4; 11, 6
+//(c) 0; 8, 7
+//(d) 3; 4, 5, 4
+
+//12. Show the output produced by each of the following program fragments.
+//     Assume that i and j are int variables.
+
+//(a) 6, 16
+//(b) 6, -7
+//(c) 6, 23
+//(d) 6, 15
+
+//13. Only one of the expression ++i and i++ is exactly the same as (i += 1);
+//     which is it? Justify your answer.
+
+//++i will change the value of i immediately, while i++ keeps the original
+//     value of i until the statement is fully parsed. therefore ++i is
+//     exactly the same as (i += 1)
+
+//14. Supply parentheses to show how a C compiler would interpret each of the
+//     following expressions.
+
+//(a) (((a * b) - (c * d)) + e)
+//(b) (((a / b) % c) / d)
+//(c) ((((- a) - b) + c) - (+ d))
+//(d) (((a * (- b)) / c) - d)
+
+//15. Give the values of i and j after each of the following expression
+//     statements have been executed. (Assume that i has the value 1 initially
+//     and j has the value 2.)
+
+//(a) 3, 2
+//(b) 0, 2
+//(c) 1, 2       /* i and j value was never modified */
+//(d) 1, 3       /* i value was never modified */
+
+/*   CHAPTER                    4                    PROGRAMMING PROJECTS   */
+
+//1. Write a program that asks the user to enter a two-digit number, then
+//     prints the number with its digits reversed.
+
