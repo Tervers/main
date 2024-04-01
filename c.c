@@ -1321,8 +1321,8 @@ int main(void)
 //relational operators can compare numbers of mixed type
 //1 < 2.5 is 1; 5.6 < 4 is 0
 
-//relational operators are left associative
-//relational operators have lower precedence than arithmetic operators
+//left associative
+//lower precedence than arithmetic operators
 //i + j < k - 1 means ((i + j) < (k - 1))
 
 //i < j < k means ((i < j) < k), but i < j will produce a 0 or 1, which leads
@@ -1331,4 +1331,97 @@ int main(void)
 
 //                    EQUALITY OPERATORS
 
-//
+//== equal to; != not equal to
+//produce 0 or 1 as a result
+//left associative
+//lower precedence than relational operators
+//i < j == j < k means (i < j) == (j < k)
+//which is true if i < j and j < k are both true or both false
+//(i >= j) + (i == j) is either 0, 1, or 2 depending on whether i is less
+//   that, greater than, or equal to j
+
+//                    LOGICAL OPERATORS
+
+//! logical negation (unary); && logical AND (binary); || logical OR (binary)
+//! same precedence as unary + -
+//! right associative
+//&& || lower precedence than relational and equality operators
+//&& || left associative
+//i < j && k == m means (i < j) && (k == m)
+//produce 0 or 1 as a result
+//logical operators treat any non-zero operand as true and any zero as false
+//!expr has the value 1 if expr has the value 0
+//expr1 && expr2 has the value 1 only when expr1 AND expr2 are both non-zero
+//expr1 || expr2 has the value 1 if expr1 OR expr2 OR both are non-zero
+//in all other cases, these operators produce 0
+//&& and || short-circuit evaluation of their operands
+//first left operand is evaluated, then right operand
+//if the value of the expression can be deduced from the left operand alone,
+//   then the right operand isn't evaluated
+//(i != 0) && (j / i > 0)
+//(i != 0) is evaluated first. if i isn't equal to 0, then we move on to
+//   (j / i > 0). if i is equal to 0, then the entire expression must be false
+//side effects from operands won't occur if short-circuiting discards an expr
+
+/*   CHAPTER                      5.2                     THE if STATEMENT   */
+
+//the if statement can choose between two alternatives by testing the value of
+//   an expression
+//if ( expression ) statement
+//parenthesis required around expression
+//when if is executed, the expression is evaluated; if non-zero, then
+//   the statement will be executed
+
+//if (line_num == MAX_LINES)
+//  line_num = 0;
+
+//to test whether a variable falls within range, for example 0 <= i < n...
+//if (0 <= i && i < n)
+
+//to test whether a variable falls outside range
+//if (i < 0 || i >= n)
+
+//                    COMPOUND STATEMENTS
+
+//if ( expression ) { statements }
+//braces around compound statements are required
+//{ line_num = 0; page_num++; }
+//each statements still ends with a ;
+//no ; after braces
+
+//if (line_num == MAX_LINES) {
+//  line_num = 0;		//line_num = 0; page_num++;
+//  page_num++;
+//  }
+
+//                    THE else CLAUSE
+
+//if ( expression ) statement else statement
+//the statement that follows else is executed if the ( expression ) is 0
+
+//if (i > j)			//if (i > j) max = i;
+//  max = i;			//else max = j
+//else
+//  max = j;
+
+//there are no restrictions on what statements can appear in an if statement
+//extra braces, like parentheses, can increase readability and modability,
+//   while possibly avoiding the compiler not understanding the program
+//these if statements find the largest of the numbers in i, j, k and store
+//   that value in max
+
+//if (i > j)			//if (i > j) {		//if (i > j) {
+//  if (i > k)			//  if (i > k)		//  if (i > k) {
+//    max = i;			//    max = i;		//    max = i;
+//  else			//  else		//  } else {
+//    max = k;			//    max = k;		//    max = k;
+//else				//} else {		//  }
+//  if (j > k)			//  if (j > k)		//} else {
+//    max = j;			//    max = j;		//  if (j > k) {
+//  else			//  else		//    max = j;
+//    max = k;			//    max = k;		//  } else {
+//                              //}			//    max = k;
+//                              //			//  }
+//				//			//}
+
+
