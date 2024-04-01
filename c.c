@@ -778,7 +778,7 @@ int main(void)
 //mixing int and float creates a float
 //the / operator will truncate results if both operands are integers
 //1 / 2 = 0, not 0.5
-//% operator requires two int operands or program won't compile
+//% (modulus / mod) operator requires two int operands or program won't compile
 //using 0 as right operand of / or % causes undefined behavior
 
 //in C89, if either operand is negative, division results can be rounded up or
@@ -1225,5 +1225,86 @@ int main(void)
 }
 */
 
-//4. Write a program that reads an interger entered by the user and displays it
+//4. Write a program that reads an integer entered by the user and displays it
 //     in octal (base 8):
+
+/*
+#include <stdio.h>
+
+int main(void)
+{
+    int n = 0, r1 = 0, r2 = 0, r3 = 0, r4 = 0, r5 = 0;
+
+    printf("Enter a  number between 0 and 32767: ");
+    scanf("%d", &n);
+
+    r1 = n % 8;
+    r2 = ((n / 8) % 8);
+    r3 = (((n / 8) / 8) % 8);
+    r4 = ((((n / 8) / 8) / 8) % 8);
+    r5 = (((((n / 8) / 8) / 8) / 8) % 8);
+
+    printf("In Octal, your number is: %d%d%d%d%d\n", r5, r4, r3, r2, r1);
+
+    return 0;
+}
+*/
+
+//5. Rewrite the upc.c program so that the user enters 11 digits at one time.
+
+/*
+#include <stdio.h>
+
+int main(void)
+{
+    int a, b, c, d, e, f, g, h, i, j, k, first_sum, second_sum, total;
+
+    printf("Enter the first 11 digits of a UPC: ");
+    scanf("%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d",
+          &a, &b, &c, &d, &e, &f, &g, &h, &i, &j, &k);
+
+    first_sum = a + c + e + g + i + k;
+    second_sum = b + d + f + h + j;
+    total = 3 * first_sum + second_sum;
+
+    printf("Check digit: %d\n", 9 - ((total - 1) % 10));
+
+    return 0;
+}
+*/
+
+//6. Modify upc.c so that it calculates the check digit for an EAN.
+
+/*
+#include <stdio.h>
+
+int main(void)
+{
+    int a, b, c, d, e, f, g, h, i, j, k, l, first_sum, second_sum, total;
+
+    printf("Enter the first 12 digits of a UPC: ");
+    scanf("%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d",
+          &a, &b, &c, &d, &e, &f, &g, &h, &i, &j, &k, &l);
+
+    first_sum = b + d + f + h + j + l;
+    second_sum = a + c + e + g + i + k;
+    total = 3 * first_sum + second_sum;
+
+    printf("Check digit: %d\n", 9 - ((total - 1) % 10));
+
+    return 0;
+}
+*/
+
+/******************************************************************************
+*   CHAPTER                      5                     SELECTION STATEMENTS   *
+******************************************************************************/
+
+//so far, we have used the return statement and expression statements
+//most other statements fall into three categories:
+//selection statements 'if' and 'switch' allow programs to select a particular
+//   execution path from a set of alternatives
+//iteration statements 'while' 'do' and 'for' support iteration (looping)
+//jump statements 'break' 'continue' and 'goto' cause an unconditional jump
+//   to some other place in the program
+//the only other statements are compound statements and null statements
