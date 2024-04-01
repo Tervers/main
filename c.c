@@ -1308,3 +1308,27 @@ int main(void)
 //jump statements 'break' 'continue' and 'goto' cause an unconditional jump
 //   to some other place in the program
 //the only other statements are compound statements and null statements
+
+/*   CHAPTER                     5.1                   LOGICAL EXPRESSIONS   */
+
+//several C statements must test the value of an expression to see if its true
+//  or false
+
+//                    RELATIONAL OPERATORS
+//<, >, <=, => are relational operators
+//a comparison such as i < j will yield an integer: 0 (false) or 1 (true)
+//10 < 11 is 1; 11 < 10 is 0
+//relational operators can compare numbers of mixed type
+//1 < 2.5 is 1; 5.6 < 4 is 0
+
+//relational operators are left associative
+//relational operators have lower precedence than arithmetic operators
+//i + j < k - 1 means ((i + j) < (k - 1))
+
+//i < j < k means ((i < j) < k), but i < j will produce a 0 or 1, which leads
+//   to (0 < k) or (1 < k)
+//the proper expression would be i < j && j < k
+
+//                    EQUALITY OPERATORS
+
+//
