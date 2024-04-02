@@ -813,7 +813,7 @@ int main(void)
 
 //   - + i       is equivalent to   -(+i)
 
-//          upc.c - COMPUTES A UNIVERSAL PRODUCT CODE CHECK DIGIT
+//                    upc.c - COMPUTES A UNIVERSAL PRODUCT CODE CHECK DIGIT
 
 /*
 #include <stdio.h>
@@ -1424,4 +1424,136 @@ int main(void)
 //                              //			//  }
 //				//			//}
 
+//                    CASCADED if STATEMENTS
+
+//we will often need to test a series of conditions, stopping as soon as one
+//   of them is true
+//the following cascaded if statements tests whether n is less than, equal to,
+//   or greater than 0:
+
+//if (n < 0)
+//  printf("n is less than 0\n");
+//else if (n == 0)
+//  printf("n is equal to 0\n");
+//else
+//printf("n is greater than 0\n");
+
+//if ( expression )
+//  statement
+//else if ( expression )
+//  statement
+//...
+//else if ( expression )
+//  statement
+//else
+//  statement
+
+//the above way of indenting cascaded if statements avoids the problem of
+//   excessive indentation when the number of tests is large
+//cascaded if statements are not specifically a new kind of statement; they're
+//   just ordinary if statements that happen to have another if statement as
+//   its else clause
+
+//                    CALCULATING A BROKER'S COMMISSION
+
+//the heart of the program is a cascaded if statement that determines which
+//   range the trade falls into.
+
+//                    broker.c - CALCULATES A BROKER'S COMMISSION
+
+/*
+#include <stdio.h>
+
+int main(void)
+{
+    float commission, value;
+
+    printf("Enter value of trade: ");
+    scanf("%f", &value);
+
+    if (value < 2500.00f)
+        commission = 30.00f + .017f * value;
+    else if (value < 6250.00f)
+        commission = 56.00f + .0066f * value;
+    else if (value < 20000.00f)
+        commission = 76.00f + .0034f * value;
+    else if (value < 50000.00f)
+        commission = 100.00f + .0022f * value;
+    else if (value < 500000.00f)
+        commission = 155.00f + .0011f * value;
+    else
+        commission = 255.00f + .0009f * value;
+
+    if (commission < 39.00f)
+        commission = 39.00f;
+
+    printf("Commission: $%.2f\n", commission);
+
+    return 0;
+}
+*/
+
+//                    THE DANGLING else PROBLEM
+
+//if (y != 0)
+//  if (x != 0)
+//    result = x / y;
+//else
+//  prinf("Error: y is equal to 0\n");
+
+//the indentation suggests the else belongs to the outer if statement, but
+//   C follows the rule that an else clause belongs to the nearest if statement
+//to make the else clause part of the outer if statement, enclose the inner if
+//   statement in braces
+
+//if (y != 0) {
+//  if (x != 0)
+//    result = x / y;
+//} else
+//    printf("Error: y is equal to 0\n");
+
+//                    CONDITIONAL EXPRESSIONS
+
+//if statements allow a program to perform one of two actions depending on the
+//   value of a condition
+//C also provides an operator that allows an expression to produce one of two
+//   values depending on the value of a conditional
+//precedence is lower than other operators so far, except assignment operator
+//the conditional operator consists of two symbols (? and :), which must be
+//   used together in the following way:
+
+//expr1 ? expr2 : expr3
+
+//essentially, if expr1, then expr2, else expr3
+//expr1, expr2, and expr3 can be expressions of any type
+//since conditional expressions requires three operands, it can be referred to
+//   as a ternary operator
+//expr1 evaluated first; if its value isn't 0, then expr2 is evaluated, and
+//   its value is the value of the entire conditional expression
+//if expr1 is zero, then the value of expr3 is the value of the conditional
+
+//int i, j ,k;
+//i = 1; j = 2;
+//k = i > j ? i : j;            /* k is now 2 */
+//k = (i >= 0 ? i : 0) + j;     /* k is now 3 */
+
+//i > j ? i : j returns the value of either i or j, whichever is larger
+//since i > j (1 > 2) fails, the value of the conditional, 2, is added to k
+
+//i >= 0 succeeds in the second assignment to k
+//(i >= 0 ? i : 0) has the value 1, which is added to j to produce 3
+//the parentheses are necessary due to precedence
+//conditional expressions can make programs shorter but harder to understand
+
+//if (i > j)
+//  return i;
+//else
+//  return j;               //return i > j ? i : j;
+
+//if (i > j)
+//  printf("%d\n", i);
+//else
+//  printf("%d\n", j);      //printf("%d\n", i > j ? i : j);
+
+//                    BOOLEAN VALUES IN C89
 
