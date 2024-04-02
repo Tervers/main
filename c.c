@@ -1638,4 +1638,22 @@ else
 
 the following switch statement is equivalent to our cascaded if:
 
-switch (grade)
+switch (grade) {
+   case 4:  printf("Excellent");
+	    break;
+   case 3:  printf("Good");
+	    break;
+   case 2:  printf("Average");
+	    break;
+   case 1:  printf("Poor");
+	    break;
+   case 0;  printf("Failing");
+	    break;
+   default: printf("Illegal Grade");
+	    break;
+}
+
+when executed, the value of grade is tested against 4, 3, 2, 1, and 0. if it
+   matches 4, the message Excellent is printed, then the break statement
+   transfers control to the statement following the switch statement
+if the value of grade does not match any choice, then the default case applies
