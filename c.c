@@ -1721,3 +1721,9 @@ if default is missing and the value of the controlling expression does not
     switch
 
                     THE ROLE OF THE break STATEMENT
+
+the break statement allows the program to exit the switch statement and
+   pass control onto the next statement after the switch
+we need a break statement because the switch statement is a form of computed
+   jump
+when the controlling expr is evaluated, control
