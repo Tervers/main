@@ -1657,3 +1657,67 @@ when executed, the value of grade is tested against 4, 3, 2, 1, and 0. if it
    matches 4, the message Excellent is printed, then the break statement
    transfers control to the statement following the switch statement
 if the value of grade does not match any choice, then the default case applies
+
+switch statements are often easier to read than cascaded if statements
+switch statements are often faster than if statements, especially when there
+   are more than a few cases
+common switch format:
+
+switch ( expression ) {
+   case constant-expression :  statements
+   ...
+   case constant-expression :  statements
+   default : statements
+}
+
+the word switch must be followed by an integer expression in parentheses
+characters are treated as integers in C, so they can be tested in switch
+   statements; floating-point numbers and strings do not qualify
+
+each case begins with a label of the form:
+    case constant-expression :
+constant expressions are similar to ordinary expressions except it cannot
+   contain variables or function calls
+5 is a constant expr. 5 + 10 is a constant expr. n + 10 is not a constant expr,
+   unless n is a macro that represents a constant
+the constant expr in a case label must evaluate to an integer or character
+
+after each case label comes any number of statements
+no braces are required around the statements
+the last statement in each group is normally break
+
+duplicate case labels are not allowed
+case order does not matter, even for default
+only one constant expression may follow the word case
+several case labels may precede the same group of statements:
+
+switch (grade) {
+   case 4:
+   case 3:
+   case 2:
+   case 1:  printf("Passing");
+            break;
+   case 0:  printf("Failing");
+            break;
+   default: printf("Illegal grade");
+            break;
+}
+
+to save space, you can put several case labels on the same line:
+
+switch (grade) {
+   case 4: case 3: case 2: case 1:
+            printf("Passing");
+            break;
+   case 0:  printf("Failing");
+            break;
+   default: printf("Illegal grade");
+            break;
+}
+
+a switch statements is not required to have a default case
+if default is missing and the value of the controlling expression does not
+    match any case label, control simply passes to the next statement after the
+    switch
+
+                    THE ROLE OF THE break STATEMENT
