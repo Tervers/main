@@ -71,10 +71,10 @@ int main(void)
 a preprocessor first edits a program before the program  is compiled
 directives are commands intended for the preprocessor
 #include <stdio.h> says that information inside stdio.h should be included into
-   the program before compilation
+    the program before compilation
 headers (.h) contain information about some part of the standard library
 C has no built-in read and write commands, functions in the standard library
-   supply these (printf)
+    supply these (printf)
 directives always begin with a #
 directives are one line long and the line ends with no special marker
 
@@ -84,9 +84,9 @@ in C, a function is a series of statements that have been given a name
 there are also functions provided by the C language called library functions
 some functions compute a value; some don't
 a function that computes a value uses the return statement to specify what
-   value it returns
+    value it returns
 'main' function is mandatory, it gets called automatically when program is
-   executed
+    executed
 
 int main(void)
 return 0;
@@ -95,7 +95,7 @@ int indicates main function returns an integer value
 main returns a status code that is given to the OS when the program ends
 void indicates main has no arguments
 return 0 causes main to terminate (which ends the program) and indicates main
-   to return a value of 0
+    to return a value of 0
 
                     STATEMENTS
 
@@ -271,7 +271,7 @@ names of functions in the standard library contain only lower-case letters
 /*   CHAPTER                   2.8                   LAYOUT OF A C PROGRAM   */
 
 tokens are groups of characters that can't be split up without changing their
-   meaning
+    meaning
 
 printf("Height: %d\n", height);   /* contains 7 'TOKENS' */
 
@@ -321,7 +321,7 @@ Work expands so as to fill the time
 available for its completion.
 
 3a - Condense 'dweight.c' by replacing assignments with initializers and by
-   removing the weight variable // with an inline printf expression.
+    removing the weight variable // with an inline printf expression.
 
 printf("Weight: %d\n", (volume + 165) / 166);
 
@@ -488,14 +488,14 @@ Double backslash   \\
 /*   CHAPTER                     3.2                    THE scanf FUNCTION   */
 
 scanf handles Conversion Specifications, white-space characters, and
-   'ordinary' characters differently
+    'ordinary' characters differently
 scanf attempts to match input characters with conversion specifications
 scanf conversions are essentially the same as printf
 scanf READs a character when it matches format
 scanf often only contains conversion specifications
 starting from the left, scanf tries to find each conversion specification with
-   an item of appropriate type from input data, skipping blank space when
-   necessary
+    an item of appropriate type from input data, skipping blank space when
+    necessary
 STOPs reading when encountering a character that can't possibly match
 PUTs BACK if the item was read successfully
 scanf RETURNs if item was not read successfully
@@ -508,31 +508,31 @@ scanf("%d%d%f%f", &i, &j, &x, &y);
 
 is equivalent to 1-20.3-4.0e3
 scanf ignores 'white-space characters': space, horizontal and vertical tab,
-   form-feed, new-line
+    form-feed, new-line
 scanf read integer order = digit, +, -, digits until nondigit
 scanf read float order = + or -, digits possibly with ., e, + or -, digits
-   until nondigit
+    until nondigit
 %e, %f, %g are interchangeable with scanf
 1|-20|0.3|-4.0e3
 scanf will process characters in a format string differently depending if its a
-   white-space character or other character
+    white-space character or other character
 with one or more consecutive white-spaces, scanf repeatedly reads until non-
-   white-space character encountered
+    white-space character encountered
 
                     ORDINARY CHARACTERS IN FORMAT STRINGS
 
 white-space chars read from input until non-white-space char, which is put back
 number of white-space chars in format string irrelevant; it will match ANY
-   number of white-space chars, including NONE
+    number of white-space chars, including NONE
 if non-white-space chars match, scanf continues
 if no match, scanf aborts
 
 suppose a format string is "%d/%d"
 if user input is ' 5/ 96', scanf skips first space, matches %d with 5, matches
-   / with /, skips a space looking for integer, then matches %d with 96
+    / with /, skips a space looking for integer, then matches %d with 96
 if user input is ' 5 / 96' instead, scanf skips one space, matches %d with 5,
-   attempts to match a space with /. There is no match, scanf puts the space
-   back; ' / 96' remain to be read by next scanf.
+    attempts to match a space with /. There is no match, scanf puts the space
+    back; ' / 96' remain to be read by next scanf.
 allow spaces after first number by adding a space into string: "%d /%d"
 
                     addfrac.c - ADDS TWO FRACTIONS
@@ -782,13 +782,13 @@ the / operator will truncate results if both operands are integers
 using 0 as right operand of / or % causes undefined behavior
 
 in C89, if either operand is negative, division results can be rounded up or
-   down, depending on implementation
+    down, depending on implementation
 (-9 / 7) may yield -1 or -2 depending on cpu
 in C99, division is always truncated towards 0
 the value of i % j has the same unary operator as i
 (-9 % 7) is -2; (9 % -7) is 2
 implementation-defined behavior arises from purposely unspecified C language
-   details (the idea is to match the way hardware behaves)
+    details (the idea is to match the way hardware behaves)
 
                     OPRATOR PRECEDENCE AND ASSOCIATIVITY
 
@@ -858,7 +858,7 @@ j = i;            j is now 5
 
 k = 10 * i + j;   k is now 55
 if v and e don't share the same type, then e is converted to the type of v
-   as the assignment takes place:
+    as the assignment takes place:
 
 int i;
 float f;
@@ -901,7 +901,7 @@ thus any evaluation of v is multiplied
 
 a[i++] += 2;     i is incremented once
 a[i++] = a[i++] + 2;     i is modified as well as used elsewhere in the
-   statement, so the effect of executing the statement is undefined
+    statement, so the effect of executing the statement is undefined
 
 i *= j + k isn't the same as i = i * j + k due to operator precedence
 v may also have a side effect
@@ -935,7 +935,7 @@ printf("i is %d\n", i);       /* prints "i is 2" */
 
 ++i increment immediately, i++ increment later
 C standard doesn't specify how much later, but its safe to assume its before
-   the next statement is executed
+    the next statement is executed
 
 i = 1;
 j = 2;
@@ -960,8 +960,8 @@ a = b += (((c++) - d) + ((--e) / (-f)))         additive
                     ORDER OF SUBEXPRESSION EVALUATION
 
 C does not define the order in which subexpressions are evaluated (the
-   exceptions being 'logical and', 'logical or', conditional, and comma
-   operators)
+    exceptions being 'logical and', 'logical or', conditional, and comma
+    operators)
 
 (a + b) * (c - d)
 
@@ -983,7 +983,7 @@ c = b - a;
 the value of c is now always 6
 
 = (assignment), ++ (increment) and -- (decrement) are the only operators that
-   modify their operands
+    modify their operands
 
 i = 2;
 j = i * i++;
@@ -1000,11 +1000,11 @@ any expression can be turned into a statement by appending a ;
 ++i;     statement
 
 when ++i; is executed, i is first incremented, then the new i value is fetched
-   (as though to be used in an enclosing expression)
+    (as though to be used in an enclosing expression)
 ++i; is not part of a larger expression here, so it becomes discarded (the
-   change to i is permanent)
+    change to i is permanent)
 since its value is discarded, there is little use in using an expression as a
-   statement unless the expression has a side effect
+    statement unless the expression has a side effect
 
 i = 1;        1 is stored in i, then new value of i is fetched but not used
 i--;          value of i is fetched but not used, though i is decremented after
@@ -1022,7 +1022,7 @@ rvalues are essentially expressions
 
 "discarding a value"
 by definition, expressions represent a value; if the expression is i = 5, then
-   evaluating the expression i + 1 produces the value 6
+    evaluating the expression i + 1 produces the value 6
 turn the expression i + 1 into a statement
 i + 1; when this statement is executed, the value of i + 1 is computed
 since this computed value was not saved or used in some way, it is lost
@@ -1302,10 +1302,10 @@ int main(void)
 so far, we have used the return statement and expression statements
 most other statements fall into three categories:
 selection statements 'if' and 'switch' allow programs to select a particular
-   execution path from a set of alternatives
+    execution path from a set of alternatives
 iteration statements 'while' 'do' and 'for' support iteration (looping)
 jump statements 'break' 'continue' and 'goto' cause an unconditional jump to
-   some other place in the program
+    some other place in the program
 the only other statements are compound statements and null statements
 
 /*   CHAPTER                     5.1                   LOGICAL EXPRESSIONS   */
@@ -1324,7 +1324,7 @@ lower precedence than arithmetic operators
 i + j < k - 1 means ((i + j) < (k - 1))
 
 i < j < k means ((i < j) < k), but i < j will produce a 0 or 1, which leads to
-   (0 < k) or (1 < k)
+    (0 < k) or (1 < k)
 the proper expression would be i < j && j < k
 
                     EQUALITY OPERATORS
@@ -1336,7 +1336,7 @@ lower precedence than relational operators
 i < j == j < k means (i < j) == (j < k)
 which is true if i < j and j < k are both true or both false
 (i >= j) + (i == j) is either 0, 1, or 2 depending on whether i is less than,
-   greater than, or equal to j
+    greater than, or equal to j
 
                     LOGICAL OPERATORS
 
@@ -1355,20 +1355,20 @@ in all other cases, these operators produce 0
 && and || short-circuit evaluation of their operands
 first left operand is evaluated, then right operand
 if the value of the expression can be deduced from the left operand alone, then
-   the right operand isn't evaluated
+    the right operand isn't evaluated
 (i != 0) && (j / i > 0)
 (i != 0) is evaluated first. if i is not equal to 0, then we move on to
-   (j / i > 0). if i is equal to 0, then the entire expression must be false
+    (j / i > 0). if i is equal to 0, then the entire expression must be false
 side effects from operands will not occur if short-circuiting discards an expr
 
 /*   CHAPTER                      5.2                     THE if STATEMENT   */
 
 the if statement can choose between two alternatives by testing the value of an
-   expression
+    expression
 if ( expression ) statement
 parenthesis required around expression
 when if is executed, the expression is evaluated; if non-zero, then the
-   statement will be executed
+    statement will be executed
 
 if (line_num == MAX_LINES)
   line_num = 0;
@@ -1404,9 +1404,9 @@ else
 
 there are no restrictions on what statements can appear in an if statement
 extra braces, like parentheses, can increase readability and modability, while
-   possibly avoiding the compiler not understanding the program
+    possibly avoiding the compiler not understanding the program
 these if statements find the largest of the numbers in i, j, k and store that
-   value in max
+    value in max
 
 if (i > j)		  |  	if (i > j) {	  | 	if (i > j) {
   if (i > k)	  | 	  if (i > k)	  | 	  if (i > k) {
@@ -1425,9 +1425,9 @@ else			  |     } else {	      | 	  }
                     CASCADED if STATEMENTS
 
 we will often need to test a series of conditions, stopping as soon as one of
-   them is true
+    them is true
 the following cascaded if statements tests whether n is less than, equal to, or
-   greater than 0:
+    greater than 0:
 
 if (n < 0)
   printf("n is less than 0\n");
@@ -1447,15 +1447,15 @@ else
   statement
 
 the above way of indenting cascaded if statements avoids the problem of
-   excessive indentation when the number of tests is large
+    excessive indentation when the number of tests is large
 cascaded if statements are not specifically a new kind of statement; they are
-   just ordinary if statements that happen to have another if statement as its
-   else clause
+    just ordinary if statements that happen to have another if statement as its
+    else clause
 
                     CALCULATING A BROKER'S COMMISSION
 
 the heart of the program is a cascaded if statement that determines which
-   range the trade falls into.
+    range the trade falls into.
 
                     broker.c - CALCULATES A BROKER'S COMMISSION
 
@@ -1500,9 +1500,9 @@ else
   prinf("Error: y is equal to 0\n");
 
 the indentation suggests the else belongs to the outer if statement, but C
-   follows the rule that an else clause belongs to the nearest if statement
+    follows the rule that an else clause belongs to the nearest if statement
 to make the else clause part of the outer if statement, enclose the inner if
-   statement in braces
+    statement in braces
 
 if (y != 0) {
   if (x != 0)
@@ -1513,21 +1513,21 @@ if (y != 0) {
                     CONDITIONAL EXPRESSIONS
 
 if statements allow a program to perform one of two actions depending on the
-   value of a condition
+    value of a condition
 C also provides an operator that allows an expression to produce one of two
-   values depending on the value of a conditional
+    values depending on the value of a conditional
 precedence is lower than other operators so far, except assignment operator
 the conditional operator consists of two symbols (? and :), which must be used
-   together in the following way:
+    together in the following way:
 
 expr1 ? expr2 : expr3
 
 essentially, if expr1, then expr2, else expr3
 expr1, expr2, and expr3 can be expressions of any type
 since conditional expressions requires three operands, it can be referred to as
-   a ternary operator
+    a ternary operator
 expr1 evaluated first; if its value isn't 0, then expr2 is evaluated, and its
-   value is the value of the entire conditional expression
+    value is the value of the entire conditional expression
 if expr1 is zero, then the value of expr3 is the value of the conditional
 
 int i, j ,k;
@@ -1564,7 +1564,7 @@ flag = 0;
 flag = 1;
 
 its not obvious that flag should only be assigned boolean values, or that 0 and
-   1 represent false and true
+    1 represent false and true
 
 #define TRUE 1
 #define FALSE 0
@@ -1594,17 +1594,17 @@ _Bool flag;
 _Bool is an unsigned integer type
 a _Bool variable can only be assigned 0 or 1
 in general, a non-zero value stored into a _Bool variable will cause the
-   variable to be assigned 1:
+    variable to be assigned 1:
 
 flag = 5;     /* flag is assigned 1 */
 
 its legal (but not advisable) to perform arithmetic on _Bool variables; also
-   legal to print a _Bool variable, and they can be tested in if statements
+    legal to print a _Bool variable, and they can be tested in if statements
 
 if (flag)     /* tests if flag is 1 */
 
 C99 also provides the stdbool.h header, which provides a macro, bool, that
-   stands for _Bool
+    stands for _Bool
 
 
 #include stdbool.h
@@ -1620,7 +1620,7 @@ flag = true;
 /*   CHAPTER                    5.3                   THE switch STATEMENT   */
 
 we'll often need to compare an expression against a series of values to see
-   which one it currently matches
+    which one it currently matches
 for example, this cascaded if statement:
 
 if (grade == 4)
@@ -1654,13 +1654,13 @@ switch (grade) {
 }
 
 when executed, the value of grade is tested against 4, 3, 2, 1, and 0. if it
-   matches 4, the message Excellent is printed, then the break statement
-   transfers control to the statement following the switch statement
+    matches 4, the message Excellent is printed, then the break statement
+    transfers control to the statement following the switch statement
 if the value of grade does not match any choice, then the default case applies
 
 switch statements are often easier to read than cascaded if statements
 switch statements are often faster than if statements, especially when there
-   are more than a few cases
+    are more than a few cases
 common switch format:
 
 switch ( expression ) {
@@ -1672,14 +1672,14 @@ switch ( expression ) {
 
 the word switch must be followed by an integer expression in parentheses
 characters are treated as integers in C, so they can be tested in switch
-   statements; floating-point numbers and strings do not qualify
+    statements; floating-point numbers and strings do not qualify
 
 each case begins with a label of the form:
     case constant-expression :
 constant expressions are similar to ordinary expressions except it cannot
-   contain variables or function calls
+    contain variables or function calls
 5 is a constant expr. 5 + 10 is a constant expr. n + 10 is not a constant expr,
-   unless n is a macro that represents a constant
+    unless n is a macro that represents a constant
 the constant expr in a case label must evaluate to an integer or character
 
 after each case label comes any number of statements
@@ -1722,8 +1722,57 @@ if default is missing and the value of the controlling expression does not
 
                     THE ROLE OF THE break STATEMENT
 
-the break statement allows the program to exit the switch statement and
-   pass control onto the next statement after the switch
+the break statement allows the program to exit the switch statement and pass
+    control onto the next statement after the switch
 we need a break statement because the switch statement is a form of computed
-   jump
-when the controlling expr is evaluated, control
+    jump
+when the controlling expr is evaluated, control jumps to the case label
+    matching the value of the switch expr
+case labels are just markers indicating a position within switches
+when the last statement in the case has been executed, control "falls through"
+    to the first statement of the next case, ignoring the case label
+to prevent control flowing from one case into the next, a break (or some other
+    jump statement) is necessary as the last statement in a case
+
+switch (grade) {
+   case 4:  printf("Excellent");
+   case 3:  printf("Good");
+   case 2:  printf("Average");
+   case 1:  printf("Poor");
+   case 0:  printf("Failing");
+   default: printf("Illegal grade");
+}
+
+if the value of grade is 3, the message printed is:
+
+GoodAveragePoorFailingIllegal grade
+
+deliberately falling through one case into the next is rare, so it is a good
+    idea to point out any purposeful omission of break
+
+switch (grade) {
+    case 4: case 3: case 2: case 1:
+            num_passing++;
+            /* FALL THROUGH */
+    case 0: total_grades++;
+            break;
+}
+
+without the comment, someone might try to "fix the error" later by adding an
+    unwanted break statement
+although the last case in a switch statement never needs a break statement, it
+    is common practice to put one anyways to prevent a "missing break" problem
+
+                    PRINT A DATE IN LEGAL FORM
+
+#include <stdio.h>
+
+int main(void)
+{
+    int month, day, year;
+
+    printf("Enter date (mm/dd/yy): ");
+    scanf("%d /%d /%d", &month, &day, &year);
+
+    printf("Dated this %d")
+}
