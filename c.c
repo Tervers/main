@@ -1774,5 +1774,7 @@ int main(void)
     printf("Enter date (mm/dd/yy): ");
     scanf("%d /%d /%d", &month, &day, &year);
 
-    printf("Dated this %d")
+    printf("Dated this %d", day);
+    switch (day) {
+	    case 1: case 21: case 31:
 }
