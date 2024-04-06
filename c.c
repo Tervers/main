@@ -1631,7 +1631,7 @@ flag = true;
 
 /*   CHAPTER                    5.3                   THE switch STATEMENT   */
 
-we'll often need to compare an expression against a series of values to see
+we will often need to compare an expression against a series of values to see
     which one it currently matches
 for example, this cascaded if statement:
 
@@ -1688,7 +1688,7 @@ characters are treated as integers in C, so they can be tested in switch
 
 each case begins with a label of the form:
     case constant-expression :
-constant expressions are similar to ordinary expressions except it cannot
+constant expressions are similar to ordinary expressions, except it cannot
     contain variables or function calls
 5 is a constant expr. 5 + 10 is a constant expr. n + 10 isnt a constant expr,
     unless n is a macro that represents a constant
@@ -1904,17 +1904,54 @@ onetwo, since there are no break statements
      statement will display the message "Area code not recognized".
 
 switch (area_code) {
-    case 229:  printf("Albany");                    break;
-    case 404:  printf("Atlanta");                   break;
-    case 470:  printf("Atlanta");                   break;
-    case 478:  printf("Macon");                     break;
-    case 678:  printf("Atlanta");                   break;
-    case 706:  printf("Columbus");                  break;
-    case 762:  printf("Columbus");                  break;
-    case 770:  printf("Atlanta");                   break;
-    case 912:  printf("Savannah");                  break;
-    default:   printf("Area code not recognized");  break;
+    case 229: printf("Albany\n");
+        break;
+    case 404: case 470: case 678: case 770: printf("Atlanta\n");
+        break;
+    case 478: printf("Macon\n");
+        break;
+    case 706: case 762: printf("Columbus\n");
+        break;
+    case 912: printf("Savannah\n");
+        break;
+    default:   printf("Area code not recognized\n");  break;
 }
 
                     PROGRAMMING PROJECTS
+
+1. Write a program that calculates how many digits a number contains:
+
+#include <stdio.h>
+
+int main(void)
+{
+    int n;  //n represents number input by user
+
+    printf("Enter a number: ");
+    scanf("%d", &n);
+
+    if (n < 0)
+    {
+        n = -n;
+        printf("Removing the negative...\n");
+    }
+
+    if (n >= 0 && n <= 9)
+        printf("The number %d has 1 digit", n);
+    else if (n >= 10 && n <= 99)
+        printf("The number %d has 2 digit", n);
+    else if (n >= 100 && n <= 999)
+        printf("The number %d has 3 digit", n);
+    else if (n >= 1000 && n <= 9999)
+        printf("The number %d has 4 digit", n);
+    else
+        printf("Number out of range!");
+
+return 0;
+
+}
+
+
+2. Write a program that asks the user for a 24-hour time, then displays the
+     time in 12-hour form:
 
