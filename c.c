@@ -765,7 +765,8 @@ logical operators; x < 0 && x > -10;     //&& possibly wrong
 arithmetic operators come in two forms; unary and binary
 
 unary operators require one operand (u-nary)
-+ = unary plus; - = unary minus
++ unary plus
+- unary minus
 unary + / - used to emphasize positive / negative numbers
 
 binary operators require two operands (bi-nary)
@@ -895,7 +896,7 @@ v *= e   multiplies v by e, storing the result in v
 v /= e   divides v by e, storing the result in v
 v %= e   computes remainder of v divided by e, storing the result in v
 
-v += e is not exactly equivalent to v = v + e
+v += e isnt exactly equivalent to v = v + e
 v += e evaluates v once; v = v + e evaluates v twice
 thus any evaluation of v is multiplied
 
@@ -1001,7 +1002,7 @@ any expression can be turned into a statement by appending a ;
 
 when ++i; is executed, i is first incremented, then the new i value is fetched
     (as though to be used in an enclosing expression)
-++i; is not part of a larger expression here, so it becomes discarded (the
+++i; isnt part of a larger expression here, so it becomes discarded (the
     change to i is permanent)
 since its value is discarded, there is little use in using an expression as a
     statement unless the expression has a side effect
@@ -1315,21 +1316,22 @@ C statements often test the value of an expression to see if its true or false
                     RELATIONAL OPERATORS
 <, >, <=, => are relational operators
 a comparison such as i < j will yield an integer: 0 (false) or 1 (true)
-10 < 11 is 1; 11 < 10 is 0
+10 < 11 is 1
+11 < 10 is 0
 relational operators can compare numbers of mixed type
-1 < 2.5 is 1; 5.6 < 4 is 0
-
+1 < 2.5 is 1
+5.6 < 4 is 0
 left associative
 lower precedence than arithmetic operators
 i + j < k - 1 means ((i + j) < (k - 1))
-
 i < j < k means ((i < j) < k), but i < j will produce a 0 or 1, which leads to
     (0 < k) or (1 < k)
 the proper expression would be i < j && j < k
 
                     EQUALITY OPERATORS
 
-== equal to; != not equal to
+== equal to
+!= not equal to
 produce 0 or 1 as a result
 left associative
 lower precedence than relational operators
@@ -1340,7 +1342,9 @@ which is true if i < j and j < k are both true or both false
 
                     LOGICAL OPERATORS
 
-! logical negation (unary); && logical AND (binary); || logical OR (binary)
+! logical negation (unary)
+&& logical AND (binary)
+|| logical OR (binary)
 ! same precedence as unary + -
 ! right associative
 && || lower precedence than relational and equality operators
@@ -1357,7 +1361,7 @@ first left operand is evaluated, then right operand
 if the value of the expression can be deduced from the left operand alone, then
     the right operand isn't evaluated
 (i != 0) && (j / i > 0)
-(i != 0) is evaluated first. if i is not equal to 0, then we move on to
+(i != 0) is evaluated first. if i isnt equal to 0, then we move on to
     (j / i > 0). if i is equal to 0, then the entire expression must be false
 side effects from operands will not occur if short-circuiting discards an expr
 
@@ -1366,7 +1370,7 @@ side effects from operands will not occur if short-circuiting discards an expr
 the if statement can choose between two alternatives by testing the value of an
     expression
 if ( expression ) statement
-parenthesis required around expression
+parentheses required around expression
 when if is executed, the expression is evaluated; if non-zero, then the
     statement will be executed
 
@@ -1375,7 +1379,6 @@ if (line_num == MAX_LINES)
 
 to test whether a variable falls within range, for example 0 <= i < n...
 if (0 <= i && i < n)
-
 to test whether a variable falls outside range
 if (i < 0 || i >= n)
 
@@ -1388,8 +1391,8 @@ each statements still ends with a ;
 no ; after braces
 
 if (line_num == MAX_LINES) {
-  line_num = 0;		//line_num = 0; page_num++;
-  page_num++;
+  line_num = 0;
+  page_num++;       //line_num = 0; page_num++;
   }
 
                     THE else CLAUSE
@@ -1431,10 +1434,18 @@ the following cascaded if statements tests whether n is less than, equal to, or
 
 if (n < 0)
   printf("n is less than 0\n");
+else
+  if (n == 0)
+    printf("n is equal to 0\n");
+  else
+    printf("n is greater than 0\n");
+
+if (n < 0)
+  printf("n is less than 0\n");
 else if (n == 0)
   printf("n is equal to 0\n");
 else
-printf("n is greater than 0\n");
+  printf("n is greater than 0\n");
 
 if ( expression )
   statement
@@ -1450,7 +1461,7 @@ the above way of indenting cascaded if statements avoids the problem of
     excessive indentation when the number of tests is large
 cascaded if statements are not specifically a new kind of statement; they are
     just ordinary if statements that happen to have another if statement as its
-    else clause
+    else clause; if...else if...else if...else if...else if...
 
                     CALCULATING A BROKER'S COMMISSION
 
@@ -1494,7 +1505,7 @@ int main(void)
 if (y != 0)
   if (x != 0)
     result = x / y;
-else
+else        /* MISLEADING INDENTATION */
   prinf("Error: y is equal to 0\n");
 
 the indentation suggests the else belongs to the outer if statement, but C
@@ -1503,7 +1514,7 @@ to make the else clause part of the outer if statement, enclose the inner if
     statement in braces
 
 if (y != 0) {
-  if (x != 0)
+  if (x != 0)       /* if and if */
     result = x / y;
 } else
     printf("Error: y is equal to 0\n");
@@ -1515,16 +1526,16 @@ if statements allow a program to perform one of two actions depending on the
 C also provides an operator that allows an expression to produce one of two
     values depending on the value of a conditional
 precedence is lower than other operators so far, except assignment operator
-the conditional operator consists of two symbols (? and :), which must be used
+the conditional operator consists of ? and :, which must be used
     together in the following way:
 
-expr1 ? expr2 : expr3
+expr1 ? expr2 : expr3  /* if 1, do 2; otherwise 3 */
 
 essentially, if expr1, then expr2, else expr3
 expr1, expr2, and expr3 can be expressions of any type
 since conditional expressions requires three operands, it can be referred to as
     a ternary operator
-expr1 evaluated first; if its value isn't 0, then expr2 is evaluated, and its
+expr1 evaluated first; if its value isnt 0, then expr2 is evaluated, and its
     value is the value of the entire conditional expression
 if expr1 is zero, then the value of expr3 is the value of the conditional
 
@@ -1604,12 +1615,11 @@ if (flag)     /* tests if flag is 1 */
 C99 also provides the stdbool.h header, which provides a macro, bool, that
     stands for _Bool
 
-
 #include stdbool.h
 
 bool flag;        /* same as _Bool flag; */
 
-stdbool.h also supplies macros name true and false, which stand for 1 and 0
+stdbool.h also supplies macros named true and false, which stand for 1 and 0
 
 flag = false;
 ...
@@ -1676,7 +1686,7 @@ each case begins with a label of the form:
     case constant-expression :
 constant expressions are similar to ordinary expressions except it cannot
     contain variables or function calls
-5 is a constant expr. 5 + 10 is a constant expr. n + 10 is not a constant expr,
+5 is a constant expr. 5 + 10 is a constant expr. n + 10 isnt a constant expr,
     unless n is a macro that represents a constant
 the constant expr in a case label must evaluate to an integer or character
 
@@ -1713,7 +1723,7 @@ switch (grade) {
             break;
 }
 
-a switch statements is not required to have a default case
+a switch statements isnt required to have a default case
 if default is missing and the value of the controlling expression does not
     match any case label, control simply passes to the next statement after the
     switch
@@ -1814,3 +1824,33 @@ if i > 0 is true, the value of the expr will be the value of i after conversion
 a switch statement can contain labels that are not preceded by the word case
 suppose you accidentally misspell the word default as 'defualt', the compiler
     may not detect the error, since it assumes 'defualt' is a ordinary label
+
+                    EXERCISES
+
+1. The following program fragments illustrate the relational and equality
+     operators. Show the output produced by each, assuming that i, j, and k are
+     int variables.
+
+(a) 1
+(b) 1
+(c) 1
+(d) 0
+
+2. The following program fragments illustrate the logical operators. Show the
+     output produced by each, assuming that i, j, and k are int variables.
+
+(a) 1
+(b) 1
+(c) 1
+(d) 1
+
+3. The following program fragments illustrate the short-circuit behavior of
+     logical expressions. Show the output produced by each, assuming that i, j,
+     and k are int variables.
+
+(a) 1
+    3, 5, 5
+(b) 0
+    7, 8, 9
+(c)
+(d)
