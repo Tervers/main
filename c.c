@@ -1123,10 +1123,14 @@ yes, the program would still work, and would produce identical values
 11. Show the output produced by each of the following program fragments. Assume
      that i, j, and k are int variables.
 
-(a) 0; 2
-(b) 4; 11, 6
-(c) 0; 8, 7
-(d) 3; 4, 5, 4
+(a) 0
+    2
+(b) 4
+    11, 6
+(c) 0
+    8, 7
+(d) 3
+    4, 5, 4
 
 12. Show the output produced by each of the following program fragments. Assume
      that i and j are int variables.
@@ -1852,5 +1856,6 @@ suppose you accidentally misspell the word default as 'defualt', the compiler
     3, 5, 5
 (b) 0
     7, 8, 9
-(c)
-(d)
+(c) 1
+    9, 9, 9
+(d) 
