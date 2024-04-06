@@ -1861,6 +1861,60 @@ suppose you accidentally misspell the word default as 'defualt', the compiler
 (d) 1
     2*, 2*, 2*	/* undefined behavior for increments */
 
-4. 
+4. Write a single expression whose value is either -1, 0, or +1, depending on
+     whether i is less than, equal to, or greather than j, respectively.
 
+((i >= j) + (i == j) - 1)
+
+5. Is the following if statement legal? If so, what does it do when n is equal
+     to 0?
+
+its legal, but it wont work as intended
+"1 is between 1 and 10"
+
+6. Is the following if statement legal? If so, what does it do when n is equal
+     to 5?
+
+n == -9
+wont run unless n is -9, in which it will then print "-9 is between 1 and 10"
+
+7. What does the next statement print if i has the value 17? What about -17?
+
+17
+17
+
+8. The following if statement is unnecessarily complicated. Simplify it as much
+     as possible. (Hint: The entire statement can be replaced by a single
+     assignment.)
+
+teenager = age >= 13 && age <= 19;
+
+9. Are the following if statements equivalent? If not, why not?
+
+functionally equivalent
+
+10. What output does the following program fragment produce? (Assume that i is
+     an integer variable.)
+
+onetwo, since there are no break statements
+
+11. Write a switch statement whose controlling expression is the variable
+     area_code. If the value of area_code is in the table, the switch
+     statement will print the corresponding city name. Otherwise, the switch
+     statement will display the message "Area code not recognized".
+
+switch (area_code) {
+    case 229:  printf("Albany");                    break;
+    case 404:  printf("Atlanta");                   break;
+    case 470:  printf("Atlanta");                   break;
+    case 478:  printf("Macon");                     break;
+    case 678:  printf("Atlanta");                   break;
+    case 706:  printf("Columbus");                  break;
+    case 762:  printf("Columbus");                  break;
+    case 770:  printf("Atlanta");                   break;
+    case 912:  printf("Savannah");                  break;
+    default:   printf("Area code not recognized");  break;
+}
+
+                    PROGRAMMING PROJECTS
 
