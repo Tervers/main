@@ -1853,9 +1853,14 @@ suppose you accidentally misspell the word default as 'defualt', the compiler
      and k are int variables.
 
 (a) 1
-    3, 5, 5
+    3, 5*, 5	/* undefined behavior for increments */
 (b) 0
     7, 8, 9
 (c) 1
     9, 9, 9
-(d) 
+(d) 1
+    2*, 2*, 2*	/* undefined behavior for increments */
+
+4. 
+
+
