@@ -1955,3 +1955,13 @@ return 0;
 2. Write a program that asks the user for a 24-hour time, then displays the
      time in 12-hour form:
 
+#include <stdio.h>
+
+int main(void)
+
+	int h12, h24, m;
+
+	printf("Enter a 24-hour time (hh:mm): ");
+	scanf("%d:%d", h24, m);
+
+
