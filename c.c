@@ -1992,7 +1992,7 @@ return 0;
 int main(void)
 {
     int shares;
-    float commission, price, value;
+    float commission, rcommission, price, value;
 
     printf("Enter the number of shares: ");
     scanf("%d", &shares);
@@ -2020,9 +2020,16 @@ int main(void)
 
     printf("Commission: $%.2f\n", commission);
 
-    if (shares < 2000) {
-        commission = ((shares * 0.03f) + 33.00f);
-        printf("Rival broker's commission: $%.2f", commission);
-}
+    if (shares < 2000)
+        rcommission = ((shares * 0.03f) + 33.00f);
+
+    else if (shares >= 2000)
+        rcommission = ((shares * 0.02f) + 33.00f);
+
+        printf("Rival broker's commission: $%.2f", rcommission);
+
+
     return 0;
 }
+
+4.
