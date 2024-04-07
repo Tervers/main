@@ -2032,4 +2032,49 @@ int main(void)
     return 0;
 }
 
-4.
+4. @rite a program that asks a user to enter a wind speed (in knots) and
+	 displays the corresponding Beaufort scale description
+
+#include <stdio.h>
+
+int main(void)
+{
+	int speed;
+
+	printf("Enter a wind speed (in knots): ");
+	scanf("%d", &speed);
+
+	if (speed < 1)
+		printf("Wind force is calm\n");
+	else if (speed == 1 || speed == 2 || speed == 3)
+		printf("Wind force is a light air\n");
+	else if (speed >= 4 && speed <= 27)
+		printf("Wind force is a breeze\n");
+	else if (speed >= 28 && speed <= 47)
+		printf("Wind force is a gale\n");
+	else if (speed >= 48 && speed <= 63)
+		printf("Wind force is a storm\n");
+	else (speed > 63)
+		printf("Wind force is a hurricane\n");
+
+	return 0;
+
+}
+
+5. 
+
+#include <stdio.h>
+
+int main(void)
+
+	int income;
+	float tax;
+
+	printf("Enter income: ");
+	scanf("%d", &income);
+
+	switch (income)
+		case (0 <= 750):
+		printf("Tax due: %.2f\n", tax = (income * 0.01); break;
+
+		case (750 <= 2250):
