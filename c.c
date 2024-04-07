@@ -2100,4 +2100,31 @@ int main(void)
 
 6.
 
+#include <stdio.h>
+
+int main(void)
+{
+    int a, b, c, d, e, f, g, h, i, j, k, l, first_sum, second_sum, total;
+
+    printf("Enter a 12-digit UPC: ");
+    scanf("%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d",
+          &a, &b, &c, &d, &e, &f, &g, &h, &i, &j, &k, &l);
+
+    first_sum = a + c + e + g + i + k;
+    second_sum = b + d + f + h + j;
+    total = (9 - ((3 * first_sum + second_sum) - 1 ) % 10);
+
+
+
+    if (total == l)
+    printf("Valid\n");
+
+    else
+    printf("Invalid\n");
+
+    return 0;
+}
+
+7.
+
 
