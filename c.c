@@ -2066,15 +2066,38 @@ int main(void)
 #include <stdio.h>
 
 int main(void)
-
+{
 	int income;
 	float tax;
 
 	printf("Enter income: ");
 	scanf("%d", &income);
 
-	switch (income)
-		case (0 <= 750):
-		printf("Tax due: %.2f\n", tax = (income * 0.01); break;
+	
+	if (income <= 749)
+	printf("Tax due: %.2f\n", tax = (income * 0.01));
 
-		case (750 <= 2250):
+	else if (income >= 750 && income <= 2249)
+	printf("Tax due: %.2f\n", tax = (7.50f + ((income - 750) * 0.02)));
+
+	else if (income >= 2250 && income <= 3749)
+	printf("Tax due: %.2f\n", tax = (37.50f + ((income - 2250) * 0.02)));
+
+	else if (income >= 3750 && income <= 5249)
+	printf("Tax due: %.2f\n", tax = (82.50f + ((income - 3750) * 0.02)));
+
+	else if (income >= 5250 && income <= 6999)
+	printf("Tax due: %.2f\n", tax = (142.50f + ((income - 5250) * 0.02)));
+
+	else if (income >= 7000)
+	printf("Tax due: %.2f\n", tax = (230.00f + ((income - 7000) * 0.02)));
+
+	else
+		printf("Try again.\n");
+
+	return 0;
+}
+
+6.
+
+
