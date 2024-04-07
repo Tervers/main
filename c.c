@@ -2127,4 +2127,12 @@ int main(void)
 
 7.
 
+#include <stdio.h>
+
+int main(void)
+{
+	int n1, n2, n3, n4, large, small;
+
+	printf("Enter four integers: ");
+	scanf("%d%d%d%d", &n1, &n2, &n3, &n4);
 
