@@ -1959,9 +1959,70 @@ return 0;
 
 int main(void)
 
-	int h12, h24, m;
+{
+
+	int hh, mm;
 
 	printf("Enter a 24-hour time (hh:mm): ");
-	scanf("%d:%d", h24, m);
+	scanf("%d:%d", &hh, &mm);
 
+    if (hh >= 0 && hh <= 11)
+        printf("Equivalent 12-hour time: %2.2d:%2.2d AM\n", hh, mm);
 
+    else if (hh == 12)
+        printf("Equivalent 12-hour time: %2.2d:%2.2d PM\n", hh, mm);
+
+    else if (hh >= 13 && hh <= 24)
+        printf("Equivalent 12-hour time: %2.2d:%2.2d PM\n", (hh - 12), mm);
+
+    else printf("Invalid time.\n");
+
+return 0;
+
+}
+
+3. Modify the broker.c program by making both of the following changes:
+    (a) Ask the user to enter the number of shares and the price per share
+    (b) Add statements that compute the commission charged by a rival broker
+        ($33 plus 3 cents per share for fewer than 2000 shares; $33 plus 2
+        cents per share for 2000 shares or more).
+
+#include <stdio.h>
+
+int main(void)
+{
+    int shares;
+    float commission, price, value;
+
+    printf("Enter the number of shares: ");
+    scanf("%d", &shares);
+
+    printf("Enter the price per share: ");
+    scanf("%f", &price);
+
+    value = (shares * price);
+
+    if (value < 2500.00f)
+        commission = 30.00f + .017f * value;
+    else if (value < 6250.00f)
+        commission = 56.00f + .0066f * value;
+    else if (value < 20000.00f)
+        commission = 76.00f + .0034f * value;
+    else if (value < 50000.00f)
+        commission = 100.00f + .0022f * value;
+    else if (value < 500000.00f)
+        commission = 155.00f + .0011f * value;
+    else
+        commission = 255.00f + .0009f * value;
+
+    if (commission < 39.00f)
+        commission = 39.00f;
+
+    printf("Commission: $%.2f\n", commission);
+
+    if (shares < 2000) {
+        commission = ((shares * 0.03f) + 33.00f);
+        printf("Rival broker's commission: $%.2f", commission);
+}
+    return 0;
+}
