@@ -2061,7 +2061,7 @@ int main(void)
 
 }
 
-5. 
+5.
 
 #include <stdio.h>
 
@@ -2073,7 +2073,7 @@ int main(void)
 	printf("Enter income: ");
 	scanf("%d", &income);
 
-	
+
 	if (income <= 749)
 	printf("Tax due: %.2f\n", tax = (income * 0.01));
 
@@ -2098,13 +2098,15 @@ int main(void)
 	return 0;
 }
 
-6.
+6. Modify the upc.c program so that it checks whether a UPC is valid. The
+     program should also display either VALID or NOT VALID.
 
 #include <stdio.h>
 
 int main(void)
 {
-    int a, b, c, d, e, f, g, h, i, j, k, l, first_sum, second_sum, total;
+    int a, b, c, d, e, f, g, h, i, j, k, l, first_sum;
+    int second_sum, total;
 
     printf("Enter a 12-digit UPC: ");
     scanf("%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d%1d",
@@ -2114,25 +2116,88 @@ int main(void)
     second_sum = b + d + f + h + j;
     total = (9 - ((3 * first_sum + second_sum) - 1 ) % 10);
 
-
-
-    if (total == l)
-    printf("Valid\n");
-
-    else
-    printf("Invalid\n");
+    total == l ? printf("VALID\n") : printf("NOT VALID\n");
 
     return 0;
 }
 
-7.
+7. Write a program that finds the largest and smallest of four integers entered
+     by the user.
 
 #include <stdio.h>
 
 int main(void)
 {
-	int n1, n2, n3, n4, large, small;
+	int i, j, k, l, max1, max2, min1, min2;
 
 	printf("Enter four integers: ");
-	scanf("%d%d%d%d", &n1, &n2, &n3, &n4);
+	scanf("%d%d%d%d", &i, &j, &k, &l);
+
+    if (i >= j){
+        max1 = i;
+        min1 = j;}
+    else{
+        max1 = j;
+        min1 = i;}
+
+    if (k >= l){
+        max2 = k;
+        min2 = l;}
+    else{
+        max2 = l;
+        min2 = k;}
+
+    if (max1 >= max2)
+        printf("Largest: %d\n", max1);
+    else
+        printf("Largest: %d\n", max2);
+
+    if (min1 <= min2)
+        printf("Smallest: %d\n", min1);
+    else
+        printf("Smallest: %d\n", min2);
+
+    return 0;
+}
+
+8. Write a program that asks user to enter a 24-hour time. The program will
+     display the departure and arrival times for the flight whose departure
+     time is closest to the time entered by the user.
+
+#include <stdio.h>
+
+int main(void)
+{
+
+    clunky-ass project
+
+}
+
+9. Write a program that prompts the user to enter two dates and then
+     indicates which date comes earlier on the calendar.
+
+#include <stdio.h>
+
+int main(void)
+{
+    int m1, m2, d1, d2, y1, y2;
+
+    printf("Enter first date (mm/dd/yy): ");
+    scanf("%d/%d/%d", &m1, &d1, &y1);
+
+    printf("Enter second date (mm/dd/yy): ");
+    scanf("%d/%d/%d", &m2, &d2, &y2);
+
+    if (y1 < y2)
+        printf("%2.2d/%2.2d/%2.2d is earlier than %2.2d/%2.2d/%2.2d\n",
+                m1, d1, y1, m2, d2, y2);
+    else
+        printf("%2.2d/%2.2d/%2.2d is earlier than %2.2d/%2.2d/%2.2d\n",
+                m2, d2, y2, m1, d1, y1);
+
+    return 0;
+}
+
+10. Using the switch statement, write a program that converts a numerical grade
+     into a letter grade.
 
