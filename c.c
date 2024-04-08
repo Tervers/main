@@ -2496,7 +2496,16 @@ int main(void)
     return 0;
 }
 
+/*   CHAPTER                     6.3                     THE for STATEMENT   */
 
+the "for" statement is ideal for counting variables, although its versatility
+    lends to other types of loops as well
 
+for ( expr1 ; expr2 ; expr3 ) statement
 
-}
+for (i = 10; i > 0; i--)
+    printf("T minus %d and counting\n", i);
+
+first i is initialized to 10
+then i is tested to see if its greater than 0
+since it is, printf executes, printing "T minus 10 and counting"
