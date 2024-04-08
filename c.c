@@ -2395,7 +2395,7 @@ int main(void)
     int i, n;
 
     printf("This program prints a table of squares.\n");
-    printf("Enter number of enteries in table: ");
+    printf("Enter number of entries in table: ");
     scanf("%d", &n);
 
     i = 1;
@@ -2405,4 +2405,98 @@ int main(void)
 }
 
 return 0;
+}
+
+                            SUMMING A SERIES OF NUMBERS
+
+//This program sums a series of integers.
+//Enter integers (0 to terminate) : 8_23_71_5_0
+//The sum is: 107
+
+#include <stdio.h>
+
+int main(void)
+{
+    int n, sum = 0;
+
+    printf("This program sums a series of integers.\n");
+    printf("Enter integers (0 to terminate) : ");
+
+    scanf("%d", &n);
+    while (n != 0) {
+        sum += n;
+        scanf("%d", &n);
+    }
+    printf("The sum is: %d\n", sum);
+
+    return 0;
+}
+
+n != 0 is tested after a number is read, allowing the loop to terminate as soon
+    as possible
+note the two identical calls of scanf, which is hard to avoid when using while
+    loops
+
+/*   CHAPTER                      6.2                     THE do STATEMENT   */
+
+the "do" statement is similar to while, except that "do" tests its controlling
+    statement after each loop body execution
+
+do statement while ( expression ) ;
+
+the body of a do statement must be one statement (including compound)
+the controlling expression must be enclosed within parentheses
+when a "do" statement is executed, the loop body is executed first
+then the controlling expression is evaluated
+if nonzero, the loop body is executed again and the expr evaluated once more
+do terminates when the controlling expression has the value 0 after the loop
+    body has been executed
+
+i = 10;
+do {
+    printf("T minus %d and counting\n", i);
+    --i;
+} while (i > 0);
+
+its a good idea to use braces in all do statements
+without braces, "do" statements can easily be mistaken for "while" statements
+
+do
+    printf("T minus %d and counting\n", i--);
+while (i > 0);
+
+                            CALCULATING THE NUMBER OF DIGITS IN AN INTEGER
+
+although "while" appears much more often than "do", the latter is useful for
+    loops that must execute at least once
+
+//Enter a nonnegative integer: 60_
+//The number has 2 digit(s).
+
+the strategy of this next program is to divide the users input by 10 repeatedly
+    until it becomes 0
+the number of divisions performed is the number of digits
+
+#include <stdio.h>
+
+int main(void)
+{
+    int digits = 0, n;
+
+    printf("Enter a nonnegative integer: ");
+    scanf("%d", &n);
+
+    do {
+        n /= 10;
+        digits++;
+    }   while (n > 0);
+
+    printf("The number has %d digit(s).\n", digits);
+
+    return 0;
+}
+
+
+
+
 }
