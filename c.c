@@ -2201,3 +2201,35 @@ int main(void)
 10. Using the switch statement, write a program that converts a numerical grade
      into a letter grade.
 
+#include <stdio.h>
+
+int main(void)
+{
+    int d1;
+
+    printf("Enter grade: ");
+    scanf("%d", &d1);
+
+    (d1 > 100 || 0 > d1) ?
+    printf("ERROR: Enter a number between 0 and 100\n") :
+    (d1 /= 10);
+
+    switch (d1) {
+        case 10: case 9:
+                printf("Letter grade: A\n");   break;
+        case 8:
+                printf("Letter grade: B\n");   break;
+        case 7:
+                printf("Letter grade: C\n");   break;
+        case 6:
+                printf("Letter grade: D\n");   break;
+        case 5: case 4: case 3: case 2: case 1: case 0:
+                printf("Letter grade: F\n");   break;
+        }
+
+    return 0;
+}
+
+11. Write a program that asks the user for a two-digit number, then prints the
+     English word for the number.
+
