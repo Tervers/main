@@ -6,7 +6,7 @@
 
 /*   CHAPTER                  2.1                 WRITING A SIMPLE PROGRAM   */
 
-                    pun.c - DISPLAYS A MESSAGE WHEN RUN
+                            pun.c - DISPLAYS A MESSAGE WHEN RUN
 
 /*
 #include <stdio.h>
@@ -30,7 +30,7 @@ return 0 = tells program to return the value 0 to OS when program terminates
 statements end with a ;
 printf = 'print formatted' statement. library function call from stdio.h
 
-                    COMPILING AND LINKING
+                            COMPILING AND LINKING
 
 Preprocessing adds directives (usually handled by compiler)
 ?preprocessing connects header files to source files?
@@ -66,7 +66,7 @@ int main(void)
 }
 */
 
-                    DIRECTIVES
+                            DIRECTIVES
 
 a preprocessor first edits a program before the program  is compiled
 directives are commands intended for the preprocessor
@@ -78,14 +78,14 @@ C has no built-in read and write commands, functions in the standard library
 directives always begin with a #
 directives are one line long and the line ends with no special marker
 
-                    FUNCTIONS
+                            FUNCTIONS
 
 in C, a function is a series of statements that have been given a name
 there are also functions provided by the C language called library functions
-some functions compute a value; some don't
+some functions compute a value; some dont
 a function that computes a value uses the return statement to specify what
     value it returns
-'main' function is mandatory, it gets called automatically when program is
+"main" function is mandatory, it gets called automatically when program is
     executed
 
 int main(void)
@@ -97,7 +97,7 @@ void indicates main has no arguments
 return 0 causes main to terminate (which ends the program) and indicates main
     to return a value of 0
 
-                    STATEMENTS
+                            STATEMENTS
 
 statements are commands to be executed when the program runs
 return is a statement
@@ -111,13 +111,13 @@ statements end with a ; (except compound statements)
 
 /*   CHAPTER                  2.4                 VARIABLES AND ASSIGNMENT   */
 
-                    VARIABLES
+                            VARIABLES
 
 most programs need to perform calculations before producing output
 so they need to store data temporarily during program execution
 variables are storage locations for temporary data
 
-                    TYPES
+                            TYPES
 
 every variable must have a type
 type specifies what kind of data it will hold
@@ -130,7 +130,7 @@ float can store numbers with digits after the decimal point (379.125)
 float arithmetic may be slower than arithmetic on int numbers
 float values are often approximations
 
-                    DECLARATIONS
+                            DECLARATIONS
 
 variables must be declared
 to declare a variable, specify its type, then name it
@@ -148,7 +148,7 @@ int main(void)
 
 in c99, declarations do not have to be placed before statements
 
-                    ASSIGNMENT
+                            ASSIGNMENT
 
 assignment is giving a variable a value
 constants are values assigned to variables
@@ -158,7 +158,7 @@ height = 8;       /* variable = constant */
 length = 10;      /* length   = 10       */
 pi = 3.14f;
 
-                    dweight.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
+                        dweight.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
 
 /*
 #include <stdio.h>
@@ -181,7 +181,7 @@ return 0;
 }
 */
 
-                    INITIALIZATION
+                            INITIALIZATION
 
 a variable that doesn't have a default value is uninitialized
 initialization happens when you give a variable a value during declaration
@@ -191,7 +191,7 @@ height = 10;      /* assignment */
 int height = 10;  /* initialization */
 type variable = initializer
 
-                    dweight2.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
+                        dweight2.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
 
 /*
 #include <stdio.h>
@@ -262,7 +262,7 @@ case-sensitive
 
 times10  get_next_char  _done  currentPage  nameAndAddress  SymbolTable
 
-                    KEYWORDS
+                            KEYWORDS
 
 some words have special significance in C and cannot be used as identifiers
 these keywords are also case-sensitive
@@ -431,7 +431,7 @@ printf displays a format string
 
 printf("string", expr1, expr2, ...)
 
-                    CONVERSION SPECIFICATIONS
+                            CONVERSION SPECIFICATIONS
 
 % = conversion specifications (converts from binary to printed)
 %d converts binary int value to a string of digits
@@ -476,7 +476,7 @@ int main(void)
 }
 */
 
-                    ESCAPE SEQUENCES
+                            ESCAPE SEQUENCES
 
 Alert (bell)   \a
 Backspace   \b
@@ -519,7 +519,7 @@ scanf will process characters in a format string differently depending if its a
 with one or more consecutive white-spaces, scanf repeatedly reads until non-
     white-space character encountered
 
-                    ORDINARY CHARACTERS IN FORMAT STRINGS
+                            ORDINARY CHARACTERS IN FORMAT STRINGS
 
 white-space chars read from input until non-white-space char, which is put back
 number of white-space chars in format string irrelevant; it will match ANY
@@ -535,7 +535,7 @@ if user input is ' 5 / 96' instead, scanf skips one space, matches %d with 5,
     back; ' / 96' remain to be read by next scanf.
 allow spaces after first number by adding a space into string: "%d /%d"
 
-                    addfrac.c - ADDS TWO FRACTIONS
+                            addfrac.c - ADDS TWO FRACTIONS
 
 /*
 #include <stdio.h>
@@ -791,7 +791,7 @@ the value of i % j has the same unary operator as i
 implementation-defined behavior arises from purposely unspecified C language
     details (the idea is to match the way hardware behaves)
 
-                    OPRATOR PRECEDENCE AND ASSOCIATIVITY
+                            OPRATOR PRECEDENCE AND ASSOCIATIVITY
 
 arithmetic operator precedence:
 
@@ -814,7 +814,7 @@ unary arithmetic operators are right associative:
 
    - + i       is equivalent to   -(+i)
 
-                    upc.c - COMPUTES A UNIVERSAL PRODUCT CODE CHECK DIGIT
+                        upc.c - COMPUTES A UNIVERSAL PRODUCT CODE CHECK DIGIT
 
 /*
 #include <stdio.h>
@@ -846,7 +846,7 @@ some older compilers limit maximum value of int variable to 32,767
 
 /*   CHAPTER                    4.2                   ASSIGNMENT OPERATORS   */
 
-                    SIMPLE ASSIGNMENT
+                            SIMPLE ASSIGNMENT
 
 = simple assignment operator
 = can be used to store a variable
@@ -872,7 +872,7 @@ thus the value of i = 72.99f is 72
 most C operators don't modify their operands; = is one that does
 an operator modifying an operand is known as a side effect
 
-                    LVALUES
+                            LVALUES
 
 Most C operators allow operands to be variables, constants, or expressions
 = requires its left operand to be an lvalue
@@ -880,7 +880,7 @@ lvalues represent objects stored in memory
 variables are lvalues
 constants or computational results are not lvalues
 
-                    COMPOUND ASSIGNMENT
+                            COMPOUND ASSIGNMENT
 
 assignments often use their old value to compute their new value
 
@@ -958,7 +958,7 @@ a = b += (c++) - d + ((--e) / (-f))             multiplicative (division)
 a = b += (((c++) - d) + ((--e) / (-f)))         additive
 (a = (b += (((c++) - d) + ((--e) / (-f)))))     assignment
 
-                    ORDER OF SUBEXPRESSION EVALUATION
+                            ORDER OF SUBEXPRESSION EVALUATION
 
 C does not define the order in which subexpressions are evaluated (the
     exceptions being 'logical and', 'logical or', conditional, and comma
@@ -1012,7 +1012,7 @@ i--;          value of i is fetched but not used, though i is decremented after
 i * j - 1;    value of expression is computed then discarded
 i and j are not changed, so previous statement has no effect and no purpose
 
-                    ADDITIONAL NOTES
+                            ADDITIONAL NOTES
 
 an lvalue is an expression on the left side of an assignment
 therefore an rvalue is an expression that can appear on the right side
@@ -1317,7 +1317,7 @@ the only other statements are compound statements and null statements
 
 C statements often test the value of an expression to see if its true or false
 
-                    RELATIONAL OPERATORS
+                            RELATIONAL OPERATORS
 <, >, <=, => are relational operators
 a comparison such as i < j will yield an integer: 0 (false) or 1 (true)
 10 < 11 is 1
@@ -1332,7 +1332,7 @@ i < j < k means ((i < j) < k), but i < j will produce a 0 or 1, which leads to
     (0 < k) or (1 < k)
 the proper expression would be i < j && j < k
 
-                    EQUALITY OPERATORS
+                            EQUALITY OPERATORS
 
 == equal to
 != not equal to
@@ -1344,7 +1344,7 @@ which is true if i < j and j < k are both true or both false
 (i >= j) + (i == j) is either 0, 1, or 2 depending on whether i is less than,
     greater than, or equal to j
 
-                    LOGICAL OPERATORS
+                            LOGICAL OPERATORS
 
 ! logical negation (unary)
 && logical AND (binary)
@@ -1386,7 +1386,7 @@ if (0 <= i && i < n)
 to test whether a variable falls outside range
 if (i < 0 || i >= n)
 
-                    COMPOUND STATEMENTS
+                            COMPOUND STATEMENTS
 
 if ( expression ) { statements }
 braces around compound statements are required
@@ -1399,7 +1399,7 @@ if (line_num == MAX_LINES) {
   page_num++;       //line_num = 0; page_num++;
   }
 
-                    THE else CLAUSE
+                            THE else CLAUSE
 
 if ( expression ) statement else statement
 the statement that follows else is executed if the ( expression ) is 0
@@ -1429,7 +1429,7 @@ else			  |     } else {	      | 	  }
                               			  |       }
                                           |     }
 
-                    CASCADED if STATEMENTS
+                            CASCADED if STATEMENTS
 
 we will often need to test a series of conditions, stopping as soon as one of
     them is true
@@ -1467,12 +1467,12 @@ cascaded if statements are not specifically a new kind of statement; they are
     just ordinary if statements that happen to have another if statement as its
     else clause; if...else if...else if...else if...else if...
 
-                    CALCULATING A BROKER'S COMMISSION
+                            CALCULATING A BROKER'S COMMISSION
 
 the heart of the program is a cascaded if statement that determines which
     range the trade falls into.
 
-                    broker.c - CALCULATES A BROKER'S COMMISSION
+                            broker.c - CALCULATES A BROKER'S COMMISSION
 
 #include <stdio.h>
 
@@ -1504,7 +1504,7 @@ int main(void)
     return 0;
 }
 
-                    THE DANGLING else PROBLEM
+                            THE DANGLING else PROBLEM
 
 if (y != 0)
   if (x != 0)
@@ -1523,7 +1523,7 @@ if (y != 0) {
 } else
     printf("Error: y is equal to 0\n");
 
-                    CONDITIONAL EXPRESSIONS
+                            CONDITIONAL EXPRESSIONS
 
 if statements allow a program to perform one of two actions depending on the
     value of a condition
@@ -1566,7 +1566,7 @@ if (i > j)
 else
   printf("%d\n", j);      //printf("%d\n", i > j ? i : j);
 
-                    BOOLEAN VALUES IN C89
+                            BOOLEAN VALUES IN C89
 
 C89 lacks a boolean type, although there are some workarounds
 
@@ -1598,7 +1598,7 @@ define a macro that can be used as a type
 
 BOOL flag;
 
-                    BOOLEAN VALUES IN C99
+                            BOOLEAN VALUES IN C99
 
 C99 provides the _Bool type
 
@@ -1732,7 +1732,7 @@ if default is missing and the value of the controlling expression does not
     match any case label, control simply passes to the next statement after the
     switch
 
-                    THE ROLE OF THE break STATEMENT
+                            THE ROLE OF THE break STATEMENT
 
 the break statement allows the program to exit the switch statement and pass
     control onto the next statement after the switch
@@ -1775,7 +1775,7 @@ without the comment, someone might try to "fix the error" later by adding an
 although the last case in a switch statement never needs a break statement, it
     is common practice to put one anyways to prevent a "missing break" problem
 
-                    PRINT A DATE IN LEGAL FORM
+                            PRINT A DATE IN LEGAL FORM
 
 #include <stdio.h>
 
@@ -1817,7 +1817,7 @@ int main(void)
     return 0;
 }
 
-                    ADDITIONAL NOTES
+                            ADDITIONAL NOTES
 
 when int and float values are mixed in a conditional expression, the expr has
     type float
@@ -1829,7 +1829,7 @@ a switch statement can contain labels that are not preceded by the word case
 suppose you accidentally misspell the word default as 'defualt', the compiler
     may not detect the error, since it assumes 'defualt' is a ordinary label
 
-                    EXERCISES
+                            EXERCISES
 
 1. The following program fragments illustrate the relational and equality
      operators. Show the output produced by each, assuming that i, j, and k are
@@ -1917,7 +1917,7 @@ switch (area_code) {
     default:   printf("Area code not recognized\n");  break;
 }
 
-                    PROGRAMMING PROJECTS
+                            PROGRAMMING PROJECTS
 
 1. Write a program that calculates how many digits a number contains:
 
@@ -2294,3 +2294,115 @@ int main(void)
 *   CHAPTER                      6                                    LOOPS   *
 ******************************************************************************/
 
+a loop is a statement whose job is to repeatedly execute some other statement
+    (the loop body)
+every loop has a "controlling expression"
+each time the loop body is executed ("iteration"), the controlling expression
+    is evaluated
+if true (not zero) the loop continues
+there are three iteration statements: "while", "do", and "for"
+"while" tests the controlling expressioon before the loop body is executed
+"do" tests the expression after the loop body is executed
+"for" is useful for loops that increment/decrement a counting variable
+there are three other statements used in conjunction with loops
+"break" jumps out of a loop and transfers control to the next statement after
+    the loop
+"continue" skips the rest of a loop iteration
+"goto" jumps to any statement within a function
+null statements can be used to create loops with empty bodies
+
+/*   CHAPTER                    6.1                    THE while STATEMENT   */
+
+while ( expression ) statement
+the expression inside the parentheses is the "controlling expression"
+the statement after the parentheses is the loop body
+
+while (i < n)   /* controlling expression */
+    i = i * 2;  /* loop body */
+
+parentheses are mandatory and nothing goes between the right parenthesis and
+    the loop body
+when a "while" statement is executed, the controlling expression is evaluated
+    first
+if nonzero (true), the loop body is executed and the expression is tested again
+the process contrinues until the controlling expression has the value zero
+
+i = 1;
+while (i < n)
+    i = i * 2;
+n = 10;
+
+i = 1;      i is now 1
+Is i < n?   yes; continue
+i = i * 2;  i is now 2
+Is i < n?   yes; continue
+i = i * 2;  i is now 4
+Is i < n?   yes; continue
+i = i * 2;  i is now 8
+Is i < n?   yes; continue
+i = i * 2;  i is now 16
+Is i < n?   no; exit loop
+
+although the loop body must be a single statement, we can still use braces to
+    create a single compound statement
+
+while (i > 0) {
+    printf("T minus %d and counting\n", i);
+    i--;
+}
+
+first, i is assigned the value 10
+since 10 > 0, loop body executed
+message "T minus 10 and counting" printed
+i decremented
+i > 0 tested again
+9 > 0, ...
+
+if i has a negative or zero value when while first called, the loop wont
+    execute even once
+
+a more concise loop:
+
+while (i > 0)
+    printf("T minus %d and counting\n", i--);
+
+                            INFINITE LOOPS
+
+a "while" statement wont terminate if the controlling expression always has a
+    nonzero value
+
+while (1)
+
+this will execute forever unless its body contains a break, goto, return, or
+    calls a function that causes the program to terminate
+
+                            PRINTING A TABLE OF SQUARES
+
+//This program prints a table of squares.
+//Enter number of entries in the table: _
+//          1           1
+//          2           4
+//          3           9
+//          4           16
+//          5           25
+
+                            square.c - PRINTS A TABLE OF SQUARES USING "WHILE"
+
+#include <stdio.h>
+
+int main(void)
+{
+    int i, n;
+
+    printf("This program prints a table of squares.\n");
+    printf("Enter number of enteries in table: ");
+    scanf("%d", &n);
+
+    i = 1;
+    while (i <=n) {
+        printf("%10d%10d\n", i, i * i);
+        i++;
+}
+
+return 0;
+}
