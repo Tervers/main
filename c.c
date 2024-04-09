@@ -1,4 +1,4 @@
-
+r
 
 /******************************************************************************
 *   CHAPTER                         2                        C FUNDAMENTALS   *
@@ -14,7 +14,7 @@
 int main(void)
 {
 
-    printf("I love \n");
+    printf("I love ");
     printf("you Michelle.\n");
 
     return 0;
@@ -23,7 +23,7 @@ int main(void)
 
 # = directive. include = preprocessor type.
 stdio.h = standard input/output library
-main = program's executable code which represents the main program
+main = programs executable code which represents the main program
 int = variable type. implies main returns an integer / status code
 void = main has no argument
 return 0 = tells program to return the value 0 to OS when program terminates
@@ -2509,3 +2509,99 @@ for (i = 10; i > 0; i--)
 first i is initialized to 10
 then i is tested to see if its greater than 0
 since it is, printf executes, printing "T minus 10 and counting"
+i is decremented
+condition i > 0 is tested again
+the loop body will execute 10 times in all, with i varying from 10 down to 1
+the "for" statement is closely related to "while"
+except for some rare cases, a for loop can always be replaced by an equivalent
+    while loop
+
+expr1;
+while ( expr2 ) {
+    statement
+    expr3;
+}
+
+expr1 is an initialization step that performs only once
+expr2 controls loop termination
+expr3 is an operation to be performed at the end of each loop iteration
+applying this pattern to the previous for loop example:
+
+i = 10;
+while (i > 0) {
+    printf("T minus %d and counting\n", i);
+    i--;
+}
+
+studying the equivalent while statement can highlight the fine points of a for
+    statement
+suppose we replace i-- with --i
+
+for (i = 10; i > 0; --i)
+    printf("T minus %d and counting\n", i);
+
+how does this change affect the loop? looking at the equivalent while loop
+    shows there is no effect
+
+i = 10;
+while (i > 0) {
+    printf("T minus %d and counting\n", i);
+    --i;
+
+since the first and third expressions in a for statement are executed as
+    individual statements, their values are irrelevant (theyre only useful for
+    their side-effects)
+
+                            for STATEMENT IDIOMS
+
+the "for" statement is usually the best choice for loops that count-up or
+    count-down
+
+counting up from 0 to n-1:
+for (i = 0; i < n; i++)
+
+counting up from 1 to n:
+for (i = 1; i <= n; i++)
+
+counting down from n-1 to 0:
+for (i = n - 1; i >= 0; i--)
+
+counting down from n to 1:
+for (i = n; i > 0; i--)
+
+                            OMITTING EXPRESSIONS IN A for STATEMENT
+
+C allows us to omit any or all expressions in a "for" loop
+if the first expression is omitted (expr1), no initialization is performed
+
+i = 10;
+for (; i > 0; --i)
+    printf("T minus %d and counting\n", i);
+
+the two semicolons must be present, even if all expressions have been omitted
+in the above example, i is initialized by a separate assignment before "for"
+if we omit expr3, the loop body is responsible for ensuring the value of expr2
+    eventually becomes false
+
+for (i = 10; i > 0;)
+    printf("T minus %d and counting\n", i--);
+
+when the first and the third expressions are both omitted, the resulting loop
+    is just a "while" statement in disguise
+
+for (; i > 0;)
+    printf("T minus %d and counting\n", i--);
+
+is the same as
+
+while (i > 0)
+    printf("T minus %d and counting\n", i--);
+
+if expr2 is missing, it defaults to a true value, so "for" doesnt terminate
+    (unless stopped in some other fashion)
+for example, heres how you can establish an infinite loop:
+
+for (;;) ...
+
+                            for STATEMENTS IN C99
+
