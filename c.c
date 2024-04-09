@@ -1,14 +1,11 @@
-r
-
 /******************************************************************************
 *   CHAPTER                         2                        C FUNDAMENTALS   *
 ******************************************************************************/
 
-/*   CHAPTER                  2.1                 WRITING A SIMPLE PROGRAM   */
+/***   CHAPTER                2.1                 WRITING A SIMPLE PROGRAM ***/
 
                             pun.c - DISPLAYS A MESSAGE WHEN RUN
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -19,7 +16,6 @@ int main(void)
 
     return 0;
 }
-*/
 
 # = directive. include = preprocessor type.
 stdio.h = standard input/output library
@@ -38,7 +34,7 @@ Compiles human code into machine (object) code
 Links code with library functions
 gcc -o c c.c        // -o = rename a.out to c
 
-/*   CHAPTER            2.2           THE GENERAL FORM OF A SIMPLE PROGRAM   */
+/***   CHAPTER          2.2         THE GENERAL FORM OF A SIMPLE PROGRAM   ***/
 
 #include <stdio.h>
 int main(void)
@@ -51,7 +47,6 @@ directives - editing commands that modifty program prior to compilation
 functions - named blocks of executable code (main)
 statements - commands to be performed when the program runs
 
-/*
 #directives
 
 int main(void)
@@ -64,7 +59,6 @@ int main(void)
 
    return 0;
 }
-*/
 
                             DIRECTIVES
 
@@ -109,7 +103,7 @@ printf("To C, or not to C: that is the question.\n");
 pun.c calls the printf function to display a string on the screen
 statements end with a ; (except compound statements)
 
-/*   CHAPTER                  2.4                 VARIABLES AND ASSIGNMENT   */
+/***   CHAPTER                2.4               VARIABLES AND ASSIGNMENT   ***/
 
                             VARIABLES
 
@@ -160,7 +154,6 @@ pi = 3.14f;
 
                         dweight.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -179,7 +172,6 @@ printf("Dimensional weight (pounds): %d\n", weight);
 
 return 0;
 }
-*/
 
                             INITIALIZATION
 
@@ -193,7 +185,6 @@ type variable = initializer
 
                         dweight2.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -215,9 +206,8 @@ int main(void)
 
    return 0;
 }
-*/
 
-/*   CHAPTER                2.6               DEFINING NAMES FOR CONSTANTS   */
+/***   CHAPTER              2.6             DEFINING NAMES FOR CONSTANTS   ***/
 
 when a program contains constants, ideally they should be given names
 a macro definition is used to name constants
@@ -232,7 +222,6 @@ enclose the expression with parenthesis if it contains operators
 
                     celcius.c - CONVERTS A FAHRENHEIT TEMPERATURE TO CELSIUS
 
-/*
 #include <stdio.h>
 
 #define FREEZING_PT 32.0f
@@ -251,9 +240,8 @@ int main(void)
 
 	return 0;
 }
-*/
 
-/*   CHAPTER                        2.7                        IDENTIFIERS   */
+/***   CHAPTER                      2.7                      IDENTIFIERS   ***/
 
 identifiers are names for variables, functions, macros, and other entities
 may contain letters, digits, and underscores
@@ -268,7 +256,7 @@ some words have special significance in C and cannot be used as identifiers
 these keywords are also case-sensitive
 names of functions in the standard library contain only lower-case letters
 
-/*   CHAPTER                   2.8                   LAYOUT OF A C PROGRAM   */
+/***   CHAPTER                 2.8                 LAYOUT OF A C PROGRAM   ***/
 
 tokens are groups of characters that can't be split up without changing their
     meaning
@@ -284,26 +272,21 @@ entire main() function can be on one line, but difficult to read this way
 indentation can make nesting easier to spot (declarations inside main)
 blank lines can divide a program into logical units
 
-/*
 #include <stdio.h>
 #define FREEZING_PT 32.0f
 #define SCALE_FACTOR (5.0f / 9.0f)
 int main(void){float fahrenheit,celsius;printf("Enter Fahrenheit temperature: ");scanf("%f", &fahrenheit);celsius=(fahrenheit-FREEZING_PT)*SCALE_FACTOR;printf("Celsius equivalent: %.1f\n", celsius);return 0;}
-*/
 
 statements can be divided over any number of lines
 
-/*
-    printf("Dimensional weight (pounds): %d\n",
-           (volume + INCHES_PER_POUND - 1) / INCHES_PER_POUND);
-*/
+printf("Dimensional weight (pounds): %d\n",
+        (volume + INCHES_PER_POUND - 1) / INCHES_PER_POUND);
 
-/*   CHAPTER                          2                          EXERCISES   */
+/***   CHAPTER                        2                        EXERCISES   ***/
 
 2a - Identify the directives and statements in this program:
 2b - What output does the program produce?
 
-/*
 #include <stdio.h>	// include directive
 
 int main(void)
@@ -314,7 +297,6 @@ printf("available for its completion.\n");          // printf statement
 
 return 0;	                                    // return statement
 }
-*/
 
 Parkinson's Law:
 Work expands so as to fill the time
@@ -325,7 +307,6 @@ available for its completion.
 
 printf("Weight: %d\n", (volume + 165) / 166);
 
-/*
 #include <stdio.h>
 
 int main()
@@ -343,9 +324,7 @@ int main()
 
 	return 0;
 }
-*/
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -362,9 +341,7 @@ int main(void)
 
 	return 0;
 }
-*/
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -384,9 +361,7 @@ int main(void)
 
 	return 0;
 }
-*/
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -419,13 +394,12 @@ int main(void)
 
 	return 0;
 }
-*/
 
 /******************************************************************************
 *   CHAPTER                     3                    FORMATTED INPUT/OUTPUT   *
 ******************************************************************************/
 
-/*   CHAPTER                    3.1                    THE printf FUNCTION   */
+/***   CHAPTER                  3.1                  THE printf FUNCTION   ***/
 
 printf displays a format string
 
@@ -456,7 +430,6 @@ g = displays float in either fixed or exponential format depending on number
 
                    tprintf.c - PRINTS INT AND FLOAT VALUES IN VARIOUS FORMATS
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -474,7 +447,6 @@ int main(void)
 
     return 0;
 }
-*/
 
                             ESCAPE SEQUENCES
 
@@ -485,7 +457,7 @@ Horizontal tab   \t
 Double quote   \"
 Double backslash   \\
 
-/*   CHAPTER                     3.2                    THE scanf FUNCTION   */
+/***   CHAPTER                   3.2                  THE scanf FUNCTION   ***/
 
 scanf handles Conversion Specifications, white-space characters, and
     'ordinary' characters differently
@@ -537,7 +509,6 @@ allow spaces after first number by adding a space into string: "%d /%d"
 
                             addfrac.c - ADDS TWO FRACTIONS
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -556,9 +527,8 @@ int main(void)
 
     return 0;
 }
-*/
 
-/*   CHAPTER                          3                          EXERCISES   */
+/***   CHAPTER                        3                        EXERCISES   ***/
 
 1. What output do the following calls of printf produce?
                                    //123456789012       123456789012
@@ -598,11 +568,10 @@ printf("%6.0f", 8.47);
 
 scanf("%d/%d") : scanf("%d /%d")
 
-/*   CHAPTER                     3                    PROGRAMMING PROJECTS   */
+/***   CHAPTER                   3                  PROGRAMMING PROJECTS   ***/
 
 1.
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -616,11 +585,9 @@ int main(void)
 
     return 0;
 }
-*/
 
 2.
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -641,11 +608,9 @@ int main(void)
 
     return 0;
 }
-*/
 
 3.
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -664,11 +629,9 @@ int main(void)
 
 	return 0;
 }
-*/
 
 4.
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -684,11 +647,9 @@ int main(void)
 
 	return 0;
 }
-*/
 
 5.
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -720,11 +681,9 @@ int main(void)
 
     return 0;
 }
-*/
 
 6.
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -740,7 +699,6 @@ int main(void)
 
     return 0;
 }
-*/
 
 /******************************************************************************
 *   CHAPTER                          4                          EXPRESSIONS   *
@@ -760,7 +718,7 @@ arithmetic operators; +, -, *, /
 relational operators; <, >, <=
 logical operators; x < 0 && x > -10;     //&& possibly wrong
 
-/*   CHAPTER                    4.1                   ARITHMETIC OPERATORS   */
+/***   CHAPTER                  4.1                 ARITHMETIC OPERATORS   ***/
 
 arithmetic operators come in two forms; unary and binary
 
@@ -816,7 +774,6 @@ unary arithmetic operators are right associative:
 
                         upc.c - COMPUTES A UNIVERSAL PRODUCT CODE CHECK DIGIT
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -839,12 +796,11 @@ int main(void)
 
     return 0;
 }
-*/
 
 %1d allows you to store a five-digit number as five one-digit numbers
 some older compilers limit maximum value of int variable to 32,767
 
-/*   CHAPTER                    4.2                   ASSIGNMENT OPERATORS   */
+/***   CHAPTER                  4.2                 ASSIGNMENT OPERATORS   ***/
 
                             SIMPLE ASSIGNMENT
 
@@ -910,7 +866,7 @@ compound operators are right-associative
 
 i += j += k;   means   i += (j += k);
 
-/*   CHAPTER             4.3             INCREMENT AND DECREMENT OPERATORS   */
+/***   CHAPTER           4.3           INCREMENT AND DECREMENT OPERATORS   ***/
 
 i = i + 1;
 j = j - 1;
@@ -949,7 +905,7 @@ k = i++ + j++;     k = 3
 postfix ++ -- are higher precedence than unary + - and are left-associative
 prefix ++ -- are same precedence as unary + - and are right-associative
 
-/*   CHAPTER                   4.4                   EXPRESSION EVALUATION   */
+/***   CHAPTER                 4.4                 EXPRESSION EVALUATION   ***/
 
 a = b += c++ - d + --e / -f                     /* precedence */
 a = b += (c++) - d + --e / -f                   postfix increment
@@ -992,7 +948,7 @@ j = i * i++;
 j could be 4 or 6
 this unknown behavior should be avoided at all costs
 
-/*   CHAPTER                   4.5                   EXPRESSION STATEMENTS   */
+/***   CHAPTER                 4.5                 EXPRESSION STATEMENTS   ***/
 
 C has the rule that ANY expression can be used as a statement
 any expression can be turned into a statement by appending a ;
@@ -1030,7 +986,7 @@ since this computed value was not saved or used in some way, it is lost
 even when i = 1; i is assigned the value of 1
 ?lvalue has been modified, and the rvalue has been discarded?
 
-/*   CHAPTER                          4                          EXERCISES   */
+/***   CHAPTER                        4                        EXERCISES   ***/
 
 1. Show the output produced by each of the following program fragments. Assume
      that i, j, and k are int variables.
@@ -1045,7 +1001,6 @@ even when i = 1; i is assigned the value of 1
 
 yes, they have the same value
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -1062,7 +1017,6 @@ int main(void)
 
     return 0;
 }
-*/
 
 3. What is the value of each of the following expressions in C89? (give all
      possible values if an expression may have more than one value)
@@ -1164,12 +1118,11 @@ yes, the program would still work, and would produce identical values
 (c) 1, 2       /* i and j value was never modified */
 (d) 1, 3       /* i value was never modified */
 
-/*   CHAPTER                     4                    PROGRAMMING PROJECTS   */
+/***   CHAPTER                   4                  PROGRAMMING PROJECTS   ***/
 
 1. Write a program that asks the user to enter a two-digit number, then prints
      the number with its digits reversed.
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -1186,11 +1139,9 @@ int main(void)
 
     return 0;
 }
-*/
 
 2. Extend the program in project 1 to handle three-digit numbers.
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -1208,12 +1159,10 @@ int main(void)
 
     return 0;
 }
-*/
 
 3. Rewrite the program in project 2 so that it prints the reversal of a three-
      digit number without using arithmetic to split the number into digits.
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -1227,12 +1176,10 @@ int main(void)
 
     return 0;
 }
-*/
 
 4. Write a program that reads an integer entered by the user and displays it in
      octal (base 8):
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -1252,11 +1199,9 @@ int main(void)
 
     return 0;
 }
-*/
 
 5. Rewrite the upc.c program so that the user enters 11 digits at one time.
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -1275,11 +1220,9 @@ int main(void)
 
     return 0;
 }
-*/
 
 6. Modify upc.c so that it calculates the check digit for an EAN.
 
-/*
 #include <stdio.h>
 
 int main(void)
@@ -1298,7 +1241,6 @@ int main(void)
 
     return 0;
 }
-*/
 
 /******************************************************************************
 *   CHAPTER                      5                     SELECTION STATEMENTS   *
@@ -1313,7 +1255,7 @@ jump statements 'break' 'continue' and 'goto' cause an unconditional jump to
     some other place in the program
 the only other statements are compound statements and null statements
 
-/*   CHAPTER                     5.1                   LOGICAL EXPRESSIONS   */
+/***   CHAPTER                   5.1                 LOGICAL EXPRESSIONS   ***/
 
 C statements often test the value of an expression to see if its true or false
 
@@ -1369,7 +1311,7 @@ if the value of the expression can be deduced from the left operand alone, then
     (j / i > 0). if i is equal to 0, then the entire expression must be false
 side effects from operands will not occur if short-circuiting discards an expr
 
-/*   CHAPTER                      5.2                     THE if STATEMENT   */
+/***   CHAPTER                    5.2                   THE if STATEMENT   ***/
 
 the if statement can choose between two alternatives by testing the value of an
     expression
@@ -1629,7 +1571,7 @@ flag = false;
 ...
 flag = true;
 
-/*   CHAPTER                    5.3                   THE switch STATEMENT   */
+/***   CHAPTER                  5.3                 THE switch STATEMENT   ***/
 
 we will often need to compare an expression against a series of values to see
     which one it currently matches
@@ -2311,7 +2253,7 @@ there are three other statements used in conjunction with loops
 "goto" jumps to any statement within a function
 null statements can be used to create loops with empty bodies
 
-/*   CHAPTER                    6.1                    THE while STATEMENT   */
+/***   CHAPTER                  6.1                  THE while STATEMENT   ***/
 
 while ( expression ) statement
 the expression inside the parentheses is the "controlling expression"
@@ -2437,7 +2379,7 @@ n != 0 is tested after a number is read, allowing the loop to terminate as soon
 note the two identical calls of scanf, which is hard to avoid when using while
     loops
 
-/*   CHAPTER                      6.2                     THE do STATEMENT   */
+/***   CHAPTER                    6.2                   THE do STATEMENT   ***/
 
 the "do" statement is similar to while, except that "do" tests its controlling
     statement after each loop body execution
@@ -2496,7 +2438,7 @@ int main(void)
     return 0;
 }
 
-/*   CHAPTER                     6.3                     THE for STATEMENT   */
+/***   CHAPTER                   6.3                   THE for STATEMENT   ***/
 
 the "for" statement is ideal for counting variables, although its versatility
     lends to other types of loops as well
@@ -2604,4 +2546,77 @@ for example, heres how you can establish an infinite loop:
 for (;;) ...
 
                             for STATEMENTS IN C99
+
+in C99, expr1 in a "for" statement can be replaced by a declaration
+
+for (int i = 0; i < n; i++) ...
+
+i need not have been declared prior to this statement
+but if a declaration of i already exists, this statement creates a new version
+    of i that will be used solely within the loop
+a variable declared by a for statement cant be accessed outside the body of the
+    loop (we say that its not "visible" outside the loop)
+
+for (int i = 0; i < n; i++) {
+    ...
+    printf("%d", i);    /* legal; i is visible inside loop */
+    ...
+}
+printf("%d", i);        /*** WRONG ***/
+
+having a for statement clare its own control variable is often a good idea
+however, if the program needs access to the variable after loop termination,
+    its necessary to use the older form of "for"
+a "for" statement may declare more than one variable
+
+for (int i = 0, j = 0; i < n; i++)
+
+                            THE COMMA OPERATOR
+
+sometimes we might write a "for" statement with two or more initialization
+    expressions or one that increments several variables each time through the
+    loop
+we can use a "comma expression" as the first or third expression in a "for"
+    statement
+
+expr1 , expr2
+
+expr1 and expr2 are any two expressions
+first expr1 is evaluated and its value discarded
+then expr2 is evaulated; its value is the value of the entire expression
+evaluating expr1 should always have a side effect, otherwise expr1 serves no
+    purpose
+
+i = 1, j = 5
+++i, i + j          /* comma expression */
+
+when evaluated, i is first incremented
+then i + j is evaluated, so the value of the expression is 7 (and i is now 2)
+comma operator precedence is less than that of all other operators, so theres
+    no need to add parentheses around ++i and i + j
+left associative
+
+i = 1, j = 2, k = i + j
+((i = 1), (j = 2), (k = i + j))
+
+the comma operator is provided for situations where C requires a single
+    expression, but we would like to have two or more expressions
+essentially this allows us to fuse two expressions into a single expression,
+    similar to compound statements
+the "for" statement is the likely the only place where the comma operator will
+    be used (certain macro definitions may benefit from it)
+instead of writing:
+
+sum = 0;
+for (i = 1; i <= N; i++)
+    sum += i;
+
+we can write
+
+for (sum = 0, i = 1; i <= N; i++)
+    sum += i;
+
+                            PRINTING A TABLE OF SQUARES (REVISITED)
+
+square.c can be improved by converting its "while" loop to a "for" loop:
 
