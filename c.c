@@ -4,7 +4,7 @@
 
 /***   CHAPTER                2.1                 WRITING A SIMPLE PROGRAM ***/
 
-/***                  pun.c - DISPLAYS A MESSAGE WHEN RUN                  ***/
+/***                  pun.c - displays a message when run                  ***/
 
 #include <stdio.h>
 
@@ -152,7 +152,7 @@ height = 8;       /* variable = constant */
 length = 10;      /* length   = 10       */
 pi = 3.14f;
 
-/***         dweight.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX          ***/
+/***         dweight.c - computes the dimensional weight of a box          ***/
 
 #include <stdio.h>
 
@@ -183,7 +183,7 @@ height = 10;      /* assignment */
 int height = 10;  /* initialization */
 type variable = initializer
 
-/***         dweight2.c - COMPUTES THE DIMENSIONAL WEIGHT OF A BOX         ***/
+/***         dweight2.c - computes the dimensional weight of a box         ***/
 
 #include <stdio.h>
 
@@ -220,7 +220,7 @@ enclose the expression with parenthesis if it contains operators
 
 #define RECIPROCAL_OF_PI (1.0f / 3.14159f)
 
-/***       celcius.c - CONVERTS A FAHRENHEIT TEMPERATURE TO CELSIUS        ***/
+/***       celcius.c - converts a fahrenheit temperature to celsius        ***/
 
 #include <stdio.h>
 
@@ -428,7 +428,7 @@ e = exponential float. p = # of digits after decimal. 0 = no decimal
 g = displays float in either fixed or exponential format depending on number
     size. p = maximum # of significant digits. Doesn't show trailing numbers
 
-/***      tprintf.c - PRINTS INT AND FLOAT VALUES IN VARIOUS FORMATS       ***/
+/***      tprintf.c - prints int and float values in various formats       ***/
 
 #include <stdio.h>
 
@@ -507,7 +507,7 @@ if user input is ' 5 / 96' instead, scanf skips one space, matches %d with 5,
     back; ' / 96' remain to be read by next scanf.
 allow spaces after first number by adding a space into string: "%d /%d"
 
-/***                    addfrac.c - ADDS TWO FRACTIONS                     ***/
+/***                    addfrac.c - adds two fractions                     ***/
 
 #include <stdio.h>
 
@@ -772,7 +772,7 @@ unary arithmetic operators are right associative:
 
    - + i       is equivalent to   -(+i)
 
-/***         upc.c - COMPUTES A UNIVERSAL PRODUCT CODE CHECK DIGIT         ***/
+/***         upc.c - computes a universal product code check digit         ***/
 
 #include <stdio.h>
 
@@ -1414,7 +1414,7 @@ cascaded if statements are not specifically a new kind of statement; they are
 the heart of the program is a cascaded if statement that determines which
     range the trade falls into.
 
-/***              broker.c - CALCULATES A BROKER'S COMMISSION              ***/
+/***              broker.c - calculates a broker's commission              ***/
 
 #include <stdio.h>
 
@@ -2328,7 +2328,7 @@ this will execute forever unless its body contains a break, goto, return, or
 //          4           16
 //          5           25
 
-/***          square.c - PRINTS A TABLE OF SQUARES USING "WHILE"           ***/
+/***          square.c - prints a table of squares using "while"           ***/
 
 #include <stdio.h>
 
@@ -2616,7 +2616,7 @@ we can write
 for (sum = 0, i = 1; i <= N; i++)
     sum += i;
 
-/***          square2.c - PRINTING A TABLE OF SQUARES (REVISITED)          ***/
+/***          square2.c - printing a table of squares (revisited)          ***/
 
 square.c can be improved by converting its "while" loop to a "for" loop:
 
@@ -2688,4 +2688,255 @@ for (d = 2; d < n; d++)
         printf("%d is divisible by %d\n", n, d);
     else
         printf("%d is prime\n", n);
+
+break is useful for writing loops in which the exit point is in the middle of
+    the loop rather than the beginning or end
+generic format:
+
+for (;;) {
+    printf("Enter a number (enter 0 to stop): ");
+    scanf("%d", &n);
+    if (n == 0)
+        break;
+    printf("%d cubed is %d\n", n, n * n * n);
+}
+
+a break statement can transfer control out of the *innermost* enclosing "while",
+    "do", "for", or "switch" statement
+when nested, "break" can only escape one level of nesting
+
+while (...) {
+    switch (...) {
+        ...
+        break;
+        ...
+    }
+}
+
+the break transfers control out of the switch, but not out of the while
+
+/***                        THE continue STATEMENT                         ***/
+
+"continue" doesnt really exit a loop
+while "break" transfers control just past the end of a loop, "continue"
+    transfers control to a point just before the end of the loop body
+"continue" is limited to loops (it cannot be used in switch statements)
+
+n = 0;
+sum = 0;
+while (n < 10) {
+    scanf("%d", &i);
+    if (i == 0)
+        continue;
+    sum += i;
+    n++;
+    /* continue jumps to here */
+    }
+
+this loop terminates when 10 nonzero numbers have been read
+whenever the number 0 is read, the "continue" statement is executed, skipping
+    the rest of the loop body, but still remaining in the loop
+if "continue" were not available, the example could be written as:
+
+n = 0;
+sum = 0;
+while (n < 10) {
+    scanf("%d", &i);
+    if (i != 0) {
+        sum += i;
+        n++;
+        }
+    }
+
+/***                          THE goto STATEMENT                           ***/
+
+the "goto" statement is capable of jumping to any statement in a function,
+    provided that the statement has a label
+C99 states goto cannot be used to bypass the declaration of a variable-length
+    array
+a label is just an identifier placed at the beginning of a statement
+
+identifier : statement
+
+a statement may have more than one label
+"goto" statement format:
+
+goto identifier ;
+
+executing the statement goto L; transfers control to the statement that follows
+    the label L, which must be in the same function as the goto statement
+
+for (d = 2; d < n; d++)
+    if (n % d == 0)
+        goto done;
+done:
+if (d < n)
+    printf("%d is divisible by %d\n", n, d);
+else
+    printf("%d is prime\n", n);
+
+break, continue, and return are useful much more often than goto, although goto
+     can still have its uses
+
+while (...) {
+    switch (...) {
+        ...
+        goto loop_done;   /* break wont work here */
+        ...
+    }
+}
+loop_done: ...
+
+"goto" is also useful for exiting from nested loops
+
+/***                         BALANCING A CHECKBOOK                         ***/
+
+many simple interactive programs are menu-based, presenting the user with a
+    list of commands
+once the user selects a command, the program executes the desired action, then
+    prompts the user for another command
+this process continues until the user selects an exit or quit command
+the heart of this program is a loop
+inside the loop will be statements that prompt the user for a command, read the
+    command, then decide what action to take:
+
+for (;;) {
+    prompt user to enter command;
+    read command;
+    execute command;
+}
+
+executing the command will require a switch statement, or cascaded if statement
+
+for (;;) {
+    prompt user to enter command;
+    read command;
+    switch (command) {
+        case command~1 : perform operation~1; break;
+        case command~2 : perform operation~2; break;
+        .
+        .
+        .
+        case command~n : perform operation~n; break
+        default: print error message; break;
+    }
+}
+
+this next program will offer the user a menu of choices:
+clear the account balance, credit money to the account, debit money from the
+    account, display the current balance, and exit the program
+a session of the program will look like:
+
+*** ACME checkbook-balancing program ***
+Commands: 0=clear, 1=credit, 2=debit, 3=balance, 4=exit
+
+Enter command: 1_
+Enter amount of credit: 1042.56_
+Enter command: 2_
+Enter amount of debit: 133.79_
+Enter command: 1_
+Enter amount of credit: 1754.32_
+.
+.
+Current balance: $1145.09
+Enter command: 4_
+
+when the user enter the command 4 (exit), the program needs to exit from the
+    switch statement and the surrounding loop.
+"break" wont help, and we would prefer to not use a "goto" statement
+we will have the program execute a "return" statement, which will cause "main"
+    to return to the operating system
+
+/***                              checking.c                               ***/
+
+#include <stdio.h>
+
+int main(void)
+{
+    int cmd;
+    float balance = 0.0f, credit, debit;
+
+    printf("*** ACME checkbook-balancing program ***\n");
+    printf("Commands: 0=clear, 1=credit, 2=debit, ");
+    printf("3=balance, 4=exit\n\n");
+
+    for (;;) {
+        printf("Enter command: ");
+        scanf("%d", &cmd);
+        switch (cmd) {
+            case 0:
+                balance = 0.0f;
+                break;
+            case 1:
+                printf("Enter amount of credit: ");
+                scanf("%f", &credit);
+                balance += credit;
+                break;
+            case 2:
+                printf("Enter amount of debit: ");
+                scanf("%f", &debit);
+                balance -= debit;
+                break;
+            case 3:
+                printf("Current balance: $%.2f\n", balance);
+                break;
+            case 4:
+                return 0;
+            default:
+                printf("Commands: 0=clear, 1=credit, 2=debit, ");
+                printf("3=balance, 4=exit\n\n");
+                break;
+        }
+    }
+}
+
+note that return is not followed by a break statement, as it can never be
+    executed, and many compilers will issue a warning message
+
+/***   CHAPTER                  6.5                   THE NULL STATEMENT   ***/
+
+a null statement is devoid of any symbols except for the semicolon at the end
+
+i = 0; ; j = 1;
+
+this line contains three statements: an assignment to i, a null statement, and
+    an assignment to j
+the null statement is good for writing loops whose bodies are empty
+
+for (d = 2; d < n; d++)
+    if (n % d == 0)         //prime-finding loop 1
+        break;
+
+for (d = 2; d < n && n % d != 0; d++)       //prime-finding loop 2
+    ;               //empty loop body
+
+first d is initialized, then d < n is tested
+if false, the loop terminates
+otherwise n % d != 0 is tested, and if thats false, the loop terminates
+note that the null statement is placed on a line by itself, otherwise a program
+    may get misread by a human reader:
+
+for (d = 2; d < n && n % d != 0; d++);
+if (d < n)
+    printf("d is divisible by %d\n", n, d);
+
+putting a semicolon after the parentheses in an if, while, or for statement
+    creates a null statement, thus ending the if, while, or for prematurely
+turning an ordinary loop into one with an empty body is often more concise but
+    not usually more efficient
+empty body loops do have their clear use cases, such as reading character data
+
+/***                           ADDITIONAL NOTES                            ***/
+
+while (1) and for (;;) are both forms of infinite loops
+older compilers may force programs to test the 1 condition each time in a while
+    loop, so for (;;) is usually preferred
+
+/***   CHAPTER                        6                        EXERCISES   ***/
+
+1. What output does the following program fragment produce?
+
+"1 2 4 8 16 32 64 128 256 "
+
+2. What output does the following program fragment produce?
 
