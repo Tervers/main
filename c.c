@@ -2940,3 +2940,12 @@ older compilers may force programs to test the 1 condition each time in a while
 
 2. What output does the following program fragment produce?
 
+"9384 938 93 9 "
+
+3. What output does the following for statement produce?
+
+"5 4 3 2 "
+
+4. Which one of the following statements is not equivalent to the other two
+     (assuming the loop bodies are the same)?
+
