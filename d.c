@@ -2,13 +2,22 @@
 
 int main()
 {
-    int sum = 0;
-    for (int i = 0; i < 10; i++) {
-        if (i % 2)
-            continue;
-        printf("%d\n", sum += i);
-    }
-    printf("%d\n", sum);
+    int d, n;
+
+    printf("Enter a number to test if it is prime: ");
+    scanf("%d", &n);
+
+    for (d = 2; d < n; d++) {
+        if (d * d == n)
+            break;
+        if (n % d == 0)
+            break;
+        }
+
+    if (d < n)
+        printf("%d is divisible by %d\n", n, d);
+    else
+        printf("%d is prime\n", n);
 
 return 0;
 }

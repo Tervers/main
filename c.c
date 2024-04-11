@@ -791,7 +791,28 @@ while (n < 10){             |   while (n < 10) {
     0; sum += i executes;
 10: sum = 20; i increments to 9; i is less than 10; if checks 9 % 2, with a
     remained of 1; continue skips sum += i;
-11: i increments to 10; i is not less than 10; for exits loop; printf prints
-    "20" with a new line;
+11: i increments to 10; i is not less than 10; for exits loop;
 
-12.
+printf prints "20" with a new line;
+
+12. Modify the "prime-testing" loop to only check divisors up to the square
+     root of n.
+
+   for (d = 2; d < n; d++) {
+        if (d * d == n)
+            break;
+        if (n % d == 0)
+            break;
+        }
+
+13. Rewrite the following loop so that its body is empty:
+
+for (n = 0; m > 0; n++, m /= 2) {}
+
+14. Find the error in the following program fragment and fix it.
+
+if (n % 2 == 0);            //extra semicolon, causing a null statement that
+    printf("n is even\n");  //detaches printf from the loop body
+
+/***   CHAPTER                   6                  PROGRAMMING PROJECTS   ***/
+
