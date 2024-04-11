@@ -9,7 +9,7 @@ each time the loop body is executed ("iteration"), the controlling expression
     is evaluated
 if true (not zero) the loop continues
 there are three iteration statements: "while", "do", and "for"
-"while" tests the controlling expressioon before the loop body is executed
+"while" tests the controlling expression before the loop body is executed
 "do" tests the expression after the loop body is executed
 "for" is useful for loops that increment/decrement a counting variable
 there are three other statements used in conjunction with loops
@@ -812,7 +812,28 @@ for (n = 0; m > 0; n++, m /= 2) {}
 14. Find the error in the following program fragment and fix it.
 
 if (n % 2 == 0);            //extra semicolon, causing a null statement that
-    printf("n is even\n");  //detaches printf from the loop body
+    printf("n is even\n");  //detaches printf from a controlling expression
 
 /***   CHAPTER                   6                  PROGRAMMING PROJECTS   ***/
 
+1. Write a program that finds the largest in a series of numbers entered by the
+     user.
+
+#include <stdio.h>
+
+int main(void)
+{
+	float n, max;
+
+	do {
+	     printf("Enter a number: ");
+	     scanf("%f", &n);
+	     	if (n >= max)
+			max = n;
+	}
+	while (n <= 0) {}
+
+	printf("The largest number entered was %f\n", max);
+
+	return 0;
+}
