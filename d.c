@@ -1,23 +1,19 @@
 #include <stdio.h>
 
-int main()
+int main(void)
 {
-    int d, n;
+    int n;
 
-    printf("Enter a number to test if it is prime: ");
+    printf("Enter a number: ");
     scanf("%d", &n);
 
-    for (d = 2; d < n; d++) {
-        if (d * d == n)
-            break;
-        if (n % d == 0)
-            break;
-        }
+    do {
+        printf("%d", (n % 10));
+        n /= 10;
+    }
+        while (n);
 
-    if (d < n)
-        printf("%d is divisible by %d\n", n, d);
-    else
-        printf("%d is prime\n", n);
+    printf("\n");
 
-return 0;
+    return 0;
 }

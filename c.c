@@ -107,7 +107,7 @@ int main(void)
     scanf("%d", &n);
 
     i = 1;
-    while (i <=n) {
+    while (i <= n) {
         printf("%10d%10d\n", i, i * i);
         i++;
 }
@@ -825,15 +825,138 @@ int main(void)
 {
 	float n, max;
 
-	do {
-	     printf("Enter a number: ");
-	     scanf("%f", &n);
-	     	if (n >= max)
-			max = n;
-	}
-	while (n <= 0) {}
+    for (;;) {
+    printf("Enter a number: ");
+    scanf("%f", &n);
+        if (n >= max)
+            max = n;
+        if (n <= 0)
+            break;
+
+}
 
 	printf("The largest number entered was %f\n", max);
 
 	return 0;
 }
+
+2. Write a program that asks the user to enter two integers, then calculates
+     and displays their greatest common divisor.
+
+#include <stdio.h>
+
+int main(void)
+{
+    int m, n, r;
+
+    printf("Enter two integers: ");
+    scanf("%d %d", &m, &n);
+
+    for (; n;) {
+        r = m % n;
+        m = n;
+        n = r;
+        }
+
+    printf("Greatest Common Divisor: %d", m);
+
+    return 0;
+}
+
+3. Write a program that asks the user to enter a fraction, then reduces the
+     fraction to lowest terms.
+
+#include <stdio.h>
+
+int main(void)
+{
+    int a1, b1, a2, b2, r;
+
+    printf("Enter a fraction: ");
+    scanf("%d/%d", &a1, &b1);
+
+    a2 = a1;
+    b2 = b1;
+
+    for (; b2;) {
+        r = a2 % b2;
+        a2 = b2;
+        b2 = r;
+        }
+
+    a1 /= a2;
+    b1 /= a2;
+
+    printf("In lowest terms: %d/%d", a1, b1);
+
+    return 0;
+}
+
+4. Add a loop to broker.c (Section 5.2) so that the user can enter more than
+     one trade and the program will calculate the commission on each. The
+     program should terminate when the user enters 0 as the trade value.
+
+#include <stdio.h>
+
+int main(void)
+{
+    float commission, value, total;
+
+    for (;;) {
+        printf("Enter value of trade: ");
+        scanf("%f", &value);
+
+    if (!value)
+        break;
+
+    else if (value < 2500.00f)
+        commission = 30.00f + .017f * value;
+    else if (value < 6250.00f)
+        commission = 56.00f + .0066f * value;
+    else if (value < 20000.00f)
+        commission = 76.00f + .0034f * value;
+    else if (value < 50000.00f)
+        commission = 100.00f + .0022f * value;
+    else if (value < 500000.00f)
+        commission = 155.00f + .0011f * value;
+    else
+        commission = 255.00f + .0009f * value;
+
+    if (commission < 39.00f)
+        commission = 39.00f;
+
+    total += commission;
+}
+
+    printf("Commission: $%.2f\n", total);
+
+    return 0;
+}
+
+5. Write a program that can display any number with its digits reversed.
+
+#include <stdio.h>
+
+int main(void)
+{
+    int n;
+
+    printf("Enter a number: ");
+    scanf("%d", &n);
+
+    do {
+        printf("%d", (n % 10));
+        n /= 10;
+    }
+        while (n);
+
+    printf("\n");
+
+    return 0;
+}
+
+6. Write a program that prompts the user to enter a number n, then prints all
+     even squares between 1 and n. For example, if the user enters 100:
+
+4 16 36 64 100
+
