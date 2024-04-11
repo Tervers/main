@@ -734,3 +734,64 @@ for (i = 9384; i > 0; printf("%d ", i), i /= 10) {}
 
 8. What output does the following for statement produce?
 
+i is equal to 10; i is equal to or greater than 1; printf prints "10 ", i
+    increments to 6; i is divided by 2 and is now equal to 5; printf prints
+    "5 ", i increments to 6; i is greater than or equal to 1; i is divided by 2
+    and is now equal to 3; printf prints "3 ", i increments to 4; i is greater
+    than or equal to 1; i is divided by 2 and is now equal to 2; printf prints
+    "2 ", i increments to 3; i is greater than ore qual to 1; i is divided by 2
+    and is now equal to 1; printf prints "1 ", i increments to 2; i is greater
+    than or equal to 1; i is divided by 2 and is now equal to 1; printf prints
+    "1 ", i increments to 2; ... ...
+
+"10 5 3 2 1 1 1 "... with repeating ones
+
+9. Translate the for statement of Exercise 8 into an equivalent while
+     statement. You will need one statement in addition to the while loop
+     itself.
+
+i = 10;
+while (i >= 1) {
+    printf("%d ", i++);
+    i /= 2;
+}
+
+10. Show how to replace a continue statement by an equivalent goto statement.
+
+n = 0;                      |   n = 0;
+sum = 0;                    |   sum = 0;
+while (n < 10){             |   while (n < 10) {
+    scanf("%d", &i);        |       scanf("%d", &i);
+    if (i == 0)             |       if (i == 0)
+        continue;           |           goto done;
+    sum += i;               |       sum += i;
+    n++;                    |       n++;
+}                           |   }
+                            |   done: return 0;
+
+11. What output does the following program fragment produce?
+
+1: sum is equal to 0; i is equal to 0; i is less than 10; if checks 0 % 2, with
+    a remainer of 2; continue skips sum += i;
+2: i increments to 1; i is less than 10; if checks 1 % 2, with a remainer of 2;
+    continue skips sum += i;
+3: i increments to 2; i is less than 10; if checks 2 % 2, with a remainer of 0;
+    sum += i executes;
+4: sum = 2; i increments to 3; i is less than 10; if checks 3 % 2, with a
+    remainer of 1; continue skips sum += i;
+5: i increments to 4; i is less than 10; if checks 4 % 2, with a remainer of 0;
+    sum += i executes;
+6: sum = 6; i increments to 5; i is less than 10; if checks 5 % 2, with a
+    remainer of 1; continue skips sum += i;
+7: i increments to 6; i is less than 10; if checks 6 % 2, with a remainer of 0;
+    sum += i executes;
+8: sum = 12; i increments to 7; i is less than 10; if checks 7 % 2, with a
+    remainder of 1; continue skips sum += i;
+9: i increments to 8; i is less than 10; if checks 8 % 2, with a remainder of
+    0; sum += i executes;
+10: sum = 20; i increments to 9; i is less than 10; if checks 9 % 2, with a
+    remained of 1; continue skips sum += i;
+11: i increments to 10; i is not less than 10; for exits loop; printf prints
+    "20" with a new line;
+
+12.
