@@ -9,16 +9,18 @@ int main (void)
     printf("Enter starting day of the week (1=Sun, 7=Sat): ");
     scanf("%1d", &day_start);
 
-    if (j < day_start){
+    for (j = 1; j < day_start; j++)
         printf("\t");
-        j++;
-    }
+   	if
 
-    for (; i <= month_days; i++) {
+
+    for (i = 1; i <= month_days; i++) {
         printf("%d\t", i);
         if (!(i % 7))
             printf("\n");
     }
+
+            printf("\n");
 
     return 0;
 }
