@@ -960,3 +960,46 @@ int main(void)
 
 4 16 36 64 100
 
+#include <stdio.h>
+
+int main(void)
+{
+    int n, s;
+
+    printf("Enter a number: ");
+    scanf("%d", &n);
+
+    for (s = 2; (s * s) <= n; s++, s++)
+            printf("%d ", (s * s));
+
+        printf("\n");
+
+    return 0;
+}
+
+7. Rearrange the square3.c program so that the for loop initializes i, tests i,
+     and increments i. Dont rewrite the program; in particular, dont use any
+     multiplication.
+
+#include <stdio.h>
+
+int main (void)
+{
+    int i, n, odd, square;
+
+    printf("This program prints a table of squares.\n");
+    printf("Enter number of entries in table: ");
+    scanf("%d", &n);
+
+    odd = 3;
+    for (i = 1, square = 1; i <= n; ++i, odd += 2) {
+        printf("%10d%10d\n", i, square);
+        square += odd;
+    }
+    return 0;
+}
+
+8. Write a program that prints a one-month calendar. The user specifies the
+     number of days in the month and the day of the week on which the month
+     begins.
+
