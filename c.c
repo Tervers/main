@@ -1003,3 +1003,67 @@ int main (void)
      number of days in the month and the day of the week on which the month
      begins.
 
+#include <stdio.h>
+
+int main(void)
+{
+    int month_days, day_start, week, i,;
+
+    printf("Enter number of days in month: ");
+    scanf("%d", &month_days);
+    printf("Enter starting day of the week (1=Sun, 7=Sat): ");
+    scanf("%1d", &day_start);
+
+    week = day_start;
+
+    for (; day_start > 1; day_start--)
+        printf("\t");
+
+    for (i = 1; i <= month_days; i++, week++) {
+        printf("%d", i);
+        if (week <= 6)
+            printf("\t");
+        else if (week == 7) {
+            printf("\n");
+            week = 0;
+            }
+    }
+
+    return 0;
+}
+
+9. Modify Project 8 in Chapter 2 so that it also asks the user to enter the
+     number of payments and then displays the balance remaining after each of
+     these payments
+
+#include <stdio.h>
+
+int main(void)
+{
+    int interval;      //interval of payments
+	float loan, interest, payment;
+
+	printf("Enter amount of loan: \n");
+	scanf("%f", &loan);
+
+	printf("Enter interest rate: \n");
+	scanf("%f", &interest);
+
+	printf("Enter monthly payment: \n");
+	scanf("%f", &payment);
+
+    printf("Enter number of payments to calculate: \n");
+	scanf("%d", &interval);
+
+    for (int i = 1;i <= interval; i++){
+        loan = ((((interest / 100.0f) / 12.0f) * loan) + loan);
+        loan = loan - payment;              // loan =- payment;
+        printf("Balance remaining after first payment: %.2f\n", loan);
+    }
+	return 0;
+}
+
+10. Generalize Project 9 in Chapter 5 so that the user may enter any number of
+     dates. The user will enter 0/0/0 to indicate that no more dates will be
+     entered.
+

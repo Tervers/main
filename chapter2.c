@@ -284,9 +284,10 @@ printf("Dimensional weight (pounds): %d\n",
 
 /***   CHAPTER                        2                        EXERCISES   ***/
 
-2a - Identify the directives and statements in this program:
-2b - What output does the program produce?
+2(a) - Identify the directives and statements in this program:
+2(b) - What output does the program produce?
 
+(a)
 #include <stdio.h>	// include directive
 
 int main(void)
@@ -298,14 +299,21 @@ printf("available for its completion.\n");          // printf statement
 return 0;	                                    // return statement
 }
 
+(b)
 Parkinson's Law:
 Work expands so as to fill the time
 available for its completion.
 
-3a - Condense 'dweight.c' by replacing assignments with initializers and by
-    removing the weight variable // with an inline printf expression.
+3. Condense dweight.c by replacing assignments with initializers and by
+     removing the weight variable // with an inline printf expression.
 
 printf("Weight: %d\n", (volume + 165) / 166);
+
+/***   CHAPTER                   2                  PROGRAMMING PROJECTS   ***/
+
+2/3. Write a program that computes the volume of a sphere with a 10-meter
+     radius, then modify it so that it prompts the user to enter the radius of
+     the sphere.
 
 #include <stdio.h>
 
@@ -325,6 +333,9 @@ int main()
 	return 0;
 }
 
+5. Write a program that asks the user to enter a value for x and then displays
+     the value of the following polynomial:
+
 #include <stdio.h>
 
 int main(void)
@@ -341,6 +352,10 @@ int main(void)
 
 	return 0;
 }
+
+7. Write a program that asks the user to enter a dollar amount and then shows
+     how to pay that amount using the smallest number of $20, $10, $5, and $1
+     bills.
 
 #include <stdio.h>
 
@@ -361,6 +376,9 @@ int main(void)
 
 	return 0;
 }
+
+8. Write a program that calculates the remaining balance on a loan after the
+     first, second, and third monthly payments:
 
 #include <stdio.h>
 
