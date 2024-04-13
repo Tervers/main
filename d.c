@@ -8,6 +8,7 @@ int main(void)
         printf("Enter a date (mm/dd/yy): ");
         scanf("%d/%d/%d", &m1, &d1, &y1);
 
+<<<<<<< HEAD
     if (y1 == 0 && m1 == 0 && d1 == 0) {
         printf("%2.2d/%2.2d/%2.2d is the earliest date", m3, d3, y3);
         return 0;   }
@@ -48,5 +49,21 @@ int main(void)
             d3 = d1;
             }
         }
+=======
+    for (j = 1; j < day_start; j++)
+        printf("\t");
+   	if
+
+
+    for (i = 1; i <= month_days; i++) {
+        printf("%d\t", i);
+        if (!(i % 7))
+            printf("\n");
+    }
+
+            printf("\n");
+
+    return 0;
+>>>>>>> 795c1d6190bca136377cb82266363b28751debe3
 }
 
