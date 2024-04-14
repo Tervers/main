@@ -2,49 +2,26 @@
 
 int main(void)
 {
-    int m1, m2, m3, d1, d2, d3, y1, y2, y3;
+    int i = 1, n = 1;
+    float e = 0.0f, b = 0.0f, e1 = 0.0f, epsilon = 0.0f;
 
-    for (;;) {
-        printf("Enter a date (mm/dd/yy): ");
-        scanf("%d/%d/%d", &m1, &d1, &y1);
+    printf("Enter a number: ");
+    scanf("%f", &epsilon);
 
-    if (y1 == 0 && m1 == 0 && d1 == 0) {
-        printf("%2.2d/%2.2d/%2.2d is the earliest date", m3, d3, y3);
-        return 0;   }
+    e = (1.0f + (1.0f / n));    //stores calculated values
+    b = e;                      //base equation
 
-        else if (y1 < y2) {
-            y3 = y1;
-            m3 = m1;
-            d3 = d1; }
-
-        else if (y1 == y2 && m1 < m2) {
-            y3 = y1;
-            m3 = m1;
-            d3 = d1; }
-
-        else if (y1 == y2 && m1 == m2 && d1 < d2) {
-            y3 = y1;
-            m3 = m1;
-            d3 = d1; }
-
-        else if (y2 < y1) {
-            y3 = y2;
-            m3 = m2;
-            d3 = d2; }
-
-        else if (y2 == y1 && m2 < m1) {
-            y3 = y2;
-            m3 = m2;
-            d3 = d2; }
-
-        else if (y2 == y1 && m2 == m1 && d2 < d1) {
-            y3 = y2;
-            m3 = m2;
-            d3 = d2; }
-
-        else {
-            y3 = y1;
-            m3 = m1;
-            d3 = d1;
-            }
+    for (;;i++){
+        n = i;
+        e1 = e;
+        e *= b;
+            if ((e - e1) < epsilon)
+                break;
+            else
+                continue;
         }
+
+    printf("%f\n", e1);
+
+    return 0;
+}

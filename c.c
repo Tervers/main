@@ -850,7 +850,7 @@ int main(void)
     int m, n, r;
 
     printf("Enter two integers: ");
-    scanf("%d %d", &m, &n);
+    scanf("%d%d", &m, &n);
 
     for (; n;) {
         r = m % n;
@@ -858,7 +858,7 @@ int main(void)
         n = r;
         }
 
-    printf("Greatest Common Divisor: %d", m);
+    printf("Greatest Common Divisor: %d\n", m);
 
     return 0;
 }
@@ -992,10 +992,9 @@ int main (void)
     scanf("%d", &n);
 
     odd = 3;
-    for (i = 1, square = 1; i <= n; ++i, odd += 2) {
+    for (i = 1, square = 1; i <= n; square += odd, ++i, odd += 2)
         printf("%10d%10d\n", i, square);
-        square += odd;
-    }
+
     return 0;
 }
 
@@ -1066,4 +1065,68 @@ int main(void)
 10. Generalize Project 9 in Chapter 5 so that the user may enter any number of
      dates. The user will enter 0/0/0 to indicate that no more dates will be
      entered.
+
+#include <stdio.h>
+
+int main(void)
+{
+    int m1 = 99, m2 = 99, d1 = 99, d2 = 99, y1 = 99, y2 = 99;
+
+    for (;;) {
+        printf("Enter a date (mm/dd/yy): ");
+        scanf("%d/%d/%d", &m1, &d1, &y1);
+
+    if (y1 == 0 && m1 == 0 && d1 == 0) {
+        printf("%2.2d/%2.2d/%2.2d is the earliest date", m2, d2, y2);
+        return 0;
+        }
+
+    else if (y1 < y2) {
+        y2 = y1, m2 = m1, d2 = d1; }
+
+    else if (y1 == y2 && m1 < m2) {
+        y2 = y1, m2 = m1, d2 = d1; }
+
+    else if (y1 == y2 && m1 == m2 && d1 < d2) {
+        y2 = y1, m2 = m1, d2 = d1; }
+
+    else if (y2 < y1) {
+        y2 = y2, m2 = m2, d2 = d2; }
+
+    else if (y2 == y1 && m2 < m1) {
+        y2 = y2, m2 = m2, d2 = d2; }
+
+    else  (y2 == y1 && m2 == m1 && d2 < d1) {
+        y2 = y2, m2 = m2, d2 = d2; }
+
+    }
+}
+
+11. Write a program that approximates Eulers number (e = 1 + 1/1! + 1/2! + 1/3!
+     + 1/4!) where n (1 + 1/1! + 1/n!) is an integer entered by the user.
+
+#include <stdio.h>
+
+int main(void)
+{
+    int i = 1, n = 1;
+    float e = 0.0f, b = 0.0f;
+
+    printf("Enter a number: ");
+    scanf("%d", &n);
+
+    e = (1.0f + (1.0f / n));
+    b = e;
+
+    for (;i < n;i++)
+        e *= b;
+
+    printf("%f\n", e);
+
+    return 0;
+}
+
+12. Modify the previous program so that it continues adding terms until the
+     current term becomes less than "epsilon", where epsilon is a small
+     (floating-point) number entered by the user.
 
