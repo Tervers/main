@@ -1,4 +1,4 @@
-/***                         INTEGER TYPES                           ***/
+/*** CHAPTER                       7.1                        INTEGER TYPES ***/
 
 C supports two fundamentally different numeric types: integer and floating
 integer type values are whole numbers
@@ -23,11 +23,11 @@ we use long type when some numbers are too large to store in int
 and short type when we need to conserve memory
 C allows us to abbreviate by dropping int (some newer languages require this)
 
-short int	//short signed int
+short int		//short signed int
 unsigned short int	//unsigned short
 int
 unsigned int
-long int	//long
+long int		//long
 unsigned long int	//unsigned long
 
 values for these types vary by machine, though there are rules compilers must
@@ -51,7 +51,7 @@ standard unsigned integer types:
     int, unsigned char, _Bool
 C99 also allows "extended integer types", both signed and unsigned (128-bit)
 
-//                         INTEGER CONSTANTS
+//                          INTEGER CONSTANTS
 
 constants are numbers that appear in the program, not numbers that are read,
     written, or computed
@@ -108,5 +108,134 @@ when overlow occurs on unsigned integers, the result is defined: take the
 1 + 65,535U = 0
 
 //                          READING AND WRITING INTEGERS
+
+%d only works for int type variables
+when reading or writing unsigned integers, use u (unsigned decimal), o, or x
+
+unsigned int u;
+
+scanf("%u", &u);    /* reads  u in base 10 */
+printf("%u", u);    /* writes u in base 10 */
+scanf("%o", &u);    /* reads  u in base 8 */
+printf("%o", u);    /* writes u in base 8 */
+scanf("%x", &u);    /* reads  u in base 16 */
+printf("%x", u);    /* writes u in base 16 */
+
+for a short integer, put an h in front of d, o, u, or x
+
+short s;
+
+scanf("%hd", &s);
+printf("%hd", s);
+
+for a long integer, put l in front of d, o, u, or x
+
+long l;
+
+scanf("%ld", &l);
+printf("%ld", l);
+
+for a long long integer (C99), put ll in front of d, o, u, or x
+
+long long ll;
+
+scanf("%lld", &ll);
+printf("%lld", ll);
+
+//                         sum2.c -  SUMMING A SERIES OF NUMBERS (REVISITED)
+
+the program from section 6.1 could experience overflow through user input
+
+#include <stdio.h>
+
+int main(void)
+{
+	long n, sum = 0;
+
+	printf("This program sums a series of integers.\n");
+	printf("Enter integers (0 to terminate): ");
+
+	scanf("%ld", &n);
+	while (n != 0) {
+		sum += n;
+		scanf("%ld", &n);
+	}
+	printf("The sum is : %ld\n", sum);
+
+	return 0;
+}
+
+/*** CHAPTER                       7.2                       FLOATING TYPES ***/
+
+floating point types can store numbers with digits after the decimal point,
+    or numbers that are exceedingly large or small
+there are three floating types:
+float - single-precision floating-point
+double - double-precision floating-point
+long double - extended-precision floating-point
+float is suitable when the amount of precision isn't critical (calculating
+    temperature to one decimal point)
+double provides greater accuracy
+long double is extremely accurate ("rarely" used)
+C standard doesn't state the precision that float, double, and long double need
+    to provide
+
+//			    THE IEEE FLOATING-POINT STANDARD
+
+most computers follow IEEE Standard specifications for floating-point numbers
+numbers are stored in three parts: a sign, an exponent, and a fraction
+the number of bits in the exponent determines how large or small numbers can be
+the number of bits in the fraction determines the precision
+in single-precision, the exponent is 8 bits long and the fraction is 23 bits
+as a result, a single-precision number has a max value of about 3.40 x 10e38,
+    with a precision of about 6 decimal digits
+a double-precision numbers has a max value of about 1.79 x 10e308, with a
+    precision of about 15 decimal digits
+the IEEE standard also describes single extended precision and double extended
+    precision formats
+it doesn't specify the number of bits in these formats, although it requires
+    single extended type occupy at least 43 bits, and double extended type at
+    least 79 bits
+not all machines follow IEEE standards
+you can use macros that define the characteristics of floating types found in
+    the <float.h> header
+in C99, floating types are divided into two categories:
+real floating types - float, double, long double
+complex types - float _Complex, double _Complex, long double _Complex
+
+//                          FLOATING CONSTANTS
+
+floating constants can be written in a variety of ways:
+57.0  57.  57.0e0  57E0  5.7e1  5.7e+1  .57e2  570.e-1
+floating constants are stored as double-precision numbers by default
+double values are converted automatically to float when necessary
+to force indicate that single precision is required, put f at the end of the
+    constant (57.0F)
+to indicate long double, put l at the end (57.0L)
+C99 provides for writing floating constants in hexadecimal
+these constants begin with 0x or 0X ("rarely used")
+
+//                                    READING AND WRITING FLOATING-POINT NUMBERS
+
+%e, %f, and %g are used for single-precision floating point numbers
+values of types double and long double require different conversions
+when reading (not writing) a value of type double, put l in front of e, f, or g
+
+double d;
+
+scanf("%lf", &d);
+
+when using printf, the e, f, and g conversions can be used to write either
+    float or double values (C99 legalizes %le, %lf, and %lg, although the l has
+    no effect)
+when reading or writing a value of type long double, put an L (no lowercase) in
+    front of e, f, or g
+
+long double ld;
+
+scanf("%Lf", &ld);
+printf("%Lf", ld);
+
+/*** CHAPTER                      7.3                       CHARACTER TYPES ***/
 
 
