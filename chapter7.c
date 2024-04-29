@@ -1,4 +1,4 @@
-/*** CHAPTER                       7.1                        INTEGER TYPES ***/
+/*** CHAPTER                      7.1                        INTEGER TYPES ***/
 
 C supports two fundamentally different numeric types: integer and floating
 integer type values are whole numbers
@@ -142,7 +142,7 @@ long long ll;
 scanf("%lld", &ll);
 printf("%lld", ll);
 
-//                         sum2.c -  SUMMING A SERIES OF NUMBERS (REVISITED)
+//                          sum2.c -  SUMMING A SERIES OF NUMBERS (REVISITED)
 
 the program from section 6.1 could experience overflow through user input
 
@@ -165,7 +165,7 @@ int main(void)
 	return 0;
 }
 
-/*** CHAPTER                       7.2                       FLOATING TYPES ***/
+/*** CHAPTER                       7.2                      FLOATING TYPES ***/
 
 floating point types can store numbers with digits after the decimal point,
     or numbers that are exceedingly large or small
@@ -180,7 +180,7 @@ long double is extremely accurate ("rarely" used)
 C standard doesn't state the precision that float, double, and long double need
     to provide
 
-//			    THE IEEE FLOATING-POINT STANDARD
+//                          THE IEEE FLOATING-POINT STANDARD
 
 most computers follow IEEE Standard specifications for floating-point numbers
 numbers are stored in three parts: a sign, an exponent, and a fraction
@@ -215,7 +215,7 @@ to indicate long double, put l at the end (57.0L)
 C99 provides for writing floating constants in hexadecimal
 these constants begin with 0x or 0X ("rarely used")
 
-//                                    READING AND WRITING FLOATING-POINT NUMBERS
+//                          READING AND WRITING FLOATING-POINT NUMBERS
 
 %e, %f, and %g are used for single-precision floating point numbers
 values of types double and long double require different conversions
@@ -236,6 +236,308 @@ long double ld;
 scanf("%Lf", &ld);
 printf("%Lf", ld);
 
-/*** CHAPTER                      7.3                       CHARACTER TYPES ***/
+/*** CHAPTER                      7.3                      CHARACTER TYPES ***/
 
+char is the character type
+the value of type char varies because different machines may have different
+    underlying character sets
+ASCII is a common character set
+a variable of type char can be assigned any single character
 
+char ch;
+
+ch = 'a';       /* lower-case a */
+ch = 'A';       /* upper-case A */
+ch = '0';       /* zero         */
+ch = ' ';       /* space        */
+
+//                          OPERATIONS ON CHARACTERS
+
+C treats characters as small integers
+ASCII character codes range from 0000000 to 1111111, which we can think of as
+    the integers from 0 to 127
+'a' has the value 97; 'A' has the value 65; '0' is 48; ' ' is 32
+character constants actually have int type rather than char type (although this
+    will often not matter to us)
+when a character appears, C simply uses its integer value
+
+char ch;
+int i;
+
+i = 'a';        /*  i is now 97  */
+ch = 65;        /* ch is now 'A' */
+ch = ch + 1;    /* ch is now 'B' */
+ch++;           /* ch is now 'C' */
+
+characters can be compared
+this if statement checks whether ch contains a lower-case letter and, if so,
+    converts ch to upper case
+
+if ('a' <= ch && ch <= 'z')
+  ch = ch - 'a' + 'A';
+
+we can also write a for statement whose control variable steps through all the
+    upper-case letters
+
+for (ch = 'A'; ch <= 'Z'; ch++)
+
+these types of programs can hamper portability due assumptions about the under-
+    lying character set (like assuming A to Z have consecutive codes)
+
+//                          SIGNED AND UNSIGNED CHARACTERS
+
+signed characters normally have values between -128 and 127
+unsigned characters normally have values between 0 and 255
+C standard does not specify whether char is a signed or an unsigned type
+C89 uses the term "integral types" to refer to both integer types and character
+    types
+enumerated types are also integral types
+C99 does not use integral types; C99 expands the meaning of "integer types" to
+    include character types and enumerated types
+C99s _Bool type is considered to be an unsigned integer type
+
+//                          ARITHMETIC TYPES
+
+C89 arithmetic types hierarchy:
+integral types -
+    char ; signed integer types ; unsigned integer types ; enumerated types
+floating types
+
+C99 arithmetic types hierarchy:
+integer types -
+    char ; signed integer types, both standard and extended ; unsigned integer
+    types, both standard and extended ; enumerated types
+floating types -
+    real floating types ; complex types
+
+//                          ESCAPE SEQUENCES
+
+a character constant is usually one character enclosed in single quotes
+some special characters cannot be written this way because they are "invisible"
+    (new-line character) or because they cannot be entered from the keyboard
+an escape sequence is a special notation provided by C
+two types of escape sequences: character escapes and numeric escapes
+
+character escapes: /a alert, \b backspace, \f form feed, \n new line, \r
+    carriage return, \t horizontal tab, \v vertical tab, \\ backslash, \?
+    question mark, \' single quote, \" double quote
+character escapes do not include all non-printing ASCII characters
+character escapes are also useless for representing characters beyond the basic
+    128 ASCII characters
+
+numeric escapes, which can represent any character, can solve this problem
+to write a numeric escape, look up the characters octal or hex value
+for example, the ASCII escape character (decimal value: 27) has the value 33 in
+    octal and 1B in hex
+an octal escape sequence consists of the \ character followed by an octal
+    number with at most three digits (must be representable as an unsigned
+    char, so maximum value is normally 377 octal)
+octal numbers in escape sequences do not have to begin with 0, so the escape
+    character could be written \33 or \033
+a hexadecimal escape sequence consists of \x followed by a hexadecimal number
+the hex number must be representable as an unsigned character (hence it cannot
+    exceed FF if characters are eight bits long)
+the x must be lower case, but hex digits can be upper or lower case: \x1b, \x1B
+
+when used as a character constant, an escape sequence must be enclosed in
+    single quotes: '\33', '\x1B'
+escape sequences can appear a bit cryptic, so its a good idea to give them
+    names using #define:
+#define ESC '/33'   /* ASCII escape character */
+trigraph sequences provide a way to represent the characters #, [, \, ], ^, {,
+    |, }, and ~
+C99 adds universal character names, which resemble escape sequences
+unlike escape sequences, universal character names are allowed in identifiers
+
+//                          CHARACTER-HANDLING FUNCTIONS
+
+there is a faster, and more portable, way to convert lower-case letters to
+    upper-case using the C toupper library function:
+
+ch = toupper(ch);       /* converts ch to upper case */
+
+toupper checks whether its argument (ch) is lower case
+if so, it returns the corresponding upper-case letter
+if not, it returns the value of the argument
+you can also test it in an if statement:
+
+if (toupper(ch) == 'A') ...
+
+programs need to #include <ctype.h> to make use of toupper
+
+//                        READING AND WRITING CHARACTERS USING scanf AND printf
+
+the %c conversion specification allows scanf and printf to read and write
+    single characters:
+
+char ch;
+
+scanf("%c", &ch);   /* reads a single character */
+printf("%c", ch);   /* writes a single character */
+
+scanf does not skip white-space characters before reading a character
+if the next unread character is a space, then variable ch will contain a space
+    after scanf returns
+to force scanf to skip white space before reading a character, put a space in
+    its format string just before %c:
+
+scanf(" %c", &ch);      /* skips white space, then reads ch */
+
+a space in a scanf string still means skip zero or more white-space characters
+since scanf does not normally skip white space, you can easily detect the end
+    of an input line
+the following loop will read and ignore all remaining characters in the current
+    input line:
+
+do {
+    scanf("%c", &ch);
+} while (ch != '\n');
+
+when scanf is called the next time, it will read the first character on the
+    next input line
+
+//                     READING AND WRITING CHARACTERS USING getchar AND putchar
+
+C provides other ways of writing single characters, particularly getchar and
+    putchar
+putchar writes a single character:
+
+putchar(ch);
+
+each time getchar is called, it reads one character, which it returns
+to save this character, we must use assignment to store it in a variable
+
+ch = getchar();     /* reads a character and stores it in ch */\
+
+getchar actually returns an int value
+as a result, it is not unusual for a variable to have type int rather than char
+getchar does not skip white-space characters as it reads
+getchar and putchar save time (compared to scanf and printf) when a program is
+    executed
+this is because scanf and printf are designed to read and write many kinds of
+    data in a variety of formats
+getchar and putchar are usually implemented as macros for additional speed
+the previous scanf loop can be rewritten using getchar:
+
+do {
+    ch = getchar();
+} while (ch != '\n');
+
+you can also use getchar in a controlling expression
+
+while ((ch = getchar()) != '\n')
+    ;
+
+this loop reads a character, stores it into ch, then tests if ch is not equal
+    to the new-line character
+if successful, the (empty) loop body is executed, and the loop is tested again
+further condensation of the loop:
+
+while (getchar() != '\n')       /* skips rest of line */
+
+you can use getchar to skip an indefinite number of blank characters:
+
+while ((ch = getchar()) == ' ')     /* skips blanks */
+    ;
+
+when the loop terminates, ch will contain the first nonblank character that
+    getchar encountered
+be careful when mixing getchar and scanf calls in the same program
+scanf can leave behind characters that it has looked at, but not read:
+
+printf("Enter an integer: ");
+scanf("%d", &i);
+printf("Enter a command: ");
+command = getchar();
+
+after entering an integer, a user hitting the enter button will leave a new-
+    line character, which getchar will fetch
+
+//                          DETERMINING THE LENGTH OF A MESSAGE
+
+this next program will calculate the length of a message, displaying this
+    prompt:
+
+Enter a message : _Brevity is the soul of wit._
+Your message was 27 character(s) long.
+
+the length includes spaces and punctuation, but not the new-line character at
+    the end of the message
+
+//                          length.c
+
+#include <stdio.h>
+
+int main(void)
+{
+    char ch;
+    int len = 0;
+
+    printf("Enter a message: ");
+    ch = getchar();
+    while (ch != '\n') {
+        len++;
+        ch = getchar ();
+
+    }
+    printf("Your message was %d character(s) long.\n", len);
+
+    return 0;
+}
+
+we can shorten this program with some idioms involving while loops and getchar
+
+//                          length2.c
+
+#include <stdio.h>
+
+int main(void)
+{
+    int len = 0;
+
+    printf("Enter a message: ");
+    while (getchar() != '\n')
+        len++;
+    printf("Your message was %d character(s) long.\n", len);
+
+    return 0;
+}
+
+/*** CHAPTER                      7.4                      TYPE CONVERSION ***/
+
+when performing arithmetic operations, computers usually require operands to be
+    the same number of bits and be stored in the same way (they may be able to
+    add two 16-bit integers, but not a 16-bit and a 32-bit together, or a 32-
+    bit integer and 32-bit float)
+C allows basic types to be mixed in expressions
+the C compiler may then have to generate instructions that convert operands to
+    other types so the computer can evaluate the expression (if you add a 16-
+    bit short and a 32-bit int, the compiler will convert the short to 32-bits)
+since these conversions are produced by the compiler and not the programmer,
+    they are known as "implicit conversions"
+if you want to perform an "explicit conversion", you can use the cast operator
+implicit conversions occur during these situations:
+- when the operands in an arithmetic or logical expression do not have the same
+    type ("usual arithmetic conversions")
+- when the type of expression on the right side of an assignment does not match
+    the type of variable on the left side
+- when the type of argument in a function call does not match the type of the
+    corresponding parameter
+- when the type of the expression in a return statement does not match the
+    functions return type
+
+//                          THE USUAL ARITHMETIC CONVERSIONS
+
+the usual arithmetic conversions are applied to most binary operators,
+    including arithmetic, relational, and equality operators
+an integer can always be converted to float, as the worst that can happen is a
+    minor loss in precision
+as for converting float to int, this will delete the fractional part of the
+    number, and potentially give us a meaningless result if the original number
+    were larger (or smaller) than the largest (or smallest) possible integer
+usual arithmetic conversions convert operands to the narrowest (fewer storage
+    bytes) type that will safely hold both values
+the type of the narrower operand can be made to match the type of the other
+    operand ("promotion")
+among the most common promotions are "integral promotions" (converts char or
+    short to int (sometimes to unsigned int))
