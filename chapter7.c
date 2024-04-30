@@ -320,7 +320,7 @@ two types of escape sequences: character escapes and numeric escapes
 
 character escapes: /a alert, \b backspace, \f form feed, \n new line, \r
     carriage return, \t horizontal tab, \v vertical tab, \\ backslash, \?
-    question mark, \' single quote, \" double quote
+    question mark, \' single quote', \" double quote"
 character escapes do not include all non-printing ASCII characters
 character escapes are also useless for representing characters beyond the basic
     128 ASCII characters
@@ -541,3 +541,89 @@ the type of the narrower operand can be made to match the type of the other
     operand ("promotion")
 among the most common promotions are "integral promotions" (converts char or
     short to int (sometimes to unsigned int))
+the rules for performing the usual arithmetic conversions can be split into two
+    cases:
+1 - the type of either operand is a floating type
+  float -> double -> long double
+    if one operand has type long double, then convert the other type to long
+        double
+    if one operand has type double, then convert the other to double
+    if one is float, convert to float
+    if one is long int, and the other is double, convert long int to double
+
+2 - neither operand is a floating type
+    first perform integral promotion on both operands (so that neither operand
+        is a char or short)
+  int -> unsigned int -> long int -> unsigned long int
+    if one operand is unsigned long int, convert the other to unsigned long int
+    ...
+    if one operand has type long, and the other unsigned (say, both 32-bit),
+        both converted to unsigned long
+
+when a signed is combined with unsigned, the signed is converted to unsigned
+the conversion involves adding or subtracting a multiple of n + 1, where n is
+    the largest representable value of the unsigned type
+suppose int i has value -10
+and unsigned int u has value 10
+we might assume i < u is 1 (true)
+however, i was converted to unsigned int, and -10 became 4,294,967,286
+    (assuming 4,294,967,295(n) is the largest unsigned int, n + 1)
+therefore i < u is 0
+best practice to use unsigned integers as little as possible, and never mix
+    them with signed integers
+
+char c;
+short in s;
+int i;
+unsigned int u;
+long int l;
+unsigned long int ul;
+float f;
+double d;
+long double ld;
+
+i = i + c;	/* c is converted to int		*/
+i = i + s;	/* s is converted to int		*/
+u = u + i;	/* i is converted to unsigned int	*/
+l = l + u;	/* u is converted to long int		*/
+ul = ul + l;	/* l is converted to unsigned long int	*/
+f = f + ul;	/* ul is converted to float		*/
+d = d + f;	/* f is converted to double		*/
+ld = ld + d;	/* d is converted to long double	*/
+
+//			    CONVERSION DURING ASSIGNMENT
+
+expressions on the right side of assignment are converted to the type on the
+    left side
+
+char c;
+int i;
+float f;
+double d;
+
+i = c;	/* c converted to int */
+f = i;	/* i converted to float */
+d = f;	/* f converted to double */
+
+assigning floating point numbers to an integer variable drops the fractional
+    part of the number
+
+int i;
+
+i = 842.97;	/* i is now 842 */
+i = -842.97;	/* i is now -842 */
+
+assigning a value to a variable of narrower type will give a meaningless result
+    (or worse) if the value is outside the range of the variables type
+
+c = 10000;	/*** WRONG ***/
+i = 1.0e20;	/*** WRONG ***/
+f = 1.0e100;	/*** WRONG ***/
+
+it is ideal to append f (3.14159f) to floating point constants if they will be
+    assigned to a float variable, otherwise a constant (3.14159) will have type
+    double
+
+//			    IMPLICIT CONVERSIONS IN C99
+
+
