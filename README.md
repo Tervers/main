@@ -1,1 +1,3 @@
-This project is just the work I've produced from learning the C programming language. No contribution necessary.
+This is the notes I've taken while studying the book "C Programming: A Modern Approach" by K. N. King.
+
+No contribution to this work is necessary.
