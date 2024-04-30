@@ -517,6 +517,7 @@ since these conversions are produced by the compiler and not the programmer,
     they are known as "implicit conversions"
 if you want to perform an "explicit conversion", you can use the cast operator
 implicit conversions occur during these situations:
+
 - when the operands in an arithmetic or logical expression do not have the same
     type ("usual arithmetic conversions")
 - when the type of expression on the right side of an assignment does not match
@@ -543,6 +544,7 @@ among the most common promotions are "integral promotions" (converts char or
     short to int (sometimes to unsigned int))
 the rules for performing the usual arithmetic conversions can be split into two
     cases:
+
 1 - the type of either operand is a floating type
   float -> double -> long double
     if one operand has type long double, then convert the other type to long
@@ -625,5 +627,190 @@ it is ideal to append f (3.14159f) to floating point constants if they will be
     double
 
 //			    IMPLICIT CONVERSIONS IN C99
+
+C99 rules for implicit conversion are slightly different due to the additional
+    types it introduces
+C99 gives each integer type an "integer conversion rank" //rank ~= size
+
+1. long long int, unsigned long long int
+2. long int, unsigned long int
+3. int, unsigned int
+4. short int, unsigned short int
+5. char, signed char, unsigned char
+6. _Bool
+(extended integer and enumerated types are ignored for now)
+
+C99 has "integer promotions" which convert any type whose rank is less than int
+    and unsigned int to int (if the value can be represented as int) or
+    unsigned int
+C99s rules for usual arithmetic conversions are also divided into two cases:
+
+1 - the type of either operand is a floating type
+    as long as neither operand has a complex type, the rules are the same as
+        before
+
+2 - neither operand is a floating type
+    first perform integer promotion on both operands
+    if the types of both operands are the same, the process ends
+    otherwise, follow these rules, stopping at the first rule that applies:
+        if the operands are both signed or both unsigned, convert the type with
+            lesser rank to the type with higher rank
+        if the unsigned operand has rank greater than or equal to the signed
+            operand, convert the signed to unsigned
+        if the signed operand can represent all values of the unsigned operand,
+            convert the unsigned to signed
+        otherwise convert both operands to the unsigned type corresponding to
+            the type of the signed operand
+
+arithmetic types can be converted to _Bool
+the result of the conversion is 0 if the original value is 0, otherwise it is 1
+
+//                          CASTING
+
+( type-name ) expression
+type-name specifies what type the expression should be converted to
+this example shows how to use a a cast expression to compute the fractional
+    part of a float:
+
+float f, frac_part;
+
+frac_part = f - (int) f;
+
+(int) f represents the value of converting f to type int
+usual arithmetic conversion will convert (int) f back to type float before
+    subtraction is performed
+the difference between f and (int) f is the fractional part of f, which was
+    dropped during the cast
+you can document type conversions that would occur anyways:
+
+i = (int) f;    /* f is converted to int */
+
+cast allows us to overrule the compiler and force conversions that we want
+{
+float quotient;
+int dividend, divisor;
+
+quotient = dividend / divisor;
+}
+in the above program, the result of the division (an integer), will be
+    converted to float before being stored in quotient
+ideally we would convert them to float before division for a more exact answer
+
+quotient = (float) dividend / divisor;
+
+casting dividend to float forces the compiler to convert divisor to float also
+cast is a unary operator, which have higher precedence than binary operators
+
+(float) dividend / divisor  ==  ((float) dividend) / divisor
+quotient = dividend / (float) divisor;
+quotient = (float) dividend / (float) divisor;
+
+casts are sometimes necessary to avoid overflow
+
+long i;
+int j = 1000;
+
+i = j * j;  /* overflow may occur */
+
+j * j is 1,000,000, and i is a long, but two int values multiplied will result
+    in an int
+j * j might be too large to represent int on some machines
+
+i = (long) j * j;   //first j converted to long, forcing second j to convert
+i = (long) (j * j); /*** WRONG ***/ //overflow would occur before cast
+
+/*** CHAPTER                     7.5                      TYPE DEFINITIONS ***/
+
+in section 5.2 we created a macro to define a boolean type
+
+#define BOOL int
+
+alternatively with "type definition":
+
+typedef int Bool;   //capitalizing type name is not required
+
+this adds Bool to the list of type names that the compiler will recognize
+Bool can now be used in variable declarations, cast expressions, etc.
+
+Bool flag;  /* same as int flag; */
+
+the compiler treats Bool as a synonym for int, thus flag is just an int
+
+//                          ADVANTAGES OF TYPE DEFINITIONS
+
+#define BOOL int
+
+typedef int Bool;   //capitalizing Bool is not required
+
+using typedef to define Bool causes the compiler to add Bool to the list of
+    type names it recognizes
+this allows Bool to be used in variable declarations, cast expresssions, etc.
+
+Bool flag;  /* same as int flag; */
+
+the compiler treats Bool as int; thus flag is also an int variable
+
+//                          ADVANTAGES OF TYPE DEFINITIONS
+
+type definitions can make a program more understandable
+
+typedef float Dollars;
+
+Dollars cash_in, cash_out;
+
+is more informative than just writing:
+
+float cash_in, cash_out;
+
+type definitions also make a program easier to modify (if we later decide to
+    change Dollars to double)
+
+    typedef double Dollars;
+
+this would prevent the need to change variable declarations of Dollars (we
+    would need to locate all float variables that only store dollar amounts)
+
+//                          TYPE DEFINITIONS AND PORTABILITY
+
+one problem with porting a program from one computer to another is that types
+    have different ranges on different machines
+
+int i;
+i = 100000;
+
+this is fine on a 32-bit machine, but will fail on a 16-bit machine
+suppose we need variables capable of storing product quanities in the range of
+    0-50000
+we could use long, but we would rather use int, since arithmetic on int may be
+    faster than on long, and also int may take up less space
+instead of using int type to declare quantity variables, we can define our own
+    "quantity" type
+
+ typedef int Quantity;  //use this type to declare variables
+ Quantity q;
+
+ when we port the program to a machine with shorter integers, we will update
+     the definition of Quantity:
+
+typedef long Quantity;
+
+while this helps portability, this does not fix other ways Quantity variables
+    may be being used (calls of printf and scanf will need their conversion
+    specifiers (%d to %ld) updated)
+the C library itself uses typedef to create names for types that vary from one
+    C implementation to another (these types often end with _t, such as size_t,
+    wchar_t, and ptrdiff_t)
+the exact definitions of these types vary, but here are some examples:
+
+typedef long int ptrdiff_t;
+typedef unsigned long int size_t;
+typedef int wchar_t;
+
+in C99, <stdint.h> uses typedef to define names for integer types with a
+    particular number of bits (int32_t is a signed integer type with exactly
+    32-bits)
+using these types is an effective way to make programs more portable
+
+/*** CHAPTER                    7.6                    THE sizeof OPERATOR ***/
 
 
