@@ -813,4 +813,38 @@ using these types is an effective way to make programs more portable
 
 /*** CHAPTER                    7.6                    THE sizeof OPERATOR ***/
 
+the sizeof operator allows programs to determine how much memory is required to    store values of a particular type
+
+sizeof ( type-name )
+
+the value the above expression produces is an unsigned integer representing the
+    number of bytes required to store a value belonging to type-name
+sizeof (char) is always 1
+sizeof (int) is normally 4 on a 32-bit machine
+sizeof is a unary operator
+sizeof is unusual in that the compiler itself can usually determine the value
+    of a sizeof expression
+sizeof can also be applied to constants, variables, and expressions
+if i and j are int variables, then sizeof (i) is 4 on a 32-bit machine
+sizeof (i + j) is also 4
+when applied to an expression, sizeof does not require parentheses (sizeof i)
+they may still be necessary due to operator precedence
+sizeof i + j would be read as (sizeof i) + j
+the type of a sizeof expression is an implementation-defined type named size_t
+
+in C89, it ls best to convert the value of an expression to a known type
+    before printing
+size_t is guaranteed to be unsigned, so its safest to cast a sizeof expression
+    to unsigned long (C89s largest unsigned type) then print using %lu
+
+printf("Size of int: %lu\n", (unsigned long) sizeof(int));
+
+in C99, size_t can be larger than unsigned long
+printf in C99 is capable of displaying size_t values directly without a cast
+    using the %z conversion specification (followed by the usual integer codes)
+
+printf("Size of int: %zu\n", sizeof (int));
+
+//			    ADDITIONAL NOTES
+
 
