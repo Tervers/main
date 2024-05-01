@@ -37,7 +37,7 @@ int must not be shorter than short int
 long int must not be shorter than int
 short int may represent the same values as int
 int may have the same range as long int
-the limits.h header defines macros which represent the smallest and largest
+the <limits.h> header defines macros which represent the smallest and largest
     values of each integer type
 
 //                          INTEGER TYPES IN C99
