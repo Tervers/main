@@ -173,12 +173,12 @@ there are three floating types:
 float - single-precision floating-point
 double - double-precision floating-point
 long double - extended-precision floating-point
-float is suitable when the amount of precision isn't critical (calculating
+float is suitable when the amount of precision is not critical (calculating
     temperature to one decimal point)
 double provides greater accuracy
 long double is extremely accurate ("rarely" used)
-C standard doesn't state the precision that float, double, and long double need
-    to provide
+C standard does not state the precision that float, double, and long double
+    need to provide
 
 //                          THE IEEE FLOATING-POINT STANDARD
 
@@ -847,4 +847,176 @@ printf("Size of int: %zu\n", sizeof (int));
 
 //			    ADDITIONAL NOTES
 
+a hex constant begins with 0x or 0X
+must contain an exponent, which is preceded by the letter P, or p
+the exponent may have a sign
+the constant may end with f, F, l, or L
+the exponent is expressed in decimal and represents a power of 2 (not 10)
+0x1.Bp3 represents 1.6875 x 2e3 = 13.5
+hex digit B corresponds to the bit pattern 1011
+the B is on the right of the period, so each 1 bit represents a negative power:
+1      0      1      1
+2e-1 + 0    + 2e-3 + 2e-4 = 0.6875
+hex numbers have a precise binary representation, whereas decimal constants may
+    be subject to tiny rounding errors
 
+printf and scanf have variable-length argument lists
+when variable-length argument lists are called, the compiler converts float
+    arguments to double automatically
+this causes printf to be unable to distinguish between float and double
+    arguments, which is why %f works for both float and double in printf
+scanf is passed a pointer to a variable
+%f tells scanf to store a float at the address passed to it
+%lf tells scanf to store a double at that address
+scanf will likely store the wrong number of bytes if given the wrong conversion
+    specification
+
+if a variable is given a value that is too large, various outcomes may occur
+if the value is of an integral type and the variable is unsigned, then the
+    extra bits are thrown away; if the variable is signed, the result is
+    implementation defined
+assigning a float to a variable that is too small produces undefined behavior
+
+type definitions are more powerful than macro definitions
+macros cannot define array or pointer types
+suppose we try to create a macro to define a "pointer to integer" type:
+
+#define PTR_TO_INT int *
+
+the declaration
+
+PTR_TO_INT p, q, r;
+
+will become
+
+int * p, q, r;
+
+after preprocessing
+this results in only p being a pointer; q and r are ordinary integer variables
+typedef names are subject to the same scope rules as variables
+macro names are replaced by the preprocessor wherever they appear (no scope)
+
+/*** CHAPTER                          7                          EXERCISES ***/
+
+1. Give the decimal value of each of the following integer constants.
+
+(a) 077         //63
+(b) 0x77        //119
+(c) 0XABC       //2748
+
+2. Which of the following are not legal constants in C? Classify each legal
+     constant as either integer or floating-point.
+
+(a) 010E2       //64            /*** 1000; exponent indicates decimal form ***/
+(b) 32.1E+5     //3210000 float
+(c) 0790        //632 integer   /*** not legal; octal contains digits 0-7 ***/
+(d) 100_000     //not legal
+(e) 3.978e-2    //0.03987 float
+
+3. Which of the following are not legal types in C?
+
+(a) short unsigned int  //legal
+(b) short float         //not legal
+(c) long double         //legal
+(d) unsigned long       //legal
+
+4. If c is a variable of type char, which one of the following statements is
+     illegal?
+
+(a) i += c;  /* i has type int */   //legal
+(b) c = 2 * c - 1;                  //legal
+(c) putchar(c);                     //legal
+(d) printf(c);                      //not legal
+
+5. Which one of the following is not a legal way to write the number 65? Assume
+     that the character set is ASCII.
+
+(a) 'A'         //legal
+(b) 0b1000001   //legal  // not legal; C does not allow binary representation
+(c) 0101        //not legal, ASCII binary codes ranged from 000000 to 1111111
+                /*** legal; it is in octal, you dummy ***/
+(d) 0x41        //legal
+
+6. For each of the following items of data, specify which one of the types
+     char, short, int, or long is the smallest one guaranteed to be large
+     enough to store the item.
+
+(a) Days in a month     //char
+(b) Days in a year      //short
+(c) Minutes in a day    //short
+(d) Seconds in a day    //int   /*** long ***/
+
+7. For each of the following character escapes, give the equivalent octal
+     escape. Assume the character set is ASCII.
+
+(a) /b  // \10
+(b) /n  // \12
+(c) /r  // \15
+(d) /t  // \11
+
+8. Repeat Exercise 7, but give the equivalent hexadecimal escape.
+
+(a) /b  // \x08
+(b) /n  // \x0a
+(c) /r  // \x0d
+(d) /t  // \x09
+
+9. Suppose that i and j are variables of type int. What is the type of the
+     expression i / j + 'a'?
+
+int, as char is already actually an int type
+
+10. Suppose that i is a variable of type int, j is a variable of type long, and
+     k is a variable of type unsigned int. What is the type of the expression
+     i + (int) j * k?
+
+j is cast as an int type, leaving only int and unsigned int variables. The
+     usual arithmetic operations will convert int variables to unsigned int.
+
+11. Suppose that i is a variable of type int, f is a variable of type float,
+     and d is a variable of type double. What is the type of the expression
+     i * f / d?
+
+The type of the expression will be a double.
+
+12. Suppose that i is a variable of type int, f is a variable of type float,
+     and d is a variable of type double. Explain what conversions take place
+     during the following statement:  d = i + f;
+
+
+Usual arithmetic conversions will convert operands to the narrowest type that
+     will hold both values. i will be converted to float so that i + f will
+     not be truncated. d will then hold the value of i + f, but will stay a
+     double type as the type on the right side of assignment will become the
+     type on the left side.
+
+13. Assume that a program contains the following declarations:
+    char c = '\1';  //numeric escape using octal (0 not required in escape)
+    short s = 2;
+    int i = -3;
+    long m = 5;
+    float f = 6.5f;
+    double d = 7.5;
+    Give the value and the type of each expression listed below.
+
+(a) c * i   // -3 int
+(b) s + m   // 7 long
+(c) f / c   // 6.5f float
+(d) d / s   // 3.75 double
+(e) f - d   // -1.0 double
+(f) (int) f // 6 int
+
+14. Does the following statement always compute the fractional part of f
+     correctly (assuming that f and frac_part are float variables)?
+
+     frac_part = f - (int) f;
+
+     if not, what is the problem?
+
+If f is negative, frac_part will also be negative, but the digits will be
+     correct.   /*** integer overflow may occur if f is too large for int to
+     support ***/   //if overflow happens with signed integers, the programs
+     //behavior is undefined. if unsigned, we get the answer modulo 2e^n, where
+     //n is the number of storage bits
+
+15.
