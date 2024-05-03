@@ -1019,4 +1019,7 @@ If f is negative, frac_part will also be negative, but the digits will be
      //behavior is undefined. if unsigned, we get the answer modulo 2e^n, where
      //n is the number of storage bits
 
-15.
+15. Use typedef to create types named Int8, Int16, and Int32. Define the types
+     so that they represent 8-bit, 16-bit, and 32-bit integers on your machine.
+
+
