@@ -845,7 +845,7 @@ printf in C99 is capable of displaying size_t values directly without a cast
 
 printf("Size of int: %zu\n", sizeof (int));
 
-//			    ADDITIONAL NOTES
+//			                ADDITIONAL NOTES
 
 a hex constant begins with 0x or 0X
 must contain an exponent, which is preceded by the letter P, or p
@@ -1022,4 +1022,189 @@ If f is negative, frac_part will also be negative, but the digits will be
 15. Use typedef to create types named Int8, Int16, and Int32. Define the types
      so that they represent 8-bit, 16-bit, and 32-bit integers on your machine.
 
+#typedef short Int8     /*** char holds 8-bits ***/
+#typedef int Int16      /*** short ***/
+#typedef long Int32     /*** int ***/
+
+/*** CHAPTER                    7                     PROGRAMMING PROJECTS ***/
+
+1. Run square2.c and determine the smallest value of n that causes failure. Try
+     changing the type of i to short and run the program again. Then try long.
+     What can you conclude about the number of bits used to store integer types
+     on your machine?
+
+n = 46341 is the smallest value that causes an error. As a short, n = 182. As a
+     long, n = 46341. As an int and a long, the program begins to fail once the
+     calculated value attempts to surpass 2,147,483,647, hence int and long are
+     32-bit types on my machine. As a short, the program fails once the value
+     attempts to go above 32,767, hence short is a 16-bit type on my machine.
+
+2. Modify square2.c so that it pauses after every 24 squares and displays the
+     following message: "Press Enter to continue...". The program should use
+     getchar to read a character. getchar will not allow the program to
+     continue until the user presses the Enter key.
+
+#include <stdio.h>
+
+int main(void)
+{
+    char c;
+    short i, n;
+
+    printf("This program prints a table of squares.\n");
+    printf("Enter number of entries in table: ");
+    scanf("%d", &n);
+    getchar();
+
+    for (i = 1; i <= n; i++) {
+        printf("%10hd%10hd\n", i, i * i);
+        if (i % 24 == 0) {
+            printf("Press Enter to continue...\n");
+            do {                    //unnecessary line
+                putchar(c);         //unnecessary line
+            } while (getchar() != '\n');
+        }
+    }
+
+    return 0;
+}
+
+3. Modify sum2.c to sum a series of double values.
+
+#include <stdio.h>
+
+int main(void)
+{
+	double n, sum = 0;
+
+	printf("This program sums numbers.\n");
+	printf("Enter numbers (0 to terminate): ");
+
+	scanf("%lf", &n);
+	while (n != 0) {
+		sum += n;
+		scanf("%lf", &n);
+	}
+	printf("The sum is : %f\n", sum);
+
+	return 0;
+}
+
+4. Write a program that translates an alphabetic phone number into numeric
+     form: "Enter phone number: _CALLATT_\n2255288". If the original phone
+     number contains nonalphabetic characters, leave them unchanged: "Enter
+     phone number: _1-800-COL-LECT_\n1-800-265-5328". You may assume that any
+     letters entered by the user are upper case.
+
+#include <stdio.h>
+#include <ctype.h>
+
+int main(void)
+{
+	char c;
+
+	printf("Enter phone number: ");
+
+	for (;;) {
+        scanf("%c", &c);
+        c = toupper(c);
+
+        if (c >= '0' && c <= '9')
+            putchar(c);
+
+        else if (c == '-')
+            putchar(c);
+
+        else if (toupper(c) >= 'A' && toupper(c) <= 'Z')
+            switch (c) {
+                case 'A': case 'B': case 'C':
+                        printf("2");
+                        break;
+                case 'D': case 'E': case 'F':
+                        printf("3");
+                        break;
+                case 'G': case 'H': case 'I':
+                        printf("4");
+                        break;
+                case 'J': case 'K': case 'L':
+                        printf("5");
+                        break;
+                case 'M': case 'N': case 'O':
+                        printf("6");
+                        break;
+                case 'P': case 'Q': case 'R': case 'S':
+                        printf("7");
+                        break;
+                case 'T': case 'U': case 'V':
+                        printf("8");
+                        break;
+                case 'W': case 'X': case 'Y': case 'Z':
+                        printf("9");
+                        break;
+                }
+
+        else if (c == '\n')
+            break;
+
+        else
+            continue;
+	}
+	return 0;
+}
+
+5. Write a program that computes the value of a SCRABBLE word by summing the
+     face values of its letters. (Face values: 1: AEILNORSTU 2: DG 3: BCMP
+     4: FHVWY 5: K 8: JX 10: QZ)
+
+#include <stdio.h>
+#include <ctype.h>
+
+int main(void)
+{
+	char l;     //letter value
+    short w;    //word value
+
+	printf("Enter a word: ");
+
+    for (;;) {
+        scanf("%c", &l);
+        l = toupper(l);
+
+        if (l >= 'A' && l <= 'Z')
+            switch (l) {
+                case 'A': case 'E': case 'I': case 'L': case 'N':
+                case 'O': case 'R': case 'S': case 'T': case 'U':
+                    w += 1;
+                    break;
+                case 'D': case 'G':
+                    w += 2;
+                    break;
+                case 'B': case 'C': case 'M': case 'P':
+                    w += 3;
+                    break;
+                case 'F': case 'H': case 'V': case 'W': case 'Y':
+                    w += 4;
+                    break;
+                case 'K':
+                    w += 5;
+                    break;
+                case 'J': case 'X':
+                    w += 8;
+                    break;
+                case 'Q': case 'Z':
+                    w += 10;
+                    break;
+        }
+
+        else if (l == '\n')
+            break;
+    }
+
+    printf("Scrabble value: %hd", w);
+
+	return 0;
+}
+
+6. Write a program that prints the values of sizeof(int), sizeof(short),
+     sizeof(long), sizeof(float), sizeof(double), and sizeof(long double).
 
