@@ -1275,3 +1275,134 @@ int main(void)
      clock. The input will have the form "hours:minutes" followed by either A,
      P, AM, or PM. White space is allowed but not required.
 
+#include <stdio.h>
+
+int main(void)
+{
+    short uh, um, ct;      //users entered hours, user minutes: converted time
+    char mer;                //meridiem
+
+    printf("Enter a 12-hour time: ");
+    scanf("%2hd:%2hd %c", &uh, &um, &mer);
+
+    if (mer == 'P' || mer == 'p')
+        ct = (((uh * 60) + um) + 720);
+    else if (mer == 'A' || mer == 'a')
+        ct = ((uh * 60) + um);
+    else
+        printf("Invalid time.\n");
+
+    if (ct <= 531)
+        printf("Closest departure time is 8:00 a.m. arriving at 10:16 a.m.\n");
+    else if (ct >=532 && ct <= 630)
+        printf("Closest departure time is 9:43 a.m. arriving at 11:52 a.m.\n");
+    else if (ct >=631 && ct <= 722)
+        printf("Closest departure time is 11:19 a.m. arriving at 1:31 p.m.\n");
+    else if (ct >=723 && ct <= 803)
+        printf("Closest departure time is 12:47 p.m. arriving at 3:00 p.m.\n");
+    else if (ct >=804 && ct <= 892)
+        printf("Closest departure time is 2:00 p.m. arriving at 4:08 p.m.\n");
+    else if (ct >=893 && ct <= 1042)
+        printf("Closest departure time is 3:45 p.m. arriving at 5:55 p.m.\n");
+    else if (ct >=1043 && ct <= 1139)
+        printf("Closest departure time is 7:00 p.m. arriving at 9:20 p.m.\n");
+    else if (ct >=1139 && ct <= 1439)
+        printf("Closest departure time is 9:45 p.m. arriving at 11:58 p.m.\n");
+    else
+        printf("Invalid time.\n");
+
+    return 0;
+}
+
+9. Write a program that asks the user for a 12-hour time, then displays the
+     time in 24-hour form.
+
+#include <stdio.h>
+
+int main(void)
+{
+    char mer;           //meridiem
+    short uh, um, ch;   //users hours, user minutes, converted hours
+
+    printf("Enter a 12-hour time: ");
+    scanf("%hd:%hd %c", &uh, &um, &mer);
+
+    if (mer == 'P' || mer == 'p')
+        if (uh == 12)
+            ch = (uh + 1);
+        else
+            ch = (uh + 12);
+    else if (mer == 'A' || mer == 'a')
+        ch = uh;
+    else
+        printf("Invalid time.\n");
+
+    printf("Equivalent 24-hour time: %hd:%hd%\n", ch, um);
+
+    return 0;
+}
+
+10. Write a program that counts the number of vowels in a sentence.
+
+#include <stdio.h>
+#include <ctype.h>
+
+int main(void)
+{
+    char ch;           //character
+    int vc = 0;        //vowel count
+
+    printf("Enter a message: ");
+
+    ch = getchar();
+    while (ch != '\n') {
+        ch = toupper(ch);
+        if (ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U')
+            vc++;
+        ch = getchar();
+    }
+
+    printf("Your sentence contains %d vowels.\n", vc);
+
+    return 0;
+}
+
+11. Write a program that takes a first name and last name entered by the user
+     and displays the last name, a comma, and the first initial, followed by a
+     period. The users input may contain extra spaces before the first name,
+     between the first and last names, and after the last name.
+
+#include <stdio.h>
+
+int main(void)
+{
+    char ch, fn = 0, ln = 0;    //character, first name, last name
+
+    printf("Enter a first and last name: ");
+
+    while ((ch = getchar()) != '\n') {
+        if (!fn && ch >= 'A' && ch <= 'Z') {
+            fn = ch;
+            }
+
+        else if (fn && !ln && ch >= 'A' && ch <= 'Z') {
+            ln = ch;
+            putchar(ch);
+            }
+
+        else if (fn && ln)
+            putchar(ch);
+
+        else
+            ch = getchar();
+    }
+
+    printf(", %c.\n", fn);
+
+    return 0;
+}
+
+
+12. Write a program that evaluates an expression. The operands in the
+     expression is evaluated from left to right (as in no operator precedence).
+
