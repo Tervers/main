@@ -830,8 +830,7 @@ sizeof (i + j) is also 4
 when applied to an expression, sizeof does not require parentheses (sizeof i)
 they may still be necessary due to operator precedence
 sizeof i + j would be read as (sizeof i) + j
-the type of a sizeof expression is an implementation-defined type named size_t
-
+the type of sizeof is size_t, which is an implementation-defined type
 in C89, it ls best to convert the value of an expression to a known type
     before printing
 size_t is guaranteed to be unsigned, so its safest to cast a sizeof expression
@@ -1207,4 +1206,72 @@ int main(void)
 
 6. Write a program that prints the values of sizeof(int), sizeof(short),
      sizeof(long), sizeof(float), sizeof(double), and sizeof(long double).
+
+#include <stdio.h>
+
+int main()
+{
+    /***                                C89                                ***/
+    printf("Size of char: %hu\n", (unsigned char) sizeof(char));
+    printf("Size of short: %hu\n", (unsigned char) sizeof(short));
+    printf("Size of int: %hu\n", (unsigned char) sizeof(int));
+    printf("Size of long: %hu\n", (unsigned char) sizeof(long));
+    printf("Size of float: %hu\n", (unsigned char) sizeof(float));
+    printf("Size of double: %hu\n", (unsigned char) sizeof(double));
+    printf("Size of long double: %hu\n\n", (unsigned char) sizeof(long double));
+
+    /***                                C99                                ***/
+    printf("Size of char: %zu\n", sizeof (char));
+    printf("Size of short: %zu\n", sizeof (short));
+    printf("Size of int: %zu\n", sizeof (int));
+    printf("Size of long: %zu\n", sizeof (long));
+    printf("Size of float: %zu\n", sizeof (float));
+    printf("Size of double: %zu\n", sizeof (double));
+    printf("Size of long double: %zu\n", sizeof (long double));
+
+    return 0;
+}
+
+7. Modify Chapter 3, Project 6 so that the user may add, subtract, multiply, or
+     divide two fractions (by entering either +, -, *, or / between fractions)
+
+#include <stdio.h>
+
+int main(void)
+{
+    char sym;
+    int num1, denom1, num2, denom2, result_num, result_denom;
+
+    printf("Enter two fractions to calculate with +, -, *, or /: ");
+    scanf("%d/%d %c %d/%d", &num1, &denom1, &sym, &num2, &denom2);
+
+    switch (sym) {
+        case '+':
+            result_num = num1 * denom2 + num2 * denom1;
+            result_denom = denom1 * denom2;
+            printf("The sum is %d/%d\n", result_num, result_denom);
+            break;
+        case '-':
+            result_num = num1 * denom2 - num2 * denom1;
+            result_denom = denom1 * denom2;
+            printf("The difference is %d/%d\n", result_num, result_denom);
+            break;
+        case '*':
+            result_num = num1 * num2;
+            result_denom = denom1 * denom2;
+            printf("The product is %d/%d\n", result_num, result_denom);
+            break;
+        case '/':
+            result_num = num1 * denom2;
+            result_denom = denom1 * num1;
+            printf("The quotient is %d/%d\n", result_num, result_denom);
+            break;
+    }
+
+    return 0;
+}
+
+8. Modify Chapter 5, Project 8 so that the user enters a time using the 12-hour
+     clock. The input will have the form "hours:minutes" followed by either A,
+     P, AM, or PM. White space is allowed but not required.
 
