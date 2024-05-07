@@ -193,7 +193,7 @@ a double-precision numbers has a max value of about 1.79 x 10e308, with a
     precision of about 15 decimal digits
 the IEEE standard also describes single extended precision and double extended
     precision formats
-it doesn't specify the number of bits in these formats, although it requires
+it does not specify the number of bits in these formats, although it requires
     single extended type occupy at least 43 bits, and double extended type at
     least 79 bits
 not all machines follow IEEE standards
@@ -1513,3 +1513,29 @@ int main()
     (g) repeat part (a), with an long double instead.
     (e-g will show a close approximation of the factorial, not the exact value)
 
+#include <stdio.h>
+
+int main()
+{
+    typedef short Vtype;
+    short n, i = 1;      //user entered integer n, increment i
+    Vtype f = 1.0;    //factorial of n
+
+    printf("Enter a positive integer: ");
+    scanf("%hd", &n);
+
+    for (; i <= n; i++)
+        f *= i;
+
+    printf("Factorial of %hd", f);  //conv specs %hd %d %ld %lld %f %lf
+
+    return 0;
+}
+
+(a) using short, the largest value of n that prints correctly is 7
+(b) using int, the largest value of n is 12
+(c) using long, 12
+(d) long long 20
+(e) float 13, due to loss of precision
+(f) double 21, although 22 was only off by about 0.1e-15
+(g) long double unable to generate valuable answer (IDE/compiler error?)
