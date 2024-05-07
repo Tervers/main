@@ -1239,13 +1239,13 @@ int main()
 
 int main(void)
 {
-    char sym;
-    int num1, denom1, num2, denom2, result_num, result_denom;
+    char op;        //operator
+    int num1, denom1, num2, denom2, result_num, result_denom;  //numerator
 
     printf("Enter two fractions to calculate with +, -, *, or /: ");
-    scanf("%d/%d %c %d/%d", &num1, &denom1, &sym, &num2, &denom2);
+    scanf("%d/%d %c %d/%d", &num1, &denom1, &op, &num2, &denom2);
 
-    switch (sym) {
+    switch (op) {
         case '+':
             result_num = num1 * denom2 + num2 * denom1;
             result_denom = denom1 * denom2;
@@ -1405,4 +1405,111 @@ int main(void)
 
 12. Write a program that evaluates an expression. The operands in the
      expression is evaluated from left to right (as in no operator precedence).
+
+#include <stdio.h>
+
+int main()
+{
+    float cv = 0.0f, no = 0.0f;   //current value, new operand
+    char op;        //operator
+
+    printf("Enter an expression: ");
+    scanf("%f", &no);
+    cv = no;
+
+    while ((scanf("%c", &op))) {
+        switch (op){
+            case '+':
+                scanf("%f", &no);
+                cv += no;
+                break;
+            case '-':
+                scanf("%f", &no);
+                cv -= no;
+                break;
+            case '*':
+                scanf("%f", &no);
+                cv *= no;
+                break;
+            case '/':
+                scanf("%f", &no);
+                cv /= no;
+                break;
+            case '\n':
+                printf("Value of expression: %f", cv);
+                return 0;
+        }
+    }
+}
+
+13. Write a program that calculates the average word length for a sentence. For
+     simplicity, your program should consider a punctuation mark to be part of
+     the word to which it is attached. Display the average word length to one
+     decimal place.
+
+#include <stdio.h>
+
+int main()
+{
+    char ch;                //character
+    float lc, wc = 1.0f;    //letter count, word count
+
+    printf("Enter a sentence: ");
+
+    while ((scanf("%c", &ch))) {
+        lc++;
+        if (ch == ' ') {
+            lc--;
+            wc++;
+        }
+        if (ch == '\n') {
+            lc--;
+            printf("Average word length: %f\n", (lc / wc));
+            return 0;
+        }
+    }
+}
+
+14. Write a program that uses Newtons method to compute the square root of a
+     positive floating-point number. Let x be the number entered by the user.
+     Newtons method requires an initial guess y for the square root of x (we
+     will use y = 1). Successive guesses are found by computing the average of
+     y and x/y. For greater accuracy, your program should use double rather
+     than float. Have the program terminate when the absolute value of the
+     difference between the old value of y and the new value of y is less than
+     the product of .00001 and y.
+
+#include <stdio.h>
+#include <math.h>
+
+int main()
+{
+    int x;              //positive number
+    double y = 1.0f, xy = 1.0f, oy, avg; //y, xy, old y, average of y and x/y
+
+    printf("Enter a positive number: ");
+    scanf("%d", &x);
+
+    for (;;) {
+        xy = (x / y);
+        avg = ((y + (x / y)) / 2);
+        y = avg;
+
+        if ((fabs(avg - xy) < fabs(0.00001f * y))) {
+            printf("Square root: %lf\n", y);
+            return 0;
+        }
+    }
+}
+
+15. Write a program that computes the factorial of a positive integer.
+    (a) Use a short to store the factorial. What is the largest value of n for
+            which the program correctly prints the factorial of n?
+    (b) repeat part (a), with an int instead.
+    (c) repeat part (a), with an long instead.
+    (d) repeat part (a), with an long long instead.
+    (e) repeat part (a), with an float instead.
+    (f) repeat part (a), with an double instead.
+    (g) repeat part (a), with an long double instead.
+    (e-g will show a close approximation of the factorial, not the exact value)
 
