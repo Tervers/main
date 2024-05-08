@@ -147,3 +147,33 @@ int main(void)
 
     return 0;
 }
+
+//                          ARRAY INITIALIZATION
+
+an array can be given an initial value at declaration
+the most common form of "array initializer" is a list of constant expressions
+    enclosed in braces and separated by commas:
+
+int a[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+if the initializer list is shorter than the array, the remaining elements are
+    given the value 0:
+
+int a[10] = {1, 2, 3, 4, 5, 6};
+    /* initial value of a is {1, 2, 3, 4, 5, 6, 0, 0, 0, 0} */
+
+initializing an array to all zeros:
+
+int a[10] = {0};
+    /* initial value of a is {0, 0, 0, 0, 0, 0, 0, 0, 0, 0} */
+
+an initializer cannot be completely empty ( {} wrong : {0} okay )
+an initializer cannot be longer than the array it initializes
+if an initializer is present, the length of the array can be omitted:
+
+int a[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+the array in the above example still has a fixed number of elements
+
+//                          DESIGNATED INITIALIZERS
+
