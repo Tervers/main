@@ -177,3 +177,174 @@ the array in the above example still has a fixed number of elements
 
 //                          DESIGNATED INITIALIZERS
 
+often only a few elements of an array need to be initialized, while the other
+    elements can be given default values:
+
+int a[15] = {0, 0, 29, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 48};
+
+for a large array, writing an initializer this way is tedious and error-prone
+    (what if there were 200 zeros between two of the non-zero values?)
+"designated initializers" solve this problem:
+
+int a[15] = {[2] = 29, [9] = 7, [14] = 48};
+
+each number within brackets is said to be a "designator"
+the order in which elements are listed no longer matter when using designators:
+
+int a[15] = {[14] = 48, [9] = 7, [2] = 29};
+
+designators must be integer constant expressions
+if an array is given length 'n', each designator must be between 0 and 'n' - 1
+if the length of the array is omitted, then a designator can be any nonnegative
+    integer (the compiler will deduce the length of the array):
+
+int b[] = {[5] = 10, [23] = 13, [11] = 36, [15] = 29};//array length will be 24
+
+an initializer can use both the element-by-element technique, or the designator
+    technique:
+
+int c[10] = {5, 1, 9, [4] = 3, 7, 2, [8] = 6};
+
+//                          CHECKING A NUMBER FOR REPEATED DIGITS
+
+this program checks whether any of the digits in a number appear more than once
+the program will print either "Repeated digit" or "No repeated digit"
+
+Enter a number: _28212_
+Repeated digit
+
+the program uses an array of Boolean values to keep track of which digits
+    appear in a number
+
+//                          repdigit.c - CHECKS NUMBERS FOR REPEATED DIGITS
+
+#include <stdbool.h>    /* C99 only */
+#include <stdio.h>
+
+int main(void)
+{
+    bool digit_seen[10] = {false};
+    int digit;
+    long n;
+
+    printf("Enter a number: ");
+    scanf("%ld", &n);
+
+    while (n > 0) {
+        digit = n % 10;
+        if (digit_seen[digit])
+            break;
+        digit_seen[digit] = true;
+        n /= 10;
+    }
+
+    if (n > 0)
+        printf("Repeated digit\n");
+    else
+        printf("No repeated digit\n");
+
+    return 0;
+}
+
+//                          USING THE sizeof OPERATOR WITH ARRAYS
+
+sizeof can be used to determine the size of an array
+if 'a' is an array of 10 integers, then sizeof(a) is typically 40 (assuming
+    each integer requires four bytes)
+sizeof can also measure the size of an array element, such as a[0]
+dividing the array size by the element size gives the length of the array:
+
+sizeof(a) / sizeof(a[0])
+
+this expression is useful for when the length of the array is needed
+to clear the array 'a', we could write:
+
+for (i = 0; i < sizeof(a) / sizeof(a[0]); i++)
+    a[i] = 0;//loop sets a[0] to 0, then sets a[1] to 0, then sets a[2] to 0...
+
+this technique allows the loop to stay unmodified should the length of the
+    array change later
+you can also use a macro to represent the array length, but sizeof is slightly
+    better to use since there is no macro name to remember
+some compilers produce a warning message for the expression
+    i < sizeof(a) / sizeof(a[0])
+this is because 'i' is probably type int, whereas sizeof produces a value of
+    type size_t (an unsigned type)
+this is not an issue here since both ('i') and (sizeof(a) / sizeof(a[0])) have
+    nonnegative values
+to avoid a warning, convert (sizeof(a) / sizeof(a[0])) to a signed integer
+    using cast:
+
+for (i = 0; i < (int) (sizeof(a) / sizeof(a[0])); i++)
+    a[i] = 0;
+
+writing (int) (sizeof(a) / sizeof(a[0]) is a bit cumbersome, so defining a
+    macro for it is helpful:
+
+#define SIZE ((int) (sizeof(a) / sizeof(a[0])))
+
+for (i = 0; i < SIZE; i++)
+    a[i] = 0;
+
+//                          COMPUTING INTEREST
+
+this next program shows the value of $100 invested at different rates of
+    interest over a period of years
+a session with the program will look like this:
+
+Enter interest rate: _6_
+Enter number of years: _5_
+
+Years     6%     7%     8%     9%    10%
+  1     106.00 107.00 108.00 109.00 110.00
+  2     112.36 114.49 116.64 118.81 121.00
+  3     119.10 122.50 125.97 129.50 133.10
+  4     126.25 131.08 126.05 141.16 146.41
+  5     133.82 140.26 146.93 153.86 161.05
+
+//              `           interest.c - PRINTS A TABLE OF COMPOUND INTEREST
+
+#include <stdio.h>
+
+#define NUM_RATES ((int) (sizeof(value) / sizeof(value[0])))
+#define INITIAL_BALANCE 100.00
+
+int main(void)
+{
+    int i, low_rate, num_years, year;
+    double value[5];
+
+    printf("Enter interest rate: ");
+    scanf("%d", &low_rate);
+    printf("Enter number of years: ");
+    scanf("%d", &num_years);
+
+    printf("\nYears");
+    for (i = 0; i < NUM_RATES; i++) {
+        printf("%6d%%", low_rate + i); //prints interest rate to right of Years
+        value[i] = INITIAL_BALANCE; //sets the value of each element to 100.00
+    }
+    printf("\n");
+
+    for (year = 1; year <= num_years; year++) {
+        printf("%3d    ", year);
+        for (i = 0; i < NUM_RATES; i++) {
+            value[i] += (low_rate + i) / 100.0 * value[i];//calculates interest
+            printf("%7.2f", value[i]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
+
+the idea is to store the first row as an array as it is computed, then use the
+    values in the array to compute the second row
+this process can be repeated for the third and later rows
+one for statement will be nested inside another
+the outer loop will count from 1 to the number of years requested by the user
+the inner loop will increment the interest rate from its lowest value to its
+    highest value
+
+/*** CHAPTER                  8.2                  MULTIDIMENSIONAL ARRAYS ***/
+
