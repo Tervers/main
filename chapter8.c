@@ -175,7 +175,7 @@ int a[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
 the array in the above example still has a fixed number of elements
 
-//                          DESIGNATED INITIALIZERS
+//                          C99 - DESIGNATED INITIALIZERS
 
 often only a few elements of an array need to be initialized, while the other
     elements can be given default values:
@@ -404,4 +404,7 @@ if an initializer is not large enough to fill a multi-dimensional array, the
 if an inner list is not long enough to fill a row, the remaining elements in
     the row are initialized to 0
 the inner braces may be omitted (some compilers may produce a warning)
+designated initializers work with multi-dimensional arrays:
+
+double ident[2][2] = {[0][0] = 1.0, [1][1] = 1.0};	//2x2 identity matrix
 
