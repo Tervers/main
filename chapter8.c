@@ -408,10 +408,43 @@ designated initializers work with multi-dimensional arrays:
 
 double ident[2][2] = {[0][0] = 1.0, [1][1] = 1.0};	//2x2 identity matrix
 
-//			    CONSTANT ARRAYS
+//			                CONSTANT ARRAYS
 
 arrays can be made "constant" by starting its declaration with const:
 
 const char hex_char[] =
     {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
      'A', 'B', 'C', 'D', 'E', 'F'};
+
+const declarations should not be modified by the program; the compiler will
+    detect direct attempts to modify an element
+const works with any variable
+
+//                          DEALING A HAND OF CARDS
+
+this next program deals a random hand from a standard deck of cards
+to pick cards randomly, we will use several C library functions
+time (<time.h>) returns the current time, encoded in a single number
+srand (<stdlib.h>) initializes the C random number generator
+passing the return value of time to srand prevents the program from dealing the
+    same cards every time we run it
+rand (<stdlib.h>) produces an apparently random number each time it is called
+by using the modulo (%) operator, we can scale the return value from rand so
+    that it falls between 0 and 3 (for suits) or between 0 and 12 (for ranks)
+array in_hand will keep track of which cards have already been chosen
+
+//                          deal.c - DEALS A RANDOM HAND OF CARDS
+
+#include <stdbool.h>    /* C99 only */
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define NUM_SUITS 4
+#define NUM_RANKS 13
+
+int main(void)
+{
+    bool in_hand[NUM_SUITS][NUM_RANKS] = {false};
+
+}
