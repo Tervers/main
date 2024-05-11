@@ -408,3 +408,10 @@ designated initializers work with multi-dimensional arrays:
 
 double ident[2][2] = {[0][0] = 1.0, [1][1] = 1.0};	//2x2 identity matrix
 
+//			    CONSTANT ARRAYS
+
+arrays can be made "constant" by starting its declaration with const:
+
+const char hex_char[] =
+    {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+     'A', 'B', 'C', 'D', 'E', 'F'};
