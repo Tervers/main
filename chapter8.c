@@ -327,7 +327,7 @@ int main(void)
     printf("\n");
 
     for (year = 1; year <= num_years; year++) {
-        printf("%3d    ", year);
+        printf("%3d    ", year); //first prints year
         for (i = 0; i < NUM_RATES; i++) {
             value[i] += (low_rate + i) / 100.0 * value[i];//calculates interest
             printf("%7.2f", value[i]);
@@ -347,4 +347,61 @@ the inner loop will increment the interest rate from its lowest value to its
     highest value
 
 /*** CHAPTER                  8.2                  MULTIDIMENSIONAL ARRAYS ***/
+
+an array may have any number of dimensions
+this following declaration creates a two-dimensional array (matrix):
+
+int m[5][9];
+
+array 'm' will have 5 rows and 9 columns
+both rows and columns are indexed from 0
+array 'm' visualized:
+
+  0 1 2 3 4 5 6 7 8
+0 _ _ _ _ _ _ _ _ _
+1 _ _ _ _ _ _ _ _ _
+2 _ _ _ _ _ _ _ _ _
+3 _ _ _ _ _ _ _ _ _
+4 _ _ _ _ _ _ _ _ _
+
+to access the element of m in row i, column j, we must write m[i][j]
+even though we visualize two-dimensional array as tables, they are stored in
+    memory in "row-major order":
+
+    row  0            row  1            row  2            row  3
+  /        \        /        \        /        \        /        \
+m[0,0]_..._m[0,8]_m[1,0]_..._m[1,8]_m[2,0]_..._m[2,8]_m[3,0]_..._m[3,8]_...
+
+nested for loops are ideal for processing multi-dimensional arrays
+this next example shows how to initialize an array as an "identity matrix":
+
+#define N 10
+
+double ident [N][N];
+int row, col;
+
+for (row = 0; row < N; row++)
+    for (col = 0; col < N; col++)
+    if (row == col)
+        ident[row][col] = 1.0;
+    else
+        ident[row][col] = 0.0;
+
+//                          INITIALIZING A MULTIDIMENSIONAL ARRAY
+
+you can initialize a two-dimensional array by nesting one-dimensional
+    initializers:
+
+int m[5][9] = {{1, 1, 1, 1, 1, 0, 1, 1, 1},
+               {0, 1, 0, 1, 0, 1, 0, 1, 0},
+               {0, 1, 0, 1, 1, 0, 0, 1, 0},
+               {1, 1, 0, 1, 0, 0, 0, 1, 0},
+               {1, 1, 0, 1, 0, 0, 1, 1, 1}};
+
+initializers for higher-dimensional arrays are constructed the same way
+if an initializer is not large enough to fill a multi-dimensional array, the
+    remaining elements are given the value 0
+if an inner list is not long enough to fill a row, the remaining elements in
+    the row are initialized to 0
+the inner braces may be omitted (some compilers may produce a warning)
 
