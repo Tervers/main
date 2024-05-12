@@ -446,5 +446,69 @@ array in_hand will keep track of which cards have already been chosen
 int main(void)
 {
     bool in_hand[NUM_SUITS][NUM_RANKS] = {false};
+    int num_cards, rank, suit;
+    const char rank_code[] = {'2', '3', '4', '5', '6', '7', '8',
+                              '9', 't', 'j', 'q', 'k', 'a'};
+    const char suit_code[] = {'c', 'd', 'h', 's'};
 
+    srand((unsigned) time(NULL));
+
+    printf("Enter number of cards in hand: ");
+    scanf("%d", &num_cards);
+
+    printf("Your hand:");
+    while (num_cards > 0) {
+            suit = rand() % NUM_SUITS;
+            rank = rand() % NUM_RANKS;
+            if (!in_hand[suit][rank]) {
+                in_hand[suit][rank] = true;
+                num_cards--;
+                printf(" %c%c", rank_code[rank], suit_code[suit]);
+            }
+        }
+        printf("\n");
+
+        return 0;
 }
+
+/*** CHAPTER                8.3               VARIABLE-LENGTH ARRAYS (C99) ***/
+
+in C89, an array variable must be specified by a constant expression
+in C99, it is sometimes possible to use an expression that is not constant:
+
+//                          reverse2.c - REVERSES A SERIES OF NUMBERS USING VLA
+
+#include <stdio.h>
+
+int main(void)
+{
+    int i, n;
+
+    printf("How many numbers do you want to reverse? ");
+    scanf("%d", &n);
+
+    int a[n];   /* C99 only */
+
+    printf("Enter %d numbers: ", n);
+    for (i = 0; i < n; i++)
+        scanf("%d", &a[i]);
+
+    printf("In reverse order:");
+    for (i = n - 1; i >= 0; i--)
+        printf(" %d", a[i]);
+    printf("\n");
+
+    return 0;
+}
+
+the length of a VLA can be a single variable or even arbitrary expressions:
+
+int a[3*i+5];
+int b[j+k];
+
+VLAs can also be multidimensional:
+
+int c[m][n];
+
+VLAs cannot have static storage duration (not yet discussed)
+VLAs may not have an initializer
