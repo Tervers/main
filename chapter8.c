@@ -201,9 +201,27 @@ if the length of the array is omitted, then a designator can be any nonnegative
 int b[] = {[5] = 10, [23] = 13, [11] = 36, [15] = 29};//array length will be 24
 
 an initializer can use both the element-by-element technique, or the designator
-    technique:
+    technique
+since the next element to be initialized is the one following the element that
+    was initialized last, take care when placing designators in a list using
+    the element-by-element technique:
 
 int c[10] = {5, 1, 9, [4] = 3, 7, 2, [8] = 6};
+
+elements 0, 1, and 2 will have the values 5, 1, and 9
+element 4 will have the value 3
+elements 5 and 6 will have values 7 and 2
+element 8 will have value 6
+all other values will be 0
+
+int a[] = {4, 9, 1, 8, [0] = 5, 7};
+
+element 0 is value 4
+element 1 is value 9
+element 2 is value 1
+element 3 is value 8
+element 0 is now 5
+element 1 is now 7  //next element to be initialized follows the last one
 
 //                          CHECKING A NUMBER FOR REPEATED DIGITS
 
@@ -512,3 +530,11 @@ int c[m][n];
 
 VLAs cannot have static storage duration (not yet discussed)
 VLAs may not have an initializer
+
+/*** CHAPTER                          8                          EXERCISES ***/
+
+/*** CHAPTER                     8                    PROGRAMMING PROJECTS ***/
+
+1. Modify the repdigit.c program (Section 8.1) so that it shows which digits
+     (if any) were repeated.
+
