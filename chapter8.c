@@ -69,7 +69,6 @@ if a subscript goes out of bounds, it enters undefined behavior
 this often happens from forgetting an array with 'n' elements stops at 'n' - 1:
 
 int a[10], i;                   /*** BAD CODE ***/
-                                /*** BAD CODE ***/
 for (i = 0; i <= 10; i++)       /*** BAD CODE ***/
     a[i] = 0;                   /*** BAD CODE ***/
 
@@ -554,7 +553,7 @@ int main(void)
         digit = n % 10;
         if (digit_seen[digit]) {
             repdigit[digit] = true;
-	    repcheck = true;
+            repcheck = true;
 	    }
         digit_seen[digit] = true;
         n /= 10;
@@ -567,7 +566,6 @@ int main(void)
 	    return 0;
     }
 
-
     for (int i = 0; i < (sizeof(repdigit) / sizeof(repdigit[0])); i++)
             if (repdigit[i])
                 printf(" %d", i);
@@ -576,3 +574,38 @@ int main(void)
 
     return 0;
 }
+
+2. Modify the repdigit.c program so that it prints a table showing how many
+     times each digit appears in the number.
+
+#include <stdio.h>
+
+int main(void)
+{
+    int digit, digit_seen[10] = {0};
+    long n;
+
+    printf("Enter a number: ");
+    scanf("%ld", &n);
+
+    while (n > 0) {
+        digit = n % 10;
+        digit_seen[digit] += 1;
+        n /= 10;
+    }
+
+    printf("Digit:        0  1  2  3  4  5  6  7  8  9\n");
+    printf("Occurrences:");
+
+    for (int i = 0; i < (sizeof(digit_seen) / sizeof(digit_seen[0])); i++)
+            printf("%3d", digit_seen[i]);
+
+    printf("\n");
+
+    return 0;
+}
+
+3. Modify repdigit.c so that the user can enter more than one number to be
+     tested for repeated digits. The program should terminate when the user
+     enters a number that is less than or equal to 0.
+
