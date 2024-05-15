@@ -609,3 +609,106 @@ int main(void)
      tested for repeated digits. The program should terminate when the user
      enters a number that is less than or equal to 0.
 
+#include <stdio.h>
+
+#define SIZE (int) (sizeof(digit_seen) / sizeof(digit_seen[0]))
+
+int main(void)
+{
+    int digit, digit_seen[10] = {0};
+    long n;
+
+    printf("Enter a number: ");
+
+    for (;;) {
+        scanf("%ld", &n);
+        if (n <= 0)
+            break;
+        while (n > 0) {
+            digit = n % 10;
+            digit_seen[digit] += 1;
+            n /= 10;
+        }
+    }
+
+    printf("Digit:        0  1  2  3  4  5  6  7  8  9\n");
+    printf("Occurrences:");
+
+    for (int i = 0; i < SIZE; i++)
+            printf("%3d", digit_seen[i]);
+
+    printf("\n");
+
+    return 0;
+}
+
+4. Modify the reverse.c program (Section 8.1) to use the expression
+     (int) (sizeof(a) / sizeof(a[0])) (or a macro with this value) for the
+     array length.
+
+#include <stdio.h>
+
+#define N 10
+#define SIZE (int) (sizeof(a) / sizeof(a[0]))
+
+int main(void)
+{
+    int a[N], i;
+
+    printf("Enter %d numbers: ", N);
+    for (i = 0; i < SIZE; i++)
+        scanf("%d", &a[i]);
+
+    printf("In reverse order:");
+    for (i = SIZE - 1; i >= 0; i--)
+        printf(" %d", a[i]);
+    printf("\n");
+
+    return 0;
+}
+
+5. Modify the interest.c program (Section 8.1) so that it compounds interest
+     monthly instead of annually. The form of the output should not change, the
+     balance should still be shown at annual intervals.
+
+#include <stdio.h>
+
+#define NUM_RATES ((int) (sizeof(value) / sizeof(value[0])))
+#define INITIAL_BALANCE 100.00
+
+int main(void)
+{
+    int m, i, low_rate, num_years, year;
+    double value[5];
+
+    printf("Enter interest rate: ");
+    scanf("%d", &low_rate);
+    printf("Enter number of years: ");
+    scanf("%d", &num_years);
+
+    printf("\nYears");
+    for (i = 0; i < NUM_RATES; i++) {
+        printf("%6d%%", low_rate + i); //prints interest rate to right of Years
+        value[i] = INITIAL_BALANCE; //sets the value of each element to 100.00
+    }
+    printf("\n");
+
+    for (year = 1; year <= num_years; year++) {
+        printf("%3d    ", year); //first prints year
+        for (i = 0; i < NUM_RATES; i++) {
+            for (m = 1; m <= 12; m++) {
+                value[i] += (((low_rate + i) / 100.0) / 12) * value[i];
+                }
+            printf("%7.2f", value[i]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
+
+6. Write a "B1FF filter" that reads a message entered by the user and
+     translates it into B1FF-speak. Your program should convert the message to
+     upper-case, substitute letters for certain letters (A -> 4, B -> 8, E -> 3
+     I -> 1, O -> 0, S -> 5), and then append 10 or so exclamation marks.
+

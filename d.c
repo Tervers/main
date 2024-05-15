@@ -1,34 +1,31 @@
 #include <stdio.h>
+#include <ctype.h>
 
 int main(void)
 {
-    int i, n = 1, digit, digit_seen[10] = {0};
-    long user_numbers[n];
+    int l = 1, i = 0;
+    char m[l];  //message [l]ength
 
-    printf("Enter any amount of numbers (0 or less to stop): ");
+    printf("Enter message: \n");
 
-    for (i = 0;;i++, n++) {
-        scanf(" %ld", &user_numbers[i]);
-        if (user_numbers[i] <= 0) {
-            n--;
-            break;
-        }
+    while (m[i] = getchar() != '\n') {
+        l++;
+        i++;
     }
+    /*
+    for (int i = 0;;i++) {
+        m[i] = getchar();
+        m[i] = toupper(m[i]);
+        l++;
+    }
+    */
 
-    for (i = 0; i < n; i++)
-            while (user_numbers[i] > 0) {
-                digit = user_numbers[i] % 10;
-                digit_seen[digit] += 1;
-                user_numbers[i] /= 10;
-            }
+    l--;
 
-    printf("Digit:        0  1  2  3  4  5  6  7  8  9\n");
-    printf("Occurrences:");
+    for (i = 0; i < l; i++)
+        putchar(m[i]);
 
-    for (i = 0; i < (int) (sizeof(digit_seen)) / (sizeof(digit_seen[0])); i++)
-            printf("%3d", digit_seen[i]);
-
-    printf("\n");
+    printf("characters: %d\n", l);
 
     return 0;
 }
