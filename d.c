@@ -6,26 +6,33 @@ int main(void)
     int l = 1, i = 0;
     char m[l];  //message [l]ength
 
-    printf("Enter message: \n");
+    printf("Enter message: ");
 
-    while (m[i] = getchar() != '\n') {
-        l++;
-        i++;
-    }
-    /*
     for (int i = 0;;i++) {
         m[i] = getchar();
+        if (m[i] == '\n')
+            break;
         m[i] = toupper(m[i]);
         l++;
     }
-    */
 
-    l--;
-
-    for (i = 0; i < l; i++)
+    for (i = 0; i < l; i++){
+        if (m[i] == 'A')
+            m[i] = '4';
+        if (m[i] == 'B')
+            m[i] = '8';
+        if (m[i] == 'E')
+            m[i] = '3';
+        if (m[i] == 'I')
+            m[i] = '1';
+        if (m[i] == 'O')
+            m[i] = '0';
+        if (m[i] == 'S')
+            m[i] = '5';
         putchar(m[i]);
+    }
 
-    printf("characters: %d\n", l);
+    printf("!!!!!!!!!!\n");
 
     return 0;
 }
