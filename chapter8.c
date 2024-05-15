@@ -712,3 +712,46 @@ int main(void)
      upper-case, substitute letters for certain letters (A -> 4, B -> 8, E -> 3
      I -> 1, O -> 0, S -> 5), and then append 10 or so exclamation marks.
 
+#include <stdio.h>     /*** CODE BREAKS AFTER ~15 CHARACTERS ***/
+#include <ctype.h>
+
+int main(void)
+{
+    int l = 1, i = 0;
+    char m[l];  //message [l]ength
+
+    printf("Enter message: ");
+
+    for (i = 0;;i++) {
+        l++;
+        m[i] = getchar();
+        if (m[i] == '\n')
+            break;
+    }
+
+    for (i = 0; i < l; i++){
+        m[i] = toupper(m[i]);
+        if (m[i] == 'A')
+            m[i] = '4';
+        if (m[i] == 'B')
+            m[i] = '8';
+        if (m[i] == 'E')
+            m[i] = '3';
+        if (m[i] == 'I')
+            m[i] = '1';
+        if (m[i] == 'O')
+            m[i] = '0';
+        if (m[i] == 'S')
+            m[i] = '5';
+        putchar(m[i]);
+    }
+
+    l--;
+
+    printf("!!!!!!!!!!\n");
+    return 0;
+}
+
+7. Write a program that reads a 5 x 5 array of integers and then prints the row
+     sums and the column sums.
+
