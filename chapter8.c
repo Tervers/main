@@ -729,6 +729,8 @@ int main(void)
             break;
     }
 
+    printf("In B1FF speak: ");
+
     for (i = 0; i < l; i++){
         m[i] = toupper(m[i]);
         if (m[i] == 'A')
@@ -754,4 +756,40 @@ int main(void)
 
 7. Write a program that reads a 5 x 5 array of integers and then prints the row
      sums and the column sums.
+
+#include <stdio.h>
+
+int main(void)
+{
+    int i, j, n;
+    long a[5][5] = {0}, row[5] = {0}, col[5] = {0};
+
+    for (i = 0, n = 1; i <= 4; n++, i++) {
+        printf("Enter row %d: ", n);
+        for (j = 0; j <= 4; j++) {
+            scanf(" %ld", &a[i][j]);
+        }
+    }
+
+    for (i = 0; i <= 4; i++) {
+        for (j = 0; j <= 4; j++) {
+            row[i] += a[i][j];
+            col[i] += a[j][i];
+        }
+    }
+
+    printf("Row totals:");
+    for (i = 0; i <= 4; i++)
+        printf(" %ld", row[i]);
+
+    printf("\nColumn totals:");
+    for (i = 0; i <= 4; i++)
+        printf(" %ld", col[i]);
+
+    return 0;
+}
+
+8. Modify Project 7 so that it prompts for five quiz grades for each of five
+     students, then computes the total score and average score for each
+     student, and the average score, high score, and low score for each quiz.
 
