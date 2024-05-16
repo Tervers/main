@@ -853,7 +853,118 @@ int main(void)
      right by one element. The elements visited by the program will be labeled
      A through Z, in the order visited.
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+
+#define X 10
+#define Y 10
+#define NoD 4   //Number of Directions
+
+int main(void)
+{
+    bool u = 0, r = 0, d = 0, l = 0;
+    short y, x, dir;
+    char grid[Y][X], walk = 'A';
+
+    srand((unsigned) time(NULL));
+
+    for (y = 0; y < Y; y++) {
+        for (x = 0; x < X; x++) {
+            grid[y][x] = '.';
+        }
+    }
+
+    for (y = 0, x = 0;;walk++) {
+        grid[y][x] = walk;
+        if (walk == 'Z') {
+            break;
+        }
+
+        retry:
+
+        if (u && r && d && l) {
+            printf("The walk was unable to finish it's course...\n\n");
+            break;
+        }
+
+        dir = rand() % NoD;
+
+        switch (dir) {
+            case 0:
+                if ((y - 1) < 0 || grid[y - 1][x] != '.') {
+                    u = 1;
+                    goto retry;
+                }
+                y--;
+                u = 0; r = 0; d = 1; l = 0;
+                break;
+
+            case 1:
+                if ((x + 1) > 9 || grid[y][x + 1] != '.') {
+                    r = 1;
+                    goto retry;
+                }
+                x++;
+                u = 0; r = 0; d = 0; l = 1;
+                break;
+
+            case 2:
+                if ((y + 1) > 9 || grid[y + 1][x] != '.') {
+                    d = 1;
+                    goto retry;
+                }
+                y++;
+                u = 1; r = 0; d = 0; l = 0;
+                break;
+
+            case 3:
+                if ((x - 1) < 0 || grid[y][x - 1] != '.') {
+                    l = 1;
+                    goto retry;
+                }
+                x--;
+                u = 0; r = 1; d = 0; l = 0;
+                break;
+            }
+        }
+
+    for (y = 0; y < Y; y++) {
+        for (x = 0; x < X; x++) {
+            printf("%c ", grid[y][x]);
+        }
+        printf("\n");
+    }
+    return 0;
+}
+
+10. Modify Chapter 5, Project 8 so that the departure times are stored in an
+     array and the arrival times are stored in a second array. The program will
+     use a loop to search the array of departure times for the one closest to
+     the time entered by the user.
+
+//Dep. times - 8:00am, 9:43am, 11:19am, 12:47pm, 2:00pm, 3:45pm, 7:00pm, 9:45pm
+//Ar. times - 10:16am, 11:52am, 1:31pm, 3:00pm, 4:08pm, 5:55pm, 9:20pm, 11:58pm
+
+#include <stdio.h>
+
+int main(void)
+{
+    short uh, um, ct, comp, i;//user hour, user minute, converted time, compare
+    short dep[8] = {480, 583, 679, 767, 840, 945, 1140, 1305};
+    short arr[8] = {616, 712, 811, 900, 968, 1075, 1280, 1438};
+
+    printf("Enter a 24-hour time: ");
+    scanf("%2hd:%2hd", &uh, &um);
+
+    ct = ((uh * 60) + um);
+
+    for (i = 0; i <= 8; i++){
+        if (!(comp % 2))
+            comp = (dep[i + 1] - dep[i]) / 2;
+
+    }
 
 
+}
