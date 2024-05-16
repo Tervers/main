@@ -848,8 +848,12 @@ int main(void)
 }
 
 9. Write a program that generates a "random walk" across a 10x10 array. The
-     array will contain characters (all '.' initially). The program must randomly
-     "walk" from element to element, always going up, down, left, or right by
-     one element. The elements visited by the program will be labeled A through
-     Z, in the order visited.
+     array will contain characters (all '.' initially). The program must
+     randomly "walk" from element to element, always going up, down, left, or
+     right by one element. The elements visited by the program will be labeled
+     A through Z, in the order visited.
+
+#include <stdio.h>
+#include <stdlib.h>
+
 
