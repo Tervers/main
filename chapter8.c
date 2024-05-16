@@ -960,9 +960,12 @@ int main(void)
 
     ct = ((uh * 60) + um);
 
-    for (i = 0; i <= 8; i++){
-        if (!(comp % 2))
-            comp = (dep[i + 1] - dep[i]) / 2;
+    if (ct < d[0])
+        printf("");
+
+    for (i = 0; i < 8; i++){
+            if (ct > (dep[i] + dep[i + 1]) / 2)
+                printf("");
 
     }
 
