@@ -944,82 +944,165 @@ int main(void)
      use a loop to search the array of departure times for the one closest to
      the time entered by the user.
 
-//Dep. times - 8:00am, 9:43am, 11:19am, 12:47pm, 2:00pm, 3:45pm, 7:00pm, 9:45pm
-//Ar. times - 10:16am, 11:52am, 1:31pm, 3:00pm, 4:08pm, 5:55pm, 9:20pm, 11:58pm
-
 #include <stdio.h>
 #include <ctype.h>
 
-#define AVG (dep[i + 1] - dep[i]) / 2)//the average between two departure times
+#define AVG (((dep[i + 1] - dep[i]) / 2) + dep[i])//the average between two departure times
 
 int main(void)
 {
     short uh, um, cm, i;//user hour, user minute, converted min
     short dep[8] = {480, 583, 679, 767, 840, 945, 1140, 1305};
     short arr[8] = {616, 712, 811, 900, 968, 1075, 1280, 1438};
+    char mer;
 
     printf("Enter a 12-hour time: ");
-    scanf("%2hd:%2hd", &uh, &um);
+    scanf("%2hd:%2hd %c", &uh, &um, &mer);
 
-    for (i = 0; i < 8; i++){
-            if (cm <= AVG && dep[i] < 720 && arr[i] < 720) {
-                    printf("Closest departure time is %hd:%hda.m.,", dep[i] / 60, dep[i] % 60);
-                    printf("arriving at %hd:%hda.m.\n", arr[i] / 60, arr[i] % 60);
-                    break;
-            }
-            if (cm >= AVG && dep[i] < 720 && arr[i] < 720) {
-                    printf("Closest departure time is %hd:%hda.m.,", dep[i] / 60, dep[i] % 60);
-                    printf("arriving at %hd:%hda.m.\n", arr[i] / 60, arr[i] % 60);
-                    break;
-            }
+    mer = toupper(mer);
 
+    if (mer == 'P' && uh != 12)
+        cm = (((uh * 60) + um) + 720);
+    else if (mer == 'A' || mer == 'P' && uh == 12)
+        cm = ((uh * 60) + um);
+    else
+        printf("Invalid time.\n");
 
-            if (cm <= AVG && dep[i] < 720 && arr[i] > 720 && arr[i] < 780) {
-                    printf("Closest departure time is %hd:%hda.m.,", dep[i] / 60, dep[i] % 60);
-                    printf("arriving at %hd:%hdp.m.\n", arr[i] / 60, arr[i] % 60);
-                    break;
-            }
-            if (cm >= AVG && dep[i] < 720 && arr[i] > 720 && arr[i] < 780) {
-                    printf("Closest departure time is %hd:%hda.m.,", dep[i] / 60, dep[i] % 60);
-                    printf("arriving at %hd:%hdp.m.\n", arr[i] / 60, arr[i] % 60);
-                    break;
-            }
+    printf("%hd\n", cm);
 
+    for (i = 0; i < 8; i++)
+        if (cm < AVG)
+            break;
 
-            if (cm <= AVG && dep[i] > 720 && dep[i] < 780 && arr[i] > 720 && arr[i] < 780) {
-                    printf("Closest departure time is %hd:%hdp.m.,", dep[i] / 60, dep[i] % 60);
-                    printf("arriving at %hd:%hdp.m.\n", arr[i] / 60, arr[i] % 60);
-                    break;
-            }
-            if (cm >= AVG && dep[i] > 720 && dep[i] < 780 && arr[i] > 720 && arr[i] < 780) {
-                    printf("Closest departure time is %hd:%hda.m.,", dep[i] / 60, dep[i] % 60);
-                    printf("arriving at %hd:%hdp.m.\n", arr[i] / 60, arr[i] % 60);
-                    break;
-            }
-
-
-            if (cm <= AVG && dep[i] > 720 && dep[i] < 780 && arr[i] > 780) {
-                    printf("Closest departure time is %hd:%hdp.m.,", dep[i] / 60, dep[i] % 60);
-                    printf("arriving at %hd:%hdp.m.\n", ((arr[i] - 720) / 60), arr[i] % 60);
-                    break;
-            }
-            if (cm >= AVG && dep[i] > 720 && dep[i] < 780 && arr[i] > 780) {
-                    printf("Closest departure time is %hd:%hda.m.,", dep[i] / 60, dep[i] % 60);
-                    printf("arriving at %hd:%hdp.m.\n", ((arr[i] - 720) / 60), arr[i] % 60);
-                    break;
-            }
-
-
-            if (cm <= AVG && dep[i] > 780 && arr[i] > 780) {
-                    printf("Closest departure time is %hd:%hda.m.,", ((dep[i] - 720) / 60), dep[i] % 60);
-                    printf("arriving at %hd:%hdp.m.\n", ((arr[i] - 720) / 60), arr[i] % 60);
-                    break;
-            }
-            if (cm >= AVG && dep[i] > 780 && arr[i] > 780) {
-                    printf("Closest departure time is %hd:%hda.m.,", ((dep[i] - 720) / 60), dep[i] % 60);
-                    printf("arriving at %hd:%hdp.m.\n", ((arr[i] - 720) / 60), arr[i] % 60);
-                    break;
-            }
+        //dep before noon, arr before noon
+    if (dep[i] < 720 && arr[i] < 720) {
+        printf("Closest departure time is %2.2hd:%2.2hda.m.,", dep[i] / 60, dep[i] % 60);
+        printf("arriving at %2.2hd:%2.2hda.m.\n", arr[i] / 60, arr[i] % 60);
+    }
+        //dep before noon, arr during noon
+    else if (dep[i] < 720 && arr[i] >= 720 && arr[i] < 780) {
+        printf("Closest departure time is %2.2hd:%2.2hda.m.,", dep[i] / 60, dep[i] % 60);
+        printf("arriving at %2.2hd:%2.2hdp.m.\n", arr[i] / 60, arr[i] % 60);
+    }
+        //dep before noon, arr after noon
+    else if (dep[i] < 720 && arr[i] > 780) {
+        arr[i] -= 720;
+        printf("Closest departure time is %2.2hd:%2.2hda.m.,", dep[i] / 60, dep[i] % 60);
+        printf("arriving at %2.2hd:%2.2hdp.m.\n", arr[i] / 60, arr[i] % 60);
+    }
+        //dep during noon, arr during noon
+    else if (dep[i] >= 720 && dep[i] < 780 && arr[i] >= 720 && arr[i] < 780) {
+        printf("Closest departure time is %2.2hd:%2.2hdp.m.,", dep[i] / 60, dep[i] % 60);
+        printf("arriving at %2.2hd:%2.2hdp.m.\n", arr[i] / 60, arr[i] % 60);
+    }
+        //dep during noon, arr after noon
+    else if (dep[i] >= 720 && dep[i] < 780 && arr[i] > 780) {
+            arr[i] -= 720;
+        printf("Closest departure time is %2.2hd:%2.2hdp.m.,", dep[i] / 60, dep[i] % 60);
+        printf("arriving at %2.2hd:%2.2hdp.m.\n", arr[i] / 60, arr[i] % 60);
+    }
+        //dep after noon, arr after noon
+    else {
+        dep[i] -= 720;
+        arr[i] -= 720;
+        printf("Closest departure time is %2.2hd:%2.2hdp.m.,", dep[i] / 60, dep[i] % 60);
+        printf("arriving at %2.2hd:%2.2hdp.m.\n", arr[i] / 60, arr[i] % 60);
     }
     return 0;
 }
+
+11. Modify Chapter 7, Project 4 so that the program labels its output. The
+     program will need to store the phone number in an array of characters
+     until it can be printed. You may assume the phone number is no more than
+     15 characters long.
+
+#include <stdio.h>
+#include <ctype.h>
+
+int main(void)
+{
+    short i;
+	char phone[15] = {0};
+
+	printf("Enter phone number: ");
+
+	for (i = 0; i < 15;i++) {
+        scanf("%c", &phone[i]);
+        phone[i] = toupper(phone[i]);
+        if (phone [i] >= 'A' && phone [i] <= 'Z')
+            switch (phone[i]) {
+                case 'A': case 'B': case 'C':
+                        phone [i] = '2';
+                        break;
+                case 'D': case 'E': case 'F':
+                        phone [i] = '3';
+                        break;
+                case 'G': case 'H': case 'I':
+                        phone [i] = '4';
+                        break;
+                case 'J': case 'K': case 'L':
+                        phone [i] = '5';
+                        break;
+                case 'M': case 'N': case 'O':
+                        phone [i] = '6';
+                        break;
+                case 'P': case 'Q': case 'R': case 'S':
+                        phone [i] = '7';
+                        break;
+                case 'T': case 'U': case 'V':
+                        phone [i] = '8';
+                        break;
+                case 'W': case 'X': case 'Y': case 'Z':
+                        phone [i] = '9';
+                        break;
+            }
+        else if (phone[i] == '\n')
+            break;
+        else
+            continue;
+	}
+	printf("In numeric form: ");
+
+	for (i = 0; i < 15; i++) {
+        printf("%c", phone[i]);
+    }
+	return 0;
+}
+
+12. Modify Chapter 7, Project 5 so that the SCRABBLE values of the letters are
+     stored in an array. The array will have 26 elements for each letter of the
+     alphabet, and each element will contain the SCRABBLE value for that letter
+     (element 25 ('Z') is 10). Use an array initializer to set up the array.
+
+#include <stdio.h>
+#include <ctype.h>
+
+int main(void)
+{
+	char l;
+	short w = 0;    //word total
+    short svalue[26] = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3,
+                       1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
+
+	printf("Enter a word: ");
+
+    for (;;) {
+        l = getchar();
+        if (l == '\n')
+            break;
+        l = toupper(l);
+        l -= 'A';
+        w += svalue[l];
+    }
+
+    printf("Scrabble value: %hd", w);
+
+	return 0;
+}
+
+13. Modify Chapter 7, Project 11 so that the program labels its output. The
+     program will need to store the last name (but not the first name) in an
+     array of characters until it can be printed. You may assume that the last
+     name is no more than 20 characters long.
+
+

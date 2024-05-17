@@ -1402,7 +1402,6 @@ int main(void)
     return 0;
 }
 
-
 12. Write a program that evaluates an expression. The operands in the
      expression is evaluated from left to right (as in no operator precedence).
 
