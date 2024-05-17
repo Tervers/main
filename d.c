@@ -1,30 +1,89 @@
 #include <stdio.h>
+#include <ctype.h>
+
+#define AVG ((dep[i + 1] - dep[i]) / 2)//the average between two departure times
 
 int main(void)
 {
-    short uh, um, ct;      //users entered hours, user minutes: converted time
+    short uh, um, cm, i;//user hour, user minute, converted min
+    short dep[8] = {480, 583, 679, 767, 840, 945, 1140, 1305};
+    short arr[8] = {616, 712, 811, 900, 968, 1075, 1280, 1438};
+    char mer;
 
-    printf("Enter a 24-hour time: ");
-    scanf("%2hd:%2hd", &uh, &um);
+    printf("Enter a 12-hour time: ");
+    scanf("%2hd:%2hd %c", &uh, &um, &mer);
 
-    ct = ((uh * 60) + um);
+    mer = toupper(mer);
 
-    if (ct <= 531)
-        printf("Closest departure time is 8:00 a.m. arriving at 10:16 a.m.\n");
-    else if (ct >=532 && ct <= 630)
-        printf("Closest departure time is 9:43 a.m. arriving at 11:52 a.m.\n");
-    else if (ct >=631 && ct <= 722)
-        printf("Closest departure time is 11:19 a.m. arriving at 1:31 p.m.\n");
-    else if (ct >=723 && ct <= 803)
-        printf("Closest departure time is 12:47 p.m. arriving at 3:00 p.m.\n");
-    else if (ct >=804 && ct <= 892)
-        printf("Closest departure time is 2:00 p.m. arriving at 4:08 p.m.\n");
-    else if (ct >=893 && ct <= 1042)
-        printf("Closest departure time is 3:45 p.m. arriving at 5:55 p.m.\n");
-    else if (ct >=1043 && ct <= 1139)
-        printf("Closest departure time is 7:00 p.m. arriving at 9:20 p.m.\n");
+    if (mer == 'P' && uh != 12)
+        cm = (((uh * 60) + um) + 720);
+    else if (mer == 'A' || mer == 'P' && uh == 12)
+        cm = ((uh * 60) + um);
     else
-        printf("Closest departure time is 9:45 p.m. arriving at 11:58 p.m.\n");
+        printf("Invalid time.\n");
 
+    printf("%hd\n", cm);
+
+    for (i = 0; i < 8; i++){
+            if (cm <= AVG && dep[i] < 720 && arr[i] < 720) {
+                    printf("Closest departure time is %2.2hd:%2.2hda.m.,", dep[i] / 60, dep[i] % 60);
+                    printf("arriving at %2.2hd:%2.2hda.m.\n", arr[i] / 60, arr[i] % 60);
+                    break;
+            }
+            if (cm >= AVG && dep[i] < 720 && arr[i] < 720) {
+                    printf("Closest departure time is %2.2hd:%2.2hda.m.,", dep[i] / 60, dep[i] % 60);
+                    printf("arriving at %2.2hd:%2.2hda.m.\n", arr[i] / 60, arr[i] % 60);
+                    break;
+            }
+
+
+            if (cm <= AVG && dep[i] < 720 && arr[i] > 720 && arr[i] < 780) {
+                    printf("Closest departure time is %2.2hd:%2.2hda.m.,", dep[i] / 60, dep[i] % 60);
+                    printf("arriving at %2.2hd:%2.2hdp.m.\n", arr[i] / 60, arr[i] % 60);
+                    break;
+            }
+            if (cm >= AVG && dep[i] < 720 && arr[i] > 720 && arr[i] < 780) {
+                    printf("Closest departure time is %2.2hd:%2.2hda.m.,", dep[i] / 60, dep[i] % 60);
+                    printf("arriving at %2.2hd:%2.2hdp.m.\n", arr[i] / 60, arr[i] % 60);
+                    break;
+            }
+
+
+            if (cm <= AVG && dep[i] > 720 && dep[i] < 780 && arr[i] > 720 && arr[i] < 780) {
+                    printf("Closest departure time is %2.2hd:%2.2hdp.m.,", dep[i] / 60, dep[i] % 60);
+                    printf("arriving at %2.2hd:%2.2hdp.m.\n", arr[i] / 60, arr[i] % 60);
+                    break;
+            }
+            if (cm >= AVG && dep[i] > 720 && dep[i] < 780 && arr[i] > 720 && arr[i] < 780) {
+                    printf("Closest departure time is %2.2hd:%2.2hda.m.,", dep[i] / 60, dep[i] % 60);
+                    printf("arriving at %2.2hd:%2.2hdp.m.\n", arr[i] / 60, arr[i] % 60);
+                    break;
+            }
+
+
+            if (cm <= AVG && dep[i] > 780 && dep[i] < 780 && arr[i] > 780) {
+                    printf("Closest departure time is %2.2hd:%2.2hdp.m.,", dep[i] / 60, dep[i] % 60);
+                    printf("arriving at %2.2hd:%2.2hdp.m.\n", ((arr[i] - 720) / 60), arr[i] % 60);
+                    break;
+            }
+            if (cm >= AVG && dep[i] > 780 && dep[i] < 780 && arr[i] > 780) {
+                    printf("Closest departure time is %2.2hd:%2.2hda.m.,", dep[i] / 60, dep[i] % 60);
+                    printf("arriving at %2.2hd:%2.2hdp.m.\n", ((arr[i] - 720) / 60), arr[i] % 60);
+                    break;
+            }
+
+
+            if (cm <= AVG && dep[i] > 780 && arr[i] > 780) {
+                    printf("Closest departure time is %2.2hd:%2.2hda.m.,", ((dep[i] - 720) / 60), dep[i] % 60);
+                    printf("arriving at %2.2hd:%2.2hdp.m.\n", ((arr[i] - 720) / 60), arr[i] % 60);
+                    break;
+            }
+            if (cm >= AVG && dep[i] > 780 && arr[i] > 780) {
+                    printf("Closest departure time is %2.2hd:%2.2hda.m.,", ((dep[i] - 720) / 60), dep[i] % 60);
+                    printf("arriving at %2.2hd:%2.2hdp.m.\n", ((arr[i] - 720) / 60), arr[i] % 60);
+                    break;
+            }
+    }
     return 0;
 }
+
