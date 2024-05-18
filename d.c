@@ -2,30 +2,28 @@
 
 int main(void)
 {
-    char fi = 0, name[21] = {0};    //first initial, last name
+    char ch, fi = 0, name[21] = {0};    //first initial, last name
 
     printf("Enter a first and last name: ");
 
-    for (;;) {
-        fi = getchar();
+    for (i = 0;; i++) {
+        ch = getchar();
 
-        if (!fi && ch >= 'A' && ch <= 'Z') {
-            fn = ch;
+        if (!fi) {
+            fi = ch;
             }
 
-        else if (fn && !name[i] && ch >= 'A' && ch <= 'Z') {
-            ln = ch;
-            putchar(ch);
-            }
+        else if (ch == ' ') {
+		for (i = 0; i < 22; i++) {
+        		name[i] = getchar();
+		}
 
-        else if (fn && ln)
-            putchar(ch);
 
         else
-            ch = getchar();
+            continue;
     }
 
-    printf(", %c.\n", fn);
+    printf(", %c.\n", fi);
 
     return 0;
 }
