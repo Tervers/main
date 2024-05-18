@@ -1105,4 +1105,43 @@ int main(void)
      array of characters until it can be printed. You may assume that the last
      name is no more than 20 characters long.
 
+#include <stdio.h>
+
+int main(void)
+{
+    short i;
+    char ch, fi = 0, name[21] = {0};    //first initial, last name
+
+    printf("Enter a first and last name: ");
+
+    for (;;) {
+        ch = getchar();
+
+        if (!fi) {
+            fi = ch;
+            }
+        else if (ch == ' ') {
+            for (i = 0; i < 22; i++) {
+                name[i] = getchar();
+                if (name[i] == '\n') {
+                    name[i] = 0;
+                    for (i = 0;; i++) {
+                        putchar(name[i]);
+                        if (!name[i]) {
+                            printf("\b, %c.\n", fi);
+                            return 0;
+                        }
+                    }
+                }
+            }
+		}
+    }
+}
+
+14. Write a program that reverses the words in a sentence. Have the loop stop
+     at a period, question mark, or exclamation point, which is saved in a
+     separate char variable. Then use a second loop to search backwards through
+     the array for the beginning of the last word. Print the last word, then
+     search backward for the next to last word, then the next... Then print the
+     terminating character.
 
