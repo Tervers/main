@@ -10,7 +10,7 @@ functions are reusable, allowing us to take a function that was part of one
 /*** CHAPTERS              9.1              DEFINING AND CALLING FUNCTIONS ***/
 
 //type function_name(function parameters)
-double average(double a, double b) //identifiers a and b
+double average(double a, double b) //function definition | identifiers a and b
 {
     return (a + b) / 2; //body
 }
@@ -176,3 +176,72 @@ int main(void)
 }
 
 /*** CHAPTER                   9.2 FUNCTION DECLARATIONS                   ***/
+
+return-type function-name ( parameters ) ;
+
+#include <stdio.h>
+
+double average(double a, double b);   /* DECLARATION */ //function prototype
+
+int main(void)
+{
+    double x, y, z;
+
+    printf("Enter three numbers: ");
+    scanf("%lf%lf%lf", &x, &y, &z);
+    printf("Average of %g and %g: %g\n", x, y, average(x, y));
+    printf("Average of %g and %g: %g\n", y, z, average(y, z));
+    printf("Average of %g and %g: %g\n", x, z, average(x, z));
+
+    return 0;
+}
+
+double average(double a, double b)   /* DEFINITION */
+{
+    return (a + b) / 2;
+}
+
+a function prototype does not have to specify the names of the functions
+    parameters as long as their types are present: //not best practice
+
+double average(double, double);
+
+in C99, you must have either a declaration or a definition of a function prior
+    to any call of the function; calling a function for which the compiler has
+    not yet seen a declaration or definition is an error
+
+/*** CHAPTER                         9.3                         ARGUMENTS ***/
+
+parameters appear in function "definitions"
+arguments appear in function "calls"
+arguments are "passed by value": when a function is called, each _argument_ is
+    evaluated and _its value_ assigned to the corresponding _parameter_
+since the _parameter_ contains a _copy_ of the arguments _value_, any changes
+    made to the _parameter_ during the execution of the function do not affect
+    the _argument_
+
+int power(int x, int n)
+{
+    int i, result = 1;
+
+    for (i = 1; i <= n; i++)
+        result = result * x;
+
+    return result;
+}
+
+since 'n' is a copy of the original exponent, we can modify it inside the
+    function, removing the need for 'i';
+
+int power(int x, int n)
+{
+    int result = 1;
+
+    while (n-- > 0)
+        result = result * x;
+
+    return result;
+}
+
+//                          ARGUMENT CONVERSIONS
+
