@@ -243,6 +243,19 @@ int power(int x, int n)
     return result;
 }
 
-//                          ARGUMENT CONVERSIONS
+//			    ARRAY ARGUMENTS
 
+int f(int a[])		/* no length specified */
+{
+	...
+}
 
+int sum_array(int a[], int n)
+{
+	int i, sum = 0;
+
+	for (i = 0; i < n; i++)
+		sum += a[i];
+
+	return sum;
+}
