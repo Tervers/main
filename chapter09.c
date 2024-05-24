@@ -250,7 +250,7 @@ int f(int a[])		/* no length specified */
 	...
 }
 
-int sum_array(int a[], int n)
+int sum_array(int a[], int n) //array must have specified length, hence 'n'
 {
 	int i, sum = 0;
 
@@ -258,4 +258,57 @@ int sum_array(int a[], int n)
 		sum += a[i];
 
 	return sum;
+}
+
+int sum_array(int a[], int n);  //prototype
+int sum_array(int [], int);  //prototype without parameter names
+
+#define LEN 100
+
+int main(void)
+{
+    int b[LEN], total;
+    ...
+    total = sum_array(b, LEN);
+    ...
+}
+
+when calling a function with an array argument, you can tell the function that
+    the array is smaller than it is and it will only calculate the first x
+    elements
+
+total = sum_array(b, 50);
+
+functions are allowed to change the elements of an array parameter, and the
+    change is reflected in the corresponding argument
+
+void store_zeros(int a[], int n)
+{
+    int i;
+
+    for (i = 0; i < n; i++)
+        a[i] = 0;
+}
+
+the call
+
+store_zeros(b, 100);
+
+will store zeros into the first 100 elements of array b
+this may seem like a contradiction to the fact that C passes argument by value;
+    though it is not a contradiction, it cannot be explained until Section 12.3
+only the length of the first element of a multi-dimensional array may be
+    omitted when the parameter is declared
+
+#define LEN 10
+
+int sum_two_dimensional_array(int a[][LEN], int n)
+{
+    int i, j, sum = 0;
+
+    for (i = 0; i < n; i++)
+        for (j = 0; j < LEN; j++)
+            sum += a[i][j];
+
+    return sum;
 }
