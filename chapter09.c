@@ -243,7 +243,7 @@ int power(int x, int n)
     return result;
 }
 
-//			    ARRAY ARGUMENTS
+//			                ARRAY ARGUMENTS
 
 int f(int a[])		/* no length specified */
 {
@@ -294,7 +294,7 @@ the call
 
 store_zeros(b, 100);
 
-will store zeros into the first 100 elements of array b
+this will store zeros into the first 100 elements of array b
 this may seem like a contradiction to the fact that C passes argument by value;
     though it is not a contradiction, it cannot be explained until Section 12.3
 only the length of the first element of a multi-dimensional array may be
@@ -312,3 +312,55 @@ int sum_two_dimensional_array(int a[][LEN], int n)
 
     return sum;
 }
+
+//                          C99 - VARIABLE-LENGTH ARRAY PARAMETERS
+
+int sum_array(int n, int a[n])
+{
+    ...
+}
+
+putting the parameters in the correct order is important with variable-length
+    array parameters; if a[n] was listed first, the compiler would give an
+    error because it has not yet seen 'n'.
+
+int sum_array(int n, int a[n]); //prototype
+int sum_array(int n, int a[*]); //prototype
+
+since parameter names may be omitted in function declarations, if the first
+    parameter is omitted, you would not be able to specify the length of the
+    array, but '*' provides a clue that the length of the array is related to
+    parameters earlier in the list
+
+int sum_array(int, int [*]); //prototype
+int sum_array(int n, int a[]); //prototype
+int sum_array(int, int []); //prototype (not a good choice)
+
+the length of a variable-length array parameter can be any expression
+
+int concatenate(int m, int n, int a[m], int b[n], int c[m+n])
+{
+    ...
+}
+
+int sum_two_dimensional_array(int n, int m, int a[n][m])
+{
+    int i, j, sum = 0;
+
+    for (i = 0; i < n; i++)
+        for (j = 0; j < m; j++)
+            sum += a[i][j];
+
+    return sum;
+}
+
+prototypes for the above function:
+
+int sum_two_dimensional_array(int n, int m, int a[n][m]);
+int sum_two_dimensional_array(int n, int m, int a[*][*]);
+int sum_two_dimensional_array(int n, int m, int a[][m]);
+int sum_two_dimensional_array(int n, int m, int a[][*]);
+
+//                          C99 - USING static IN ARRAY PARAMETER DECLARATIONS
+
+
