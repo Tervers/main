@@ -363,4 +363,39 @@ int sum_two_dimensional_array(int n, int m, int a[][*]);
 
 //                          C99 - USING static IN ARRAY PARAMETER DECLARATIONS
 
+int sum_array(int a[static 3], int n)
+{
+    ...
+}
+
+this guarantees that array 'a' will have a length of at least 3
+if the compiler knows that an array will always have a certain minimum length,
+   it can arrange to prefetch these elements from memory when the function is
+   called, before the elements are needed by statements within the function
+static can only be used in the first dimension of a multi-dimensional array
+
+//                          C99 - COMPOUND LITERALS
+
+total = sum_array((int) []{3, 0, 3, 4, 1}, 5);
+
+in the above code,  (int) []{3, 0, 3, 4, 1}  is the compound literal
+a compound literal is an unnamed array that is created on the fly by simply
+    specifying which elements it contains
+you do not have to specify the length of the array, although it is allowed
+
+(int [10]){8, 6}
+
+this literal has 10 elements; the first two values are 8 and 6, and the
+    remaining elements will have the value 0
+compound literals may contain arbitrary expressions:
+
+total = sum_array((int []){2 * i, i + j, j * k}, 3);
+
+a compound literal is an lvalue, so the values of its elements can be changed
+if desired, a compound literal can be made read-only using const:
+
+(const int []){5, 4}
+
+/*** CHAPTER                    9.4                   THE return STATEMENT ***/
+
 
