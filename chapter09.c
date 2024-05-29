@@ -398,4 +398,25 @@ if desired, a compound literal can be made read-only using const:
 
 /*** CHAPTER                    9.4                   THE return STATEMENT ***/
 
+a non-void function must use the return statement to specify what value it will
+    return:
+
+return 0;
+return status;
+return n >= 0 ? n : 0;
+
+if the type of the expression in a return statement does not match the
+    functions return type, the expression will be implicitly converted to the
+    return type
+return may appear in functions whose return type is void, provided that no
+    expression is given:
+
+return;
+
+if a non-void function reaches the end of its body (as in, it fails to execute
+    a return statement), the behavior of the program is undefined if it
+    attempts to use the value returned by the function
+
+/*** CHAPTER                    9.5 PROGRAM TERMINATION                     ***/
+
 
