@@ -476,4 +476,23 @@ int power(int x, int n)
         return x * power(x, n - 1);
 }
 
+suppose power(5, 3) is called:
+power(5, 3) finds that 3 is not equal to 0, so it calls
+power(5, 2) finds that 2 is not equal to 0, so it calls
+power(5, 1) finds that 1 is not equal to 0, so it calls
+power(5, 0) finds that 0 is equal to 0, so it returns 1, causing 
+power(5, 1) to return 5 x 1 = 5, causing
+power(5, 2) to return 5 x 5 = 25, causing
+power(5, 3) to return 5 x 25 = 125
+
+you can condense the power function by putting a conditional expression in the
+    return statement:
+
+int power(int x, int n)
+{
+    return n == 0 ? 1 : x * power(x, n - 1);
+}
+
+//                          qsort.c - Quicksort recursive function
+
 
