@@ -417,6 +417,63 @@ if a non-void function reaches the end of its body (as in, it fails to execute
     a return statement), the behavior of the program is undefined if it
     attempts to use the value returned by the function
 
-/*** CHAPTER                    9.5 PROGRAM TERMINATION                     ***/
+/*** CHAPTER                    9.5                    PROGRAM TERMINATION ***/
+
+main must have a return type
+older programs often omit mains return type, but this is illegal in C99
+omitting void in mains parameter is legal, but it is best to be explicit that
+    main has no parameters
+the value of main is a status code that (in some operating systems) can be
+    tested when the program terminates
+typically 0 is normal termination, and any other value is an abnormal
+    termination
+there is no rule preventing the return value to be used for other purposes
+
+//                          THE exit FUNCTION
+
+<stdlib.h> contains the exit function
+the value that exit produces is functionally the same as return; both indicate
+    the programs status at termination
+
+exit(0);
+
+you can use macros provided by <stdlib.h> to be more clear about exit codes
+    (the values of these codes are implementation defined):
+
+exit(EXIT_SUCCESS);
+exit(EXIT_FAILURE);
+
+exit causes program termination regardless of which function called it, while
+    return only causes program termination while inside the main function
+
+/*** CHAPTER                         9.6                         RECURSION ***/
+
+the following program calculates 'n'! recursively, using the formula
+    'n'! = 'n' * ('n' - 1) :
+
+int fact(int n)
+{
+    if (n <= 1)
+        return 1;
+    else
+        return n * fact(n - 1);
+}
+
+suppose fact(3) is called
+3 is not less than or equal to 1, so fact(n - 1) produces 2
+2 is not less than or equal to 1, so fact(n - 1) produces 1
+1 is less than or equal to 1, so it returns 1 back to fact(2)
+fact(2) takes 1 and returns 2 * 1 = 2 to fact(3)
+fact(3) takes 2 and returns 3 * 2 = 6
+this next example computes 'x'e'n', using the formula
+    'x'e'n' = 'x' * 'x'e('n' - 1)
+
+int power(int x, int n)
+{
+    if (n == 0)
+        return 1;
+    else
+        return x * power(x, n - 1);
+}
 
 
