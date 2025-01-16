@@ -38,7 +38,7 @@ def get_authorization_level(one_id: Authorization):   # CLASS as a TYPE
 # LISTs are ordered, changable, and allow duplicate values
 # LIST as a TYPE HINT, LIST have an INTERNAL TYPE
 # The INTERNAL TYPE within square brackets are the TYPE PARAMETERS
-# i.e. str is the TYPE PARAMETER passed to LIST
+# e.g. str is the TYPE PARAMETER passed to LIST
 def process_user_ids(user_ids: list[str]):
     for user_id in user_ids:   # VARIABLE user_id is an element in user_ids
         print(user_id)
@@ -101,13 +101,11 @@ def say_hi(name: str | None = None):
 from datetime import datetime
 from pydantic import BaseModel
 
-
 class Profile(BaseModel):
     id: int
     name: str = "Tervs"
     signup_ts: datetime | None = None
     friends: list[int] = []
-
 
 external_data = {
         "id": "123"
@@ -174,3 +172,67 @@ async def read_burgers():
 #    with threads.
 # Modern versions of Python support Asynchronous code using COROUTINEs with
 #    async and await syntax
+
+# CREATING AND USING ENVIRONMENT VARIABLES IN THE SHELL (TERMINAL)
+# Create environment variable MY_NAME
+export MY_NAME="Trevor Freeman"
+...
+echo "Hello $MY_NAME"
+> Hello Trevor Freeman
+
+# READING ENV VARIABLES IN PYTHON
+## main.py
+import os
+
+name = os.getenv("MY_NAME", "World")   # 2nd argument is a default return value
+print(f"Hello {name} from Python")
+
+# CREATE AN ENV VARIABLE FOR A SPECIFIC PROGRAM INVOCATION
+MY_NAME="Trevor Freeman" python main.py
+> Hello Trevor Freeman from Python
+
+python main.py
+> Hello World from Python
+
+# Env variables can only handle text strings, so any value read in Python from
+#    an env variable will be a string, and conversion to a different type or
+#    any validation has to be done in code.
+# PATH env variable is used by OS's to find programs to run
+# PATH is one long string of directories separated by colons:
+#     /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+# Let's say you install Python and it ends up in /opt/custompython/bin
+# If you say yes to update the PATH env variable, then /opt/custompython/bin
+#    will be added to the PATH env variable:
+#    /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/custompython/bin
+
+# A VIRTUAL ENVIRONMENT IS A DIRECTORY WITH SOME FILES IN IT THAT ISOLATES
+#    PACKAGES FROM THE REST OF YOUR SYSTEM
+# Create a directory for your project: ~/env
+# Create virtual environment (only do this once):
+python3 -m venv env
+
+# Activate virtual environment (every new sessions):
+source ./env/bin/activate
+
+# Check which virtual env is active (optional):
+which python   # if it shows 'env/bin/python', then it worked
+
+# Upgrade pip (normally once, after first creating virtual env)
+python -m pip install --upgrade pip
+
+# Add a .gitignore file to exclude everything in /env from git
+echo "*" > ./env/.gitignore
+
+# Installing packages after activating virtual environment
+pip install "fastapi[standard]"
+
+# It's a very good idea to put packages and versions your program needs in a
+#    file (e.g. requirements.txt, or pyproject.toml)
+# Installing from "requirements.txt"
+pip install -r requirements.txt
+
+# Deactivating the virtual env
+deactivate
+
+
