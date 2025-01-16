@@ -235,4 +235,17 @@ pip install -r requirements.txt
 # Deactivating the virtual env
 deactivate
 
+# INSTALLING SERVER
+pip install "fastapi[standard]"
+
+# STARTING SERVER
+# Normally you can start the server with
+fastapi dev main.py
+# or
+uvicorn main:app --reload
+
+# If starting the server from a VIRTUAL ENVIRONMENT
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+# then access website at http://<your-ip>:8000
+
 
