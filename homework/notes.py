@@ -126,55 +126,9 @@ from typing import Annotated   # now part of Python standard library
 def say_hello(name: Annotated[str, "this is just metadata"]) -> str:
     return f"hello {name}"
 
-# ASYNCHRONOUS CODE: Tells computer/program that at some point in the code,
-#    it will have to wait for something else to finish somewhere else.
-# If execution time is spent waiting for I/O operations, they call them
-#    "I/O bound" operations.
-# SEQUENTIAL CODE: The computer/program follows all steps in sequence before
-#    switching to a different task, even if it involves waiting.
-# ASYNCHRONOUS CODE is sometimes called CONCURRENCY. It is different from
-#    PARALLELISM.
-# Both relate to "different things happening more or less at the same time."
-# When most execution time is spent doing work (not waiting), and the work is
-#    done by a CPU, they call these problems "CPU bound."
-# PARALLELISM can be used to cut down the execution time of CPU bound code
-# Common CPU bound operations: Audio/Image processing, Computer vision, Machine
-#    learning, Deep learning
-
-# ASYNC and AWAIT: burgers = await get_burgers(2)
-# While get_burgers(2) is processing, Python can go and do something else.
-# AWAIT needs to be inside an asynchronous function.
-async def get_burgers(number: int):
-    # Do some asynchronous stuff to create the burgers
-    return burgers
-
-# This is NOT asynchronous
-def get_sequential_burgers(number: int):
-    # Do some sequential stuff to create the burgers
-    return burgers
-
-# When you call 'async def', you have to 'await' it. So, this won't work:
-burgers = get_burgers(2)
-
-# You must create a PATH OPERATION FUNCTION that uses 'await' with 'async def'
-# The PATH OPERATION FUNCTION is the FUNCTION that appears on the next line
-#    after @decorator line.
-@app.get('/burgers')
-async def read_burgers():
-    burgers = await get_burgers(2)
-    return burgers
-
-# Functions defined with 'async def' have to be 'awaited'. So functions with
-#    'async def' can only be called inside of functions also defined with
-#    'async def'. ***So how do you call the first async function?***
-# In FastAPI, the 'first' async function is always the PATH OPERATION FUNCTION.
-# ASYNC and AWAIT are relatively new; previously asynchronous code was handled
-#    with threads.
-# Modern versions of Python support Asynchronous code using COROUTINEs with
-#    async and await syntax
-
 # CREATING AND USING ENVIRONMENT VARIABLES IN THE SHELL (TERMINAL)
 # Create environment variable MY_NAME
+
 export MY_NAME="Trevor Freeman"
 ...
 echo "Hello $MY_NAME"
@@ -182,12 +136,14 @@ echo "Hello $MY_NAME"
 
 # READING ENV VARIABLES IN PYTHON
 ## main.py
+
 import os
 
 name = os.getenv("MY_NAME", "World")   # 2nd argument is a default return value
 print(f"Hello {name} from Python")
 
 # CREATE AN ENV VARIABLE FOR A SPECIFIC PROGRAM INVOCATION
+
 MY_NAME="Trevor Freeman" python main.py
 > Hello Trevor Freeman from Python
 
@@ -208,8 +164,9 @@ python main.py
 
 # A VIRTUAL ENVIRONMENT IS A DIRECTORY WITH SOME FILES IN IT THAT ISOLATES
 #    PACKAGES FROM THE REST OF YOUR SYSTEM
-# Create a directory for your project: ~/env
-# Create virtual environment (only do this once):
+# Create a directory for your project: ./project
+# Create directory for environment files: ./project/env
+# Create virtual environment while in project directory (only do this once):
 python3 -m venv env
 
 # Activate virtual environment (every new sessions):
@@ -238,6 +195,87 @@ deactivate
 # INSTALLING SERVER
 pip install "fastapi[standard]"
 
+# ASYNCHRONOUS CODE: Tells computer/program that at some point in the code,
+#    it will have to wait for something else to finish somewhere else.
+# If execution time is spent waiting for I/O operations, they call them
+#    "I/O bound" operations.
+# SEQUENTIAL CODE: The computer/program follows all steps in sequence before
+#    switching to a different task, even if it involves waiting.
+# ASYNCHRONOUS CODE is sometimes called CONCURRENCY. It is different from
+#    PARALLELISM.
+# Both relate to "different things happening more or less at the same time."
+# When most execution time is spent doing work (not waiting), and the work is
+#    done by a CPU, they call these problems "CPU bound."
+# PARALLELISM can be used to cut down the execution time of CPU bound code
+# Common CPU bound operations: Audio/Image processing, Computer vision, Machine
+#    learning, Deep learning
+
+# ASYNC and AWAIT: burgers = await get_burgers(2)
+# While get_burgers(2) is processing, Python can go and do something else.
+# AWAIT needs to be inside an asynchronous function.
+
+async def get_burgers(number: int):
+    # Do some asynchronous stuff to create the burgers
+    return burgers
+
+# This is NOT asynchronous
+
+def get_sequential_burgers(number: int):
+    # Do some sequential stuff to create the burgers
+    return burgers
+
+# When you call 'async def', you have to 'await' it. So, this won't work:
+burgers = get_burgers(2)
+
+## FastAPI
+
+from fastapi import FastAPI
+
+app = FastAPI()   # Create a FastAPI "INSTANCE" variable named app
+                  # FastAPI() is a class
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+
+## PATH
+# Refers to last part of URL starting from the first /, so in 
+#    'https://example.com/items/foo', the path would be '/items/foo'
+# PATH = ENDPOINT = ROUTE
+# PATH is the main way to separate "concerns" and "resources"
+
+## OPERATION
+# Refers to one of the HTTP "methods": POST, GET, PUT, DELETE, OPTIONS, HEAD,
+#    PATCH, TRACE
+# POST = create data. GET = read data. PUT = update data. DELETE = delete data
+
+## PATH OPERATION DECORATOR
+# @app.get("/") tells FastAPI that the next function below will handle requests
+#    that go to the path "/" using a 'GET' operation
+# @app.post() @app.put() @app.delete() @app.options() @app.head() @app.patch()
+#    @app.trace()
+# FastAPI doesn't enforce any specific meaning to each operation, this
+#    information is just a guideline (e.g. GraphQL uses only POST operations)
+
+## PATH OPERATION FUNCTION
+# The PATH OPERATION FUNCTION is the FUNCTION that appears on the next line
+#    after @decorator line.
+# You must create a PATH OPERATION FUNCTION that uses 'await' with 'async def'
+
+@app.get('/burgers')
+async def read_burgers():
+    burgers = await get_burgers(2)
+    return burgers
+
+# Functions defined with 'async def' have to be 'awaited'. So functions with
+#    'async def' can only be called inside of functions also defined with
+#    'async def'. ***So how do you call the first async function?***
+# In FastAPI, the 'first' async function is always the PATH OPERATION FUNCTION.
+# ASYNC and AWAIT are relatively new; previously asynchronous code was handled
+#    with threads.
+# Modern versions of Python support Asynchronous code using COROUTINEs with
+#    async and await syntax
+
 # STARTING SERVER
 # Normally you can start the server with
 fastapi dev main.py
@@ -248,4 +286,50 @@ uvicorn main:app --reload
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 # then access website at http://<your-ip>:8000
 
+## FastAPI - PATH PARAMETERS
+# Order of PATH OPERATIONS matters
 
+...
+@app.get("/users/me")
+async def read_user_me():
+    return {"user_id": "the current user"}
+
+@app.get("/users/{user_id}")   # {user_id} = parameter / variable
+async def read_user(user_id: str):    # {user_id} passed to user_id
+    return {"user_id": user_id}
+...
+
+# If you go to <your-ip>:8000/users/me, you would see {"user_id":"me"}
+# If /users/{user_id} was placed first, it would also match /users/me, executing
+#    "async def read_user(user_id: str):" instead of "async def read_user_me():"
+# Similarly, you cannot redefine a path, as the first path will always be used
+
+## PREDEFINED VALUES
+# If you have a PATH OPERATION that receives a PATH PARAMETER, but you want the
+#    PATH PARAMETER values to be predefined, you can use Python ENUM
+# Import Enum, then create a sub-CLASS that INHERITs from str and Enum
+# Then create CLASS ATTRIBUTES with fixed values
+# After, create a PATH PARAMETER w/ a TYPE ANNOTATION using the CLASS you made
+
+from enum import Enum
+from fastapi import FastAPI
+
+
+class ModelName(str, Enum):
+    alexnet = "alexnet"
+    resnet = "resnet"
+    lenet = "lenet"
+
+
+app = FastAPI()
+
+
+@app.get("/models/{model_name}")
+async def get_model(model_name: ModelName):
+    if model_name is ModelName.alexnet:
+        return {"model_name": model_name, "message": "Deep Learning FTW!"}
+
+    if model_name.value == "lenet":
+        return {"model_name": model_name, "message": "LeCNN all the images"}
+
+    return {"model_name": model_name, "message": "Have some residuals"}
