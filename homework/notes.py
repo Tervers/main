@@ -315,21 +315,115 @@ from enum import Enum
 from fastapi import FastAPI
 
 
-class ModelName(str, Enum):
+class ModelName(str, Enum):   # PREDEFINED VALUES
     alexnet = "alexnet"
     resnet = "resnet"
     lenet = "lenet"
 
 
-app = FastAPI()
+app = FastAPI()   # FastAPI INSTANCE
 
 
 @app.get("/models/{model_name}")
+# function(path_parameter: TypeAnnotation):
 async def get_model(model_name: ModelName):
+    # The value of the PATH PARAMETER will be an ENUMERATION MEMBER in your enum
+    # EnumMember.PredefinedValue
+    # In general, you can get an actual enum value using your_enum_member.value
     if model_name is ModelName.alexnet:
+        # You can return ENUM MEMBERS from PATH OPERATIONS, even nested in JSON
+        # They will be converted to their corresponding values before returning
         return {"model_name": model_name, "message": "Deep Learning FTW!"}
+        # Your client will get a JSON response like:
 
-    if model_name.value == "lenet":
+        # {
+        #   "model_name": "alexnet"
+        #   "message": "Deep Learning FTW!"
+        # }
+
+    if model_name.value == "lenet":   # ModelName.lenet.value will also work
         return {"model_name": model_name, "message": "LeCNN all the images"}
 
     return {"model_name": model_name, "message": "Have some residuals"}
+
+## PATH PARAMETERS containing PATHS
+# Let's say you have a PATH OPERATION with a PATH /files/{file_path}
+# But you need file_path to contain a path, like home/johndoe/myfile.txt
+# So the URL would be something like /files/home/johndoe/myfile.txt
+# You can do this with /files/{file_path:path}
+
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/files/{file_path:path}")
+async def read_file(file_path: str):
+    return {"file_path": file_path}
+
+# The parameter may need to contain /home/johndoe/myfile.txt with the leading /
+# In that case, the URL would be /files//home/johndoe/myfile.txt
+
+
+## QUERY PARAMETERS
+
+# When you declare other FUNCTION PARAMETERS that are not part of the PATH
+#    PARAMETERS, they are automatically interpreted as "QUERY" parameters.
+
+from fastapi import FastAPI
+
+app = FastAPI()
+
+fake_items_db = [{"item_name": "Foo"}, {"item_name": "Bar"}, {"item_name": "Baz"}]
+
+@app.get("/items/")
+# Since the next PATH OPERATION FUNCTION does not declare a PATH PARAMETER,
+#    all parameters (skip, limit) will be interpreted as QUERY PARAMETERS
+async def read_item(skip: int = 0, limit: int = 10):
+    return fake_items_db[skip : skip + limit]
+
+# The QUERY is the set of key-value pairs that go after the ? in a URL,
+#    separated by & characters (e.g. 127.0.0.1:8000/items/?skip=0&limit=10)
+# The QUERY PARAMETERS: skip (with value of 0), limit (with a value of 10)
+# As they are part of the URL, they are "naturally" strings; but when declared
+#    with Python types (like int), they are converted to that type and validated
+#    against it
+# QUERY PARAMETERS can be optional and have default values
+# In the example above they have default values of skip=0 and limit=10
+# Going to 127.0.0.1:8000/items/ would be the same as going to
+#    127.0.0.1:8000/items/?skip=0&limit=10
+# But if you go to 127.0.0.1:8000/items/?skip=20, then your parameter values in
+#    your function will be skip=20 and limit=10
+# You can set QUERY PARAMETERS to None
+
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/items/{item_id}")
+async def read_item(item_id: str, q: str | None = None):
+    if q:
+        return {"item_id": item_id, "q": q}
+    return {"item_id": item_id}
+
+# Above, q will be optional, and will be None by default
+
+## QUERY PARAMETER TYPE CONVERSION
+# You can also declare bool types and they will be converted
+
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/items/{item_id}")
+# First, read_item reads item_id as a string
+# Then q tests if item_id is a str and returns None if not
+# Lastly, short tests if item_id is a bool
+async def read_item(item_id: str, q: str | None = None, short: bool = False):
+    item = {"item_id": item_id}
+    if q:
+        item.update({"q": q})
+    if not short:
+        item.update(
+            {"description": "This is an amazing item that has a long description"}
+        )
+    return item
