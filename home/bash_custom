@@ -6,3 +6,8 @@ PS1+='\001\033[38;5;201m\002\h\001\e[0m\002'   # \h
 PS1+='\001\033[38;5;57m\002:\001\e[0m\002'     # :
 PS1+='\001\033[38;5;33m\002\w\001\e[0m\002'    # \w
 PS1+='\001\033[38;5;46m\002\$\001\e[0m\002 '   # \$
+
+alias='sudo brightnessctl --device='asus::kbd_backlight' s 0'
+alias='sudo brightnessctl --device='asus::kbd_backlight' s 1'
+alias='sudo brightnessctl --device='asus::kbd_backlight' s 2'
+alias='sudo brightnessctl --device='asus::kbd_backlight' s 3'
