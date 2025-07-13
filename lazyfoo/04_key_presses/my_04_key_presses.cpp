@@ -34,10 +34,10 @@ void close();   //probably returns nothing since it closes the application
 //POINTERS
 
 //Loads individual image
-SDL_Surface* loadSurface( std::string path );   //type SDL_Surface pointer 
+SDL_Surface* loadSurface( std::string path );   //type SDL_Surface function pointer that loads path to image
 
 //The window we'll be rendering to
-SDL_Window* gWindow = NULL;
+SDL_Window* gWindow = NULL;   //type SDL_Window pointer named gWindow by lazyfoo, init'd to NULL
 	
 //The surface contained by the window
 SDL_Surface* gScreenSurface = NULL;
@@ -54,10 +54,10 @@ SDL_Surface* gCurrentSurface = NULL;
 bool init()
 {
 	//Initialization flag
-	bool success = true;
+	bool success = true;   //confirmation check that the program has loaded to this point
 
 	//Initialize SDL
-	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )   //negative return values signal errors
 	{
 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		success = false;
@@ -66,7 +66,7 @@ bool init()
 	{
 		//Create window
 		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
-		if( gWindow == NULL )
+		if( gWindow == NULL ) 
 		{
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
 			success = false;
