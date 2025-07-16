@@ -1,0 +1,27 @@
+# Compiler and flags
+CC = gcc
+CFLAGS = -Wall -g
+
+# Files
+SRCS = main.c utils.c
+OBJS = $(SRCS:.c=.o)
+TARGET = program
+
+# Default target
+all: $(TARGET)
+
+# Link object files into the final executable
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS)
+
+# Compile .c files into .o files
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Clean build artifacts
+clean:
+	rm -f $(OBJS) $(TARGET)
+
+# Optional: phony targets (they are not real files)
+.PHONY: all clean
+
