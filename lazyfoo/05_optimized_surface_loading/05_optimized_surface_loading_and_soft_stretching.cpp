@@ -6,40 +6,40 @@ and may not be redistributed without written permission.*/
 #include <stdio.h>
 #include <string>
 
-//Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+//Screen dimension constants   
+const int SCREEN_WIDTH = 640;   //lazyfoo-defined variable and values
+const int SCREEN_HEIGHT = 480;   //""
 
 //Starts up SDL and creates window
-bool init();
+bool init();   //lazyfoo-defined prototype
 
 //Loads media
-bool loadMedia();
+bool loadMedia();   //""
 
 //Frees media and shuts down SDL
-void close();
+void close();   //""
 
 //Loads individual image
-SDL_Surface* loadSurface( std::string path );
+SDL_Surface* loadSurface( std::string path );   //lazyfoo-defined pointers
 
 //The window we'll be rendering to
-SDL_Window* gWindow = NULL;
+SDL_Window* gWindow = NULL;   //""
 	
 //The surface contained by the window
-SDL_Surface* gScreenSurface = NULL;
+SDL_Surface* gScreenSurface = NULL;   //""
 
 //Current displayed image
 SDL_Surface* gStretchedSurface = NULL;
 
-bool init()
+bool init()   //lazyfoo-created function
 {
 	//Initialization flag
-	bool success = true;
+	bool success = true;   //initialized and given value at the same time
 
 	//Initialize SDL
-	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )   //SDL-defined functions
 	{
-		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
+		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );   //Calls SDL_GetError() and prints the message to the screen.
 		success = false;
 	}
 	else
@@ -54,14 +54,14 @@ bool init()
 		else
 		{
 			//Get window surface
-			gScreenSurface = SDL_GetWindowSurface( gWindow );
+			gScreenSurface = SDL_GetWindowSurface( gWindow );   //loops
 		}
 	}
 
 	return success;
 }
 
-bool loadMedia()
+bool loadMedia()  //another lazyfoo-created function
 {
 	//Loading success flag
 	bool success = true;
@@ -77,7 +77,7 @@ bool loadMedia()
 	return success;
 }
 
-void close()
+void close()    //lazyfoo
 {
 	//Free loaded image
 	SDL_FreeSurface( gStretchedSurface );
@@ -91,13 +91,13 @@ void close()
 	SDL_Quit();
 }
 
-SDL_Surface* loadSurface( std::string path )
+SDL_Surface* loadSurface( std::string path )   //lazyfoo-created function
 {
 	//The final optimized image
-	SDL_Surface* optimizedSurface = NULL;
+	SDL_Surface* optimizedSurface = NULL;   //lazyfoo-created pointer named opt..., init'd to NULL
 
 	//Load image at specified path
-	SDL_Surface* loadedSurface = SDL_LoadBMP( path.c_str() );
+	SDL_Surface* loadedSurface = SDL_LoadBMP( path.c_str() );   //lazyfoo-created pointer, stores 'value' pulled from SDL_LoadBMP( path.c_str() ) in loadedSurface variable
 	if( loadedSurface == NULL )
 	{
 		printf( "Unable to load image %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );

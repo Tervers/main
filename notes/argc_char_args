@@ -1,0 +1,33 @@
+What do argc and args[] mean?
+
+These allow your program to accept command-line arguments when it is run.
+
+    argc (argument count):
+
+        An integer representing how many arguments were passed to the program.
+
+        It always includes the name of the program itself as the first argument.
+
+    args[] (argument vector):
+
+        An array of C-style strings (char*) that holds each argument.
+
+        args[0] is the name of the program.
+
+        args[1], args[2], etc., are any additional command-line arguments.
+
+Example
+
+If you run your program like this in a terminal:
+
+./myProgram image.bmp
+
+Then:
+
+    argc == 2
+
+    args[0] == "./myProgram"
+
+    args[1] == "image.bmp"
+
+
