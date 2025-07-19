@@ -1,0 +1,23 @@
+int myAge = 43;
+
+printf("%d", myAge); // 43
+printf("%p", &myAge);  // 0x7ffe5367e044 (memory address)
+
+a POINTER is a VARIABLE (that you name) -
+it stores the MEMORY ADDRESS of ANOTHER VARIABLE as its value.
+the POINTER VARIABLE POINTS to a DATA TYPE of the SAME TYPE.
+created with the * operator
+
+int myAge = 43;
+int* ptr = &myAge; // a pointer variable name ptr, that stores the address
+		   // of myAge (& = reference operator)
+
+printf("d\n", myAge); // 43
+printf("p\n", &myAge); // 0x7ffe5367e044
+printf("p\n", ptr); // 0x7ffe5367e044
+
+int myAge = 43;
+int* ptr = &myAge;
+
+printf("%p\n", ptr); // 0x7ffe5367e044
+printf("%d\n", *ptr); // 43 (* = dereference operator)
