@@ -61,3 +61,16 @@ Once you have the library installed, you can use the sdl2-config program to help
 gcc -o myprogram myprogram.c `sdl2-config --cflags --libs`
 
 SDL on Unix should only link against the C runtime (glibc). Every thing else it needs will be dynamically loaded at runtime: X11, ALSA, d-bus, etc. This means it is possible to build an SDL that has support for all sorts of targets built in, and it will examine the system at runtime to decide what should be used (for example, if Xlib isn't available, it might try to load Wayland support, etc). In that respect, if you plan to ship the SDL binary that you build, it is to your benefit to make sure your system has development headers for as many targets as possible, regardless of what you plan to personally use, so your final library is as robust as possible. See docs/README-linux.md for more details.
+
+
+***SDL_Image headers***
+
+For those of you who have Advanced Packaging Tool available (ie Ubuntu and Debian) you'll want to search the apt-get cache to find the current SDL_image version to install. You can search the apt-get available packages using the command:
+
+apt-cache search libsdl2-image
+
+You'll want to download the development version of SDL_image. As of the last update of this tutorial, the development package of SDL_image is libsdl2-image-dev. You can install this package using the command
+
+apt-get install libsdl2-image-dev
+
+For SDL_ttf, the development package name is libsdl2-ttf-dev. For SDL_mixer it's libsdl2-mixer-dev.
