@@ -119,3 +119,9 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+
+alias='sudo brightnessctl --device='asus::kbd_backlight' s 0'
+alias='sudo brightnessctl --device='asus::kbd_backlight' s 1'
+alias='sudo brightnessctl --device='asus::kbd_backlight' s 2'
+alias='sudo brightnessctl --device='asus::kbd_backlight' s 3'
