@@ -1,3 +1,5 @@
+/* I believe lazyfoo g* variables stand for 'get' */
+
 //Using SDL, standard IO, and strings
 #include <SDL.h>
 #include <stdio.h>
@@ -65,7 +67,7 @@ bool init()
 	else
 	{
 		//Create window
-		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );   //store to variable for reuse
 		if( gWindow == NULL )
 		{
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -74,7 +76,7 @@ bool init()
 		else
 		{
 			//Get window surface
-			gScreenSurface = SDL_GetWindowSurface( gWindow );
+			gScreenSurface = SDL_GetWindowSurface( gWindow );   //store to variable for reuse
 		}
 	}
 
@@ -188,7 +190,7 @@ int main( int argc, char* args[] )
 			while( !quit )
 			{
 				//Handle events on queue
-				while( SDL_PollEvent( &e ) != 0 )
+				while( SDL_PollEvent( &e ) != 0 )   //check events, continue if not 0
 				{
 					//User requests quit
 					if( e.type == SDL_QUIT )
@@ -225,10 +227,10 @@ int main( int argc, char* args[] )
 				}
 
 				//Apply the current image
-				SDL_BlitSurface( gCurrentSurface, NULL, gScreenSurface, NULL );
+				SDL_BlitSurface( gCurrentSurface, NULL, gScreenSurface, NULL );   //the picture is drawn...
 			
 				//Update the surface
-				SDL_UpdateWindowSurface( gWindow );
+				SDL_UpdateWindowSurface( gWindow );    //...now put it up for show
 			}
 		}
 	}
