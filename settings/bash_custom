@@ -121,7 +121,8 @@ if ! shopt -oq posix; then
 fi
 
 
-alias='sudo brightnessctl --device='asus::kbd_backlight' s 0'
-alias='sudo brightnessctl --device='asus::kbd_backlight' s 1'
-alias='sudo brightnessctl --device='asus::kbd_backlight' s 2'
-alias='sudo brightnessctl --device='asus::kbd_backlight' s 3'
+# Asus Laptop keyboard backlight controls
+alias kb0='sudo brightnessctl --device='asus::kbd_backlight' s 0'
+alias kb1='sudo brightnessctl --device='asus::kbd_backlight' s 1'
+alias kb2='sudo brightnessctl --device='asus::kbd_backlight' s 2'
+alias kb3='sudo brightnessctl --device='asus::kbd_backlight' s 3'
