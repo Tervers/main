@@ -1,9 +1,13 @@
-/* I believe lazyfoo g* variables stand for 'get' */
+/* Surface - Rendered by CPU. Texture - Rendered by GPU. */
 
 //Using SDL, standard IO, and strings
 #include <SDL.h>
+#include <SDL_image.h>
 #include <stdio.h>
 #include <string>
+
+
+/*** Variables and Enums ***/
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
@@ -21,22 +25,24 @@ enum KeyPressSurfaces   //enum is the alternative to defines: '#define KEY_PRESS
 };
 
 
-/*** function prototypes ***/
+/*** Function Declarations ***/
 
 //Starts up SDL and creates window
 bool init();
 
 //Loads media
-bool loadMedia();
+bool loadMedia();   //this loads all media from outside the program
 
 //Frees media and shuts down SDL
 void close();
 
 //Loads individual image
-SDL_Surface* loadSurface( std::string path );
+SDL_Surface* loadSurface( std::string path );   //loads individual surfaces
+
+SDL_Surface* loadTexture( std::string path );   //loads individual textures
 
 
-/*** pointers ***/
+/*** Pointers ***/
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
@@ -45,13 +51,13 @@ SDL_Window* gWindow = NULL;
 SDL_Surface* gScreenSurface = NULL;
 
 //The images that correspond to a keypress
-SDL_Surface* gKeyPressSurfaces[ KEY_PRESS_SURFACE_TOTAL ];   //pointer array of 5 pointers
+SDL_Surface* gKeyPressSurfaces[ KEY_PRESS_SURFACE_TOTAL ];   //array of 5 pointers
 
 //Current displayed image
 SDL_Surface* gCurrentSurface = NULL;
 
 
-/*** pointer definitions ***/
+/*** Function Definitions ***/
 
 bool init()
 {
@@ -148,7 +154,7 @@ void close()
 	SDL_Quit();
 }
 
-SDL_Surface* loadSurface( std::string path )
+SDL_Surface* loadSurface( std::string path )   //loads BMPs
 {
 	//The final optimized image
 	SDL_Surface* optimizedSurface = NULL;
