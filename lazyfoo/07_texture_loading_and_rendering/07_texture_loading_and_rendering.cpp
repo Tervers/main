@@ -11,6 +11,9 @@ and may not be redistributed without written permission.*/
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
+
+/*** Function Declarations ***/
+
 //Starts up SDL and creates window
 bool init();
 
@@ -23,6 +26,9 @@ void close();
 //Loads individual image as texture
 SDL_Texture* loadTexture( std::string path );
 
+
+/*** Pointers ***/
+
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
 
@@ -31,6 +37,9 @@ SDL_Renderer* gRenderer = NULL;
 
 //Current displayed texture
 SDL_Texture* gTexture = NULL;
+
+
+/*** Function Definitions ***/
 
 bool init()
 {
