@@ -30,7 +30,7 @@ enum KeyPressSurfaces   //enum is the alternative to defines: '#define KEY_PRESS
 //Starts up SDL and creates window
 bool init();
 
-//Loads media   //make loadMediaSurface, create loadSurfaceTexture
+//Loads media   //make this loadMediaSurface, create loadSurfaceTexture
 bool loadMedia();   //this loads all media from outside the program
 
 //Frees media and shuts down SDL
@@ -46,7 +46,7 @@ SDL_Surface* loadTexture( std::string path );   //loads individual textures
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
-	
+
 //The surface contained by the window
 SDL_Surface* gScreenSurface = NULL;
 
@@ -73,7 +73,7 @@ bool init()
 	else
 	{
 		//Create window
-		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );   //store to variable for reuse
+		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );   //store to gWindow variable for reuse
 		if( gWindow == NULL )
 		{
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -154,6 +154,9 @@ void close()
 	SDL_Quit();
 }
 
+
+/*** Pointer Function Definitions ***/
+
 SDL_Surface* loadSurface( std::string path )   //loads BMPs
 {
 	//The final optimized image
@@ -181,7 +184,7 @@ SDL_Surface* loadSurface( std::string path )   //loads BMPs
 	return optimizedSurface;
 }
 
-SDL_Texture* loadTexture( std::string path )
+SDL_Texture* loadTexture( std::string path )   //Load various image formats
 {
         //The final texture
         SDL_Texture* newTexture = NULL;
@@ -192,15 +195,24 @@ SDL_Texture* loadTexture( std::string path )
         {
                 printf( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
         }
-        else                                                                                                          {
-        //Create texture from surface pixels
-	newTexture = SDL_CreateTextureFromSurface( gRenderer, loadedSurface );                                                  if( newTexture == NULL )                                {                                                               printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
-                }                                                                                                               //Get rid of old loaded surface
-		SDL_FreeSurface( loadedSurface );               }                                                                                                               return newTexture;                              }                                                                                                               int main( int argc, char* args[] )                      {
-        //Start up SDL and create window
-	if( !init() )                                           {                                                               printf( "Failed to initialize!\n" );            }
+        else
+	{
+        	//Create texture from surface pixels
+		newTexture = SDL_CreateTextureFromSurface( gRenderer, loadedSurface );
+			if( newTexture == NULL )
+			{
+				printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
+                	}
+
+		//Get rid of old loaded surface
+		SDL_FreeSurface( loadedSurface );
+	}
+
+	return newTexture;
+}
 
 
+/*** main ***/
 
 int main( int argc, char* args[] )
 {
