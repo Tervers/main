@@ -45,7 +45,7 @@ SDL_Surface* loadTexture( std::string path );   //loads individual textures
 /*** Pointers ***/
 
 //The window we'll be rendering to
-SDL_Window* mainWindow = NULL;
+SDL_Window* theWindow = NULL;
 
 //The surface contained by the window
 SDL_Surface* gScreenSurface = NULL;   //a buffer for drawing and rendering surfaces before displaying to screen
@@ -76,8 +76,8 @@ bool init()
 	else
 	{
 		//Create window
-		mainWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );   //store to mainWindow variable for reuse
-		if( mainWindow == NULL )
+		theWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+		if( theWindow == NULL )
 		{
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
 			success = false;
@@ -85,7 +85,7 @@ bool init()
 		else
 		{
 			//Get window surface
-			gScreenSurface = SDL_GetWindowSurface( mainWindow );   //store to variable for reuse
+			gScreenSurface = SDL_GetWindowSurface( theWindow );   //store to variable for reuse
 		}
 	}
 
@@ -151,8 +151,8 @@ void close()
 
 	//Destroy window
 	SDL_DestroyRenderer( gRenderer );
-	SDL_DestroyWindow( mainWindow );
-	mainWindow = NULL;
+	SDL_DestroyWindow( theWindow );
+	theWindow = NULL;
 	gRenderer = NULL;
 
 	//Free loaded texture
@@ -298,7 +298,7 @@ int main( int argc, char* args[] )
 				SDL_BlitScaled( gCurrentSurface, NULL, gScreenSurface, &stretchRect);   //the picture is drawn to the surface...
 			
 				//Update the surface
-				SDL_UpdateWindowSurface( mainWindow );    //...now put it up for show
+				SDL_UpdateWindowSurface( theWindow );    //...now put it up for show
 			}
 		}
 	}
