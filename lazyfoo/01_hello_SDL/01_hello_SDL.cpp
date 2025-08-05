@@ -15,7 +15,7 @@ int main( int argc, char* args[] )
 	SDL_Window* window = NULL;
 	
 	//The surface contained by the window
-	SDL_Surface* screenSurface = NULL;
+	SDL_Surface* windowSurface = NULL;
 
 	//Initialize SDL
 	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
@@ -34,10 +34,10 @@ int main( int argc, char* args[] )
 		else
 		{
 			//Get window surface
-			screenSurface = SDL_GetWindowSurface( window );
+			windowSurface = SDL_GetWindowSurface( window );
 
 			//Fill the surface white
-			SDL_FillRect( screenSurface, NULL, SDL_MapRGB( screenSurface->format, 0xFF, 0xFF, 0xFF ) );
+			SDL_FillRect( windowSurface, NULL, SDL_MapRGB( screenSurface->format, 0xFF, 0xFF, 0xFF ) );
 			
 			//Update the surface
 			SDL_UpdateWindowSurface( window );
