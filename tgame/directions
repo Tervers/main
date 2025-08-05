@@ -1,0 +1,11 @@
+/*** SDL Surface ***/
+1. Create window
+2. Create surface
+3. Initialize SDL
+  a. Initialize video
+  b. Initialize window
+  c. Initialize surface
+4. Fill surface
+5. Update surface
+6. Keep window open
+  a. Poll events, quit flags close
