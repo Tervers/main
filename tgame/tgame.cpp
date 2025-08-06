@@ -28,7 +28,7 @@ enum KeyPressSurfaces   //enum is the alternative to defines: '#define KEY_PRESS
 //Starts up SDL and creates window
 bool init();
 
-//Loads media   //make this loadMediaSurface, create loadSurfaceTexture
+//Loads media   //create loadMediaTexture
 bool loadMediaSurface();   //this loads all media from outside the program
 
 //Frees media and shuts down SDL
@@ -75,6 +75,12 @@ bool init()
 	}
 	else
 	{
+		//Set texture filtering to linear
+		if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
+		{
+			printf("Warning: Linear texture filtering not enabled!" );
+		}
+
 		//Create window
 		Window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
 		if( Window == NULL )
@@ -84,6 +90,26 @@ bool init()
 		}
 		else
 		{
+			//Create renderer for window
+			Renderer = SDL_CreateRenderer( Window, -1, SDL_RENDERER_ACCELERATED );
+			if ( Renderer == NULL )
+			{
+				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
+				success = false;
+			}
+			else
+			{
+				//Initialize renderer color
+				SDL_SetRenderDrawColor ( Renderer, 0x00, 0x00, 0x00, 0xff );
+
+				//Initialize PNG loading
+				int imgFlags = IMG_INIT_PNG;
+				if ( !( IMG_Init( imgFlags ) & imgFlags ) )
+				{
+					printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+					success = false;
+				}
+
 			//Get window surface
 			WindowSurface = SDL_GetWindowSurface( Window );   //store to variable for reuse
 		}
