@@ -32,7 +32,7 @@ int main( int argc, char* args[] )   //main parameters unused in this program
 		else
 		{
 			//Get window surface / initialize surface
-			WindowSurface = SDL_GetWindowSurface( Window );
+			WindowSurface = SDL_GetWindowSurface( Window );   //get surface for window
 
 			//Fill the surface white
 			SDL_FillRect( WindowSurface, NULL, SDL_MapRGB(
@@ -48,10 +48,7 @@ int main( int argc, char* args[] )   //main parameters unused in this program
 		    while( SDL_PollEvent( &e )){
 			    if( e.type == SDL_QUIT )
 				    quit = true;
-		    				}
-	    				}
-				}
-			}
+		    			    }}}}
 
 	//Destroy window
 	SDL_DestroyWindow( Window );

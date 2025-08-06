@@ -1,5 +1,3 @@
-/* Surface - Rendered by CPU. Texture - Rendered by GPU. */
-
 //Using SDL, standard IO, and strings
 #include <SDL.h>
 #include <SDL_image.h>
@@ -39,24 +37,26 @@ void close();
 //Loads individual image
 SDL_Surface* loadSurface( std::string path );   //loads individual surfaces
 
-SDL_Surface* loadTexture( std::string path );   //loads individual textures
+SDL_Texture* loadTexture( std::string path );   //loads individual textures
 
 
 /*** Pointers ***/
 
 //The window we'll be rendering to
-SDL_Window* theWindow = NULL;
+SDL_Window* Window = NULL;
 
 //The surface contained by the window
-SDL_Surface* gScreenSurface = NULL;   //a buffer for drawing and rendering surfaces before displaying to screen
-				      //surface of window where images will eventually be shown
-				      //it is the surface tied to the window
+SDL_Surface* WindowSurface = NULL;    //surface of window where images will eventually be shown
+				      //it is the surface that will be tied to the window
+
+//The window renderer
+SDL_Renderer* Renderer = NULL;
 
 //The images that correspond to a keypress
-SDL_Surface* gKeyPressSurfaces[ KEY_PRESS_SURFACE_TOTAL ];   //array of 5 pointers
+SDL_Surface* KeyPressSurfaces[ KEY_PRESS_SURFACE_TOTAL ];   //array of 5 pointers
 
 //Current displayed image
-SDL_Surface* gCurrentSurface = NULL;   //holds the image that you want to apply to gScreenSurface
+SDL_Surface* SelectedSurface = NULL;   //holds the image that you want to apply to WindowSurface
 				       //images change depending on user input
 
 
@@ -76,8 +76,8 @@ bool init()
 	else
 	{
 		//Create window
-		theWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
-		if( theWindow == NULL )
+		Window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+		if( Window == NULL )
 		{
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
 			success = false;
@@ -85,7 +85,7 @@ bool init()
 		else
 		{
 			//Get window surface
-			gScreenSurface = SDL_GetWindowSurface( theWindow );   //store to variable for reuse
+			WindowSurface = SDL_GetWindowSurface( Window );   //store to variable for reuse
 		}
 	}
 
@@ -98,40 +98,40 @@ bool loadMediaSurface()
 	bool success = true;
 
 	//Load default surface
-	gKeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ] = loadSurface( "pictures/press.bmp" );
-	if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ] == NULL )
+	KeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ] = loadSurface( "pictures/press.bmp" );
+	if( KeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ] == NULL )
 	{
 		printf( "Failed to load default image!\n" );
 		success = false;
 	}
 
 	//Load up surface
-	gKeyPressSurfaces[ KEY_PRESS_SURFACE_UP ] = loadSurface( "pictures/up.bmp" );
-	if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_UP ] == NULL )
+	KeyPressSurfaces[ KEY_PRESS_SURFACE_UP ] = loadSurface( "pictures/up.bmp" );
+	if( KeyPressSurfaces[ KEY_PRESS_SURFACE_UP ] == NULL )
 	{
 		printf( "Failed to load up image!\n" );
 		success = false;
 	}
 
 	//Load down surface
-	gKeyPressSurfaces[ KEY_PRESS_SURFACE_DOWN ] = loadSurface( "pictures/down.bmp" );
-	if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_DOWN ] == NULL )
+	KeyPressSurfaces[ KEY_PRESS_SURFACE_DOWN ] = loadSurface( "pictures/down.bmp" );
+	if( KeyPressSurfaces[ KEY_PRESS_SURFACE_DOWN ] == NULL )
 	{
 		printf( "Failed to load down image!\n" );
 		success = false;
 	}
 
 	//Load left surface
-	gKeyPressSurfaces[ KEY_PRESS_SURFACE_LEFT ] = loadSurface( "pictures/left.bmp" );
-	if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_LEFT ] == NULL )
+	KeyPressSurfaces[ KEY_PRESS_SURFACE_LEFT ] = loadSurface( "pictures/left.bmp" );
+	if( KeyPressSurfaces[ KEY_PRESS_SURFACE_LEFT ] == NULL )
 	{
 		printf( "Failed to load left image!\n" );
 		success = false;
 	}
 
 	//Load right surface
-	gKeyPressSurfaces[ KEY_PRESS_SURFACE_RIGHT ] = loadSurface( "pictures/right.bmp" );
-	if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_RIGHT ] == NULL )
+	KeyPressSurfaces[ KEY_PRESS_SURFACE_RIGHT ] = loadSurface( "pictures/right.bmp" );
+	if( KeyPressSurfaces[ KEY_PRESS_SURFACE_RIGHT ] == NULL )
 	{
 		printf( "Failed to load right image!\n" );
 		success = false;
@@ -145,19 +145,19 @@ void close()
 	//Deallocate surfaces
 	for( int i = 0; i < KEY_PRESS_SURFACE_TOTAL; ++i )
 	{
-		SDL_FreeSurface( gKeyPressSurfaces[ i ] );
-		gKeyPressSurfaces[ i ] = NULL;
+		SDL_FreeSurface( KeyPressSurfaces[ i ] );
+		KeyPressSurfaces[ i ] = NULL;
 	}
 
 	//Destroy window
-	SDL_DestroyRenderer( gRenderer );
-	SDL_DestroyWindow( theWindow );
-	theWindow = NULL;
-	gRenderer = NULL;
+	SDL_DestroyRenderer( Renderer );
+	SDL_DestroyWindow( Window );
+	Window = NULL;
+	Renderer = NULL;
 
 	//Free loaded texture
-	SDL_DestroyTexture( gTexture );
-	gTexture = NULL;
+	SDL_DestroyTexture( Texture );
+	Texture = NULL;
 
 	//Quit SDL subsystems
 	IMG_Quit();
@@ -181,7 +181,7 @@ SDL_Surface* loadSurface( std::string path )   //loads BMPs
 	else
 	{
 		//Convert surface to screen format
-		optimizedSurface = SDL_ConvertSurface( loadedSurface, gScreenSurface->format, 0 );
+		optimizedSurface = SDL_ConvertSurface( loadedSurface, WindowSurface->format, 0 );
 		if( optimizedSurface == NULL )
 		{
 			printf( "Unable to optimize image %s! SDL error: %s\n", path.c_str(), SDL_GetError() );
@@ -208,7 +208,7 @@ SDL_Texture* loadTexture( std::string path )   //Load various image formats
         else
 	{
         	//Create texture from surface pixels
-	newTexture = SDL_CreateTextureFromSurface( gRenderer, loadedSurface );
+	newTexture = SDL_CreateTextureFromSurface( Renderer, loadedSurface );
 		if( newTexture == NULL )
 		{
 			printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
@@ -247,7 +247,7 @@ int main( int argc, char* args[] )
 			SDL_Event e;   //
 
 			//Set default current surface
-			gCurrentSurface = gKeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ];
+			SelectedSurface = KeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ];  //defaults to this surface
 
 			//While application is running
 			while( !quit )
@@ -267,23 +267,23 @@ int main( int argc, char* args[] )
 						switch( e.key.keysym.sym )
 						{
 							case SDLK_UP:
-							gCurrentSurface = gKeyPressSurfaces[ KEY_PRESS_SURFACE_UP ];
+							SelectedSurface = KeyPressSurfaces[ KEY_PRESS_SURFACE_UP ];
 							break;
 
 							case SDLK_DOWN:
-							gCurrentSurface = gKeyPressSurfaces[ KEY_PRESS_SURFACE_DOWN ];
+							SelectedSurface = KeyPressSurfaces[ KEY_PRESS_SURFACE_DOWN ];
 							break;
 
 							case SDLK_LEFT:
-							gCurrentSurface = gKeyPressSurfaces[ KEY_PRESS_SURFACE_LEFT ];
+							SelectedSurface = KeyPressSurfaces[ KEY_PRESS_SURFACE_LEFT ];
 							break;
 
 							case SDLK_RIGHT:
-							gCurrentSurface = gKeyPressSurfaces[ KEY_PRESS_SURFACE_RIGHT ];
+							SelectedSurface = KeyPressSurfaces[ KEY_PRESS_SURFACE_RIGHT ];
 							break;
 
 							default:
-							gCurrentSurface = gKeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ];
+							SelectedSurface = KeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ];
 							break;
 						}
 					}
@@ -295,10 +295,10 @@ int main( int argc, char* args[] )
 				stretchRect.y = 0;
 				stretchRect.w = SCREEN_WIDTH;
 				stretchRect.h = SCREEN_HEIGHT;
-				SDL_BlitScaled( gCurrentSurface, NULL, gScreenSurface, &stretchRect);   //the picture is drawn to the surface...
+				SDL_BlitScaled( SelectedSurface, NULL, WindowSurface, &stretchRect);   //the picture is drawn to the surface...
 			
 				//Update the surface
-				SDL_UpdateWindowSurface( theWindow );    //...now put it up for show
+				SDL_UpdateWindowSurface( Window );    //...now put it up for show
 			}
 		}
 	}
@@ -308,3 +308,69 @@ int main( int argc, char* args[] )
 
 	return 0;
 }
+
+
+/*** Surface-only ***/
+/**
+
+//Using SDL and standard IO
+#include <SDL.h>
+#include <stdio.h>
+
+//Screen dimension constants
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
+
+int main( int argc, char* args[] )   //main parameters unused in this program
+{
+	//The window we'll be rendering to
+	SDL_Window* Window = NULL;   
+	
+	//The surface contained by the window
+	SDL_Surface* WindowSurface = NULL;
+
+	//Initialize SDL
+	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+	{
+		printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
+	}
+	else
+	{
+		//Create window / initialize Window
+		Window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED,
+				SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT,
+				SDL_WINDOW_SHOWN );
+		if( Window == NULL )
+		{
+			printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
+		}
+		else
+		{
+			//Get window surface / initialize surface
+			WindowSurface = SDL_GetWindowSurface( Window );   //get surface for window
+
+			//Fill the surface white
+			SDL_FillRect( WindowSurface, NULL, SDL_MapRGB(
+						WindowSurface->format, 0xFF, 0xFF, 0xFF ) );
+			
+			//Update the surface
+			SDL_UpdateWindowSurface( Window );
+            
+            //Hack to get window to stay up
+            SDL_Event e;
+	    bool quit = false;
+	    while( quit == false ){
+		    while( SDL_PollEvent( &e )){
+			    if( e.type == SDL_QUIT )
+				    quit = true;
+		    			    }}}}
+
+	//Destroy window
+	SDL_DestroyWindow( Window );
+
+	//Quit SDL subsystems
+	SDL_Quit();
+
+	return 0;
+}
+**/
