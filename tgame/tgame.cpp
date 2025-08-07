@@ -17,14 +17,14 @@ const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
 //Key press surface constants
-enum KeyPressSurfaces   //enum is the alternative to defines: '#define KEY_PRESS_SURFACE_DEFAULT 0', '#define KEY_PRESS_SURFACE_UP 1'
+enum KeyPressMedia   //enum is the alternative to defines: '#define KEY_PRESS_SURFACE_DEFAULT 0', '#define KEY_PRESS_SURFACE_UP 1'
 {
-	KEY_PRESS_SURFACE_DEFAULT,
-	KEY_PRESS_SURFACE_UP,
-	KEY_PRESS_SURFACE_DOWN,
-	KEY_PRESS_SURFACE_LEFT,
-	KEY_PRESS_SURFACE_RIGHT,
-	KEY_PRESS_SURFACE_TOTAL
+	KEY_PRESS_MEDIA_DEFAULT,
+	KEY_PRESS_MEDIA_UP,
+	KEY_PRESS_MEDIA_DOWN,
+	KEY_PRESS_MEDIA_LEFT,
+	KEY_PRESS_MEDIA_RIGHT,
+	KEY_PRESS_MEDIA_TOTAL
 };
 
 
@@ -59,8 +59,11 @@ SDL_Surface* primaryWindowSurface = NULL;
 //The window renderer
 SDL_Renderer* primaryRenderer = NULL;
 
-//The images that correspond to a keypress
-SDL_Surface* KeyPressSurfaces[ KEY_PRESS_SURFACE_TOTAL ];
+//The surfaces that correspond to a keypress
+SDL_Surface* KeyPressSurfaces[ KEY_PRESS_MEDIA_TOTAL ];
+
+//The textures that correspond to a keypress
+SDL_Surface* KeyPressTextures[ KEY_PRESS_MEDIA_TOTAL ];
 
 //Current displayed image
 SDL_Surface* awaitingSurface = NULL;   //holds the image that you want to apply to primaryWindowSurface
@@ -133,40 +136,40 @@ bool loadMediaSurface()
 	bool success = true;
 
 	//Load default surface
-	KeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ] = loadSurface( "pictures/press.bmp" );
-	if( KeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ] == NULL )
+	KeyPressSurfaces[ KEY_PRESS_MEDIA_DEFAULT ] = loadSurface( "pictures/press.bmp" );
+	if( KeyPressSurfaces[ KEY_PRESS_MEDIA_DEFAULT ] == NULL )
 	{
 		printf( "Failed to load default image!\n" );
 		success = false;
 	}
 
 	//Load up surface
-	KeyPressSurfaces[ KEY_PRESS_SURFACE_UP ] = loadSurface( "pictures/up.bmp" );
-	if( KeyPressSurfaces[ KEY_PRESS_SURFACE_UP ] == NULL )
+	KeyPressSurfaces[ KEY_PRESS_MEDIA_UP ] = loadSurface( "pictures/up.bmp" );
+	if( KeyPressSurfaces[ KEY_PRESS_MEDIA_UP ] == NULL )
 	{
 		printf( "Failed to load up image!\n" );
 		success = false;
 	}
 
 	//Load down surface
-	KeyPressSurfaces[ KEY_PRESS_SURFACE_DOWN ] = loadSurface( "pictures/down.bmp" );
-	if( KeyPressSurfaces[ KEY_PRESS_SURFACE_DOWN ] == NULL )
+	KeyPressSurfaces[ KEY_PRESS_MEDIA_DOWN ] = loadSurface( "pictures/down.bmp" );
+	if( KeyPressSurfaces[ KEY_PRESS_MEDIA_DOWN ] == NULL )
 	{
 		printf( "Failed to load down image!\n" );
 		success = false;
 	}
 
 	//Load left surface
-	KeyPressSurfaces[ KEY_PRESS_SURFACE_LEFT ] = loadSurface( "pictures/left.bmp" );
-	if( KeyPressSurfaces[ KEY_PRESS_SURFACE_LEFT ] == NULL )
+	KeyPressSurfaces[ KEY_PRESS_MEDIA_LEFT ] = loadSurface( "pictures/left.bmp" );
+	if( KeyPressSurfaces[ KEY_PRESS_MEDIA_LEFT ] == NULL )
 	{
 		printf( "Failed to load left image!\n" );
 		success = false;
 	}
 
 	//Load right surface
-	KeyPressSurfaces[ KEY_PRESS_SURFACE_RIGHT ] = loadSurface( "pictures/right.bmp" );
-	if( KeyPressSurfaces[ KEY_PRESS_SURFACE_RIGHT ] == NULL )
+	KeyPressSurfaces[ KEY_PRESS_MEDIA_RIGHT ] = loadSurface( "pictures/right.bmp" );
+	if( KeyPressSurfaces[ KEY_PRESS_MEDIA_RIGHT ] == NULL )
 	{
 		printf( "Failed to load right image!\n" );
 		success = false;
@@ -180,11 +183,19 @@ bool loadMediaTexture()   //maybe eventually create loadMediaPNG
 	//Loading success flag
 	bool success = true;
 
-	//Load PNG texture
+	/*Load individual PNG texture
 	primaryWindowTexture = loadTexture( "07_texture_loading_and_rendering/texture.png" );
 	if( primaryWindowTexture == NULL )
 	{
 		printf( "Failed to load texture image!\n" );
+		success = false;
+	}
+	*/
+	//Load right texture 
+	KeyPressTextures[ KEY_PRESS_MEDIA_RIGHT ] = loadSurface( "pictures/right.bmp" );
+	if( KeyPressTextures[ KEY_PRESS_MEDIA_RIGHT ] == NULL )
+	{
+		printf( "Failed to load right image!\n" );
 		success = false;
 	}
 
@@ -194,7 +205,7 @@ bool loadMediaTexture()   //maybe eventually create loadMediaPNG
 void close()
 {
 	//Deallocate surfaces
-	for( int i = 0; i < KEY_PRESS_SURFACE_TOTAL; ++i )
+	for( int i = 0; i < KEY_PRESS_MEDIA_TOTAL; ++i )
 	{
 		SDL_FreeSurface( KeyPressSurfaces[ i ] );
 		KeyPressSurfaces[ i ] = NULL;
@@ -290,7 +301,7 @@ int main( int argc, char* args[] )
 			printf( "Failed to load media!\n" );
 		}
 		else
-		{	
+		{
 			//Main loop flag
 			bool quit = false;
 
@@ -298,7 +309,7 @@ int main( int argc, char* args[] )
 			SDL_Event e;
 
 			//Set default current surface
-			awaitingSurface = KeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ];  //defaults to this surface
+			awaitingSurface = KeyPressSurfaces[ KEY_PRESS_MEDIA_DEFAULT ];  //defaults to this surface
 
 			//While application is running
 			while( !quit )
@@ -318,23 +329,23 @@ int main( int argc, char* args[] )
 						switch( e.key.keysym.sym )
 						{
 							case SDLK_UP:
-							awaitingSurface = KeyPressSurfaces[ KEY_PRESS_SURFACE_UP ];
+							awaitingSurface = KeyPressSurfaces[ KEY_PRESS_MEDIA_UP ];
 							break;
 
 							case SDLK_DOWN:
-							awaitingSurface = KeyPressSurfaces[ KEY_PRESS_SURFACE_DOWN ];
+							awaitingSurface = KeyPressSurfaces[ KEY_PRESS_MEDIA_DOWN ];
 							break;
 
 							case SDLK_LEFT:
-							awaitingSurface = KeyPressSurfaces[ KEY_PRESS_SURFACE_LEFT ];
+							awaitingSurface = KeyPressSurfaces[ KEY_PRESS_MEDIA_LEFT ];
 							break;
 
 							case SDLK_RIGHT:
-							awaitingSurface = KeyPressSurfaces[ KEY_PRESS_SURFACE_RIGHT ];
+							awaitingSurface = KeyPressSurfaces[ KEY_PRESS_MEDIA_RIGHT ];
 							break;
 
 							default:
-							awaitingSurface = KeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ];
+							awaitingSurface = KeyPressSurfaces[ KEY_PRESS_MEDIA_DEFAULT ];
 							break;
 						}
 					}
