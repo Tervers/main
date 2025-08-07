@@ -28,7 +28,7 @@ class LTexture
 		void free();
 
 		//Renders texture at given point
-		void render( int x, int y );
+		void renderLocation( int x, int y );
 
 		//Gets image dimensions
 		int getWidth();
@@ -130,7 +130,7 @@ void LTexture::free()
 	}
 }
 
-void LTexture::render( int x, int y )
+void LTexture::renderLocation( int x, int y )
 {
 	//Set rendering space and render to screen
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
@@ -280,10 +280,10 @@ int main( int argc, char* args[] )
 				SDL_RenderClear( gRenderer );
 
 				//Render background texture to screen
-				gBackgroundTexture.render( 0, 0 );
+				gBackgroundTexture.renderLocation( 0, 0 );
 
 				//Render Foo' to the screen
-				gFooTexture.render( 240, 190 );
+				gFooTexture.renderLocation( 240, 190 );
 
 				//Update screen
 				SDL_RenderPresent( gRenderer );

@@ -183,6 +183,48 @@ bool loadMediaTexture()   //maybe eventually create loadMediaPNG
 	//Loading success flag
 	bool success = true;
 
+	//Load default texture 
+	KeyPressTextures[ KEY_PRESS_MEDIA_RIGHT ] = loadTexture( "pictures/default.png" );
+	if( KeyPressTextures[ KEY_PRESS_MEDIA_RIGHT ] == NULL )
+	{
+		printf( "Failed to load right image!\n" );
+		success = false;
+	}
+
+	//Load up texture 
+	KeyPressTextures[ KEY_PRESS_MEDIA_RIGHT ] = loadTexture( "pictures/up.png" );
+	if( KeyPressTextures[ KEY_PRESS_MEDIA_RIGHT ] == NULL )
+	{
+		printf( "Failed to load right image!\n" );
+		success = false;
+	}
+
+	return success;
+
+	//Load down texture 
+	KeyPressTextures[ KEY_PRESS_MEDIA_RIGHT ] = loadTexture( "pictures/down.png" );
+	if( KeyPressTextures[ KEY_PRESS_MEDIA_RIGHT ] == NULL )
+	{
+		printf( "Failed to load right image!\n" );
+		success = false;
+	}
+
+	//Load left texture 
+	KeyPressTextures[ KEY_PRESS_MEDIA_RIGHT ] = loadTexture( "pictures/left.png" );
+	if( KeyPressTextures[ KEY_PRESS_MEDIA_RIGHT ] == NULL )
+	{
+		printf( "Failed to load right image!\n" );
+		success = false;
+	}
+
+	//Load right texture 
+	KeyPressTextures[ KEY_PRESS_MEDIA_RIGHT ] = loadTexture( "pictures/right.png" );
+	if( KeyPressTextures[ KEY_PRESS_MEDIA_RIGHT ] == NULL )
+	{
+		printf( "Failed to load right image!\n" );
+		success = false;
+	}
+
 	/*Load individual PNG texture
 	primaryWindowTexture = loadTexture( "07_texture_loading_and_rendering/texture.png" );
 	if( primaryWindowTexture == NULL )
@@ -191,15 +233,7 @@ bool loadMediaTexture()   //maybe eventually create loadMediaPNG
 		success = false;
 	}
 	*/
-	//Load right texture 
-	KeyPressTextures[ KEY_PRESS_MEDIA_RIGHT ] = loadSurface( "pictures/right.bmp" );
-	if( KeyPressTextures[ KEY_PRESS_MEDIA_RIGHT ] == NULL )
-	{
-		printf( "Failed to load right image!\n" );
-		success = false;
-	}
 
-	return success;
 }	
 
 void close()
@@ -217,7 +251,13 @@ void close()
 	primaryWindow = NULL;
 	primaryRenderer = NULL;
 
-	//Free loaded texture
+	//Deallocate textures 
+	for( int i = 0; i < KEY_PRESS_MEDIA_TOTAL; ++i )
+	{
+		SDL_DestroyTexture( KeyPressTextures[ i ] );
+		KeyPressTextures[ i ] = NULL;
+	}
+	//Free individually loaded texture
 	SDL_DestroyTexture( primaryWindowTexture );
 	primaryWindowTexture = NULL;
 
