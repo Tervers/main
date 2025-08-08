@@ -23,7 +23,12 @@ class LTexture
 
 		//Loads image at specified path
 		bool loadFromFile( std::string path );
-
+		
+		#if defined(SDL_TTF_MAJOR_VERSION)
+		//Creates image from font string
+		bool loadFromRenderedText( std::string textureText, SDL_Color textColor );
+		#endif
+		
 		//Deallocates texture
 		void free();
 
@@ -37,7 +42,7 @@ class LTexture
 		void setAlpha( Uint8 alpha );
 		
 		//Renders texture at given point
-		void render( int x, int y, SDL_Rect* clip = NULL );
+		void render( int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE );
 
 		//Gets image dimensions
 		int getWidth();
@@ -68,9 +73,11 @@ SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 
 //Scene textures
-LTexture gModulatedTexture;
-LTexture gBackgroundTexture;
-
+LTexture gPressTexture;
+LTexture gUpTexture;
+LTexture gDownTexture;
+LTexture gLeftTexture;
+LTexture gRightTexture;
 
 LTexture::LTexture()
 {
@@ -127,6 +134,43 @@ bool LTexture::loadFromFile( std::string path )
 	return mTexture != NULL;
 }
 
+#if defined(SDL_TTF_MAJOR_VERSION)
+bool LTexture::loadFromRenderedText( std::string textureText, SDL_Color textColor )
+{
+	//Get rid of preexisting texture
+	free();
+
+	//Render text surface
+	SDL_Surface* textSurface = TTF_RenderText_Solid( gFont, textureText.c_str(), textColor );
+	if( textSurface != NULL )
+	{
+		//Create texture from surface pixels
+        mTexture = SDL_CreateTextureFromSurface( gRenderer, textSurface );
+		if( mTexture == NULL )
+		{
+			printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
+		}
+		else
+		{
+			//Get image dimensions
+			mWidth = textSurface->w;
+			mHeight = textSurface->h;
+		}
+
+		//Get rid of old surface
+		SDL_FreeSurface( textSurface );
+	}
+	else
+	{
+		printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
+	}
+
+	
+	//Return success
+	return mTexture != NULL;
+}
+#endif
+
 void LTexture::free()
 {
 	//Free texture if it exists
@@ -157,7 +201,7 @@ void LTexture::setAlpha( Uint8 alpha )
 	SDL_SetTextureAlphaMod( mTexture, alpha );
 }
 
-void LTexture::render( int x, int y, SDL_Rect* clip )
+void LTexture::render( int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip )
 {
 	//Set rendering space and render to screen
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
@@ -170,7 +214,7 @@ void LTexture::render( int x, int y, SDL_Rect* clip )
 	}
 
 	//Render to screen
-	SDL_RenderCopy( gRenderer, mTexture, clip, &renderQuad );
+	SDL_RenderCopyEx( gRenderer, mTexture, clip, &renderQuad, angle, center, flip );
 }
 
 int LTexture::getWidth()
@@ -211,8 +255,8 @@ bool init()
 		}
 		else
 		{
-			//Create renderer for window
-			gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED );
+			//Create vsynced renderer for window
+			gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
 			if( gRenderer == NULL )
 			{
 				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -242,33 +286,52 @@ bool loadMedia()
 	//Loading success flag
 	bool success = true;
 
-	//Load front alpha texture
-	if( !gModulatedTexture.loadFromFile( "13_alpha_blending/fadeout.png" ) )
+	//Load press texture
+	if( !gPressTexture.loadFromFile( "18_key_states/press.png" ) )
 	{
-		printf( "Failed to load front texture!\n" );
-		success = false;
-	}
-	else
-	{
-		//Set standard alpha blending
-		gModulatedTexture.setBlendMode( SDL_BLENDMODE_BLEND );
-	}
-
-	//Load background texture
-	if( !gBackgroundTexture.loadFromFile( "13_alpha_blending/fadein.png" ) )
-	{
-		printf( "Failed to load background texture!\n" );
+		printf( "Failed to load press texture!\n" );
 		success = false;
 	}
 	
+	//Load up texture
+	if( !gUpTexture.loadFromFile( "18_key_states/up.png" ) )
+	{
+		printf( "Failed to load up texture!\n" );
+		success = false;
+	}
+
+	//Load down texture
+	if( !gDownTexture.loadFromFile( "18_key_states/down.png" ) )
+	{
+		printf( "Failed to load down texture!\n" );
+		success = false;
+	}
+
+	//Load left texture
+	if( !gLeftTexture.loadFromFile( "18_key_states/left.png" ) )
+	{
+		printf( "Failed to load left texture!\n" );
+		success = false;
+	}
+
+	//Load right texture
+	if( !gRightTexture.loadFromFile( "18_key_states/right.png" ) )
+	{
+		printf( "Failed to load right texture!\n" );
+		success = false;
+	}
+
 	return success;
 }
 
 void close()
 {
 	//Free loaded images
-	gModulatedTexture.free();
-	gBackgroundTexture.free();
+	gPressTexture.free();
+	gUpTexture.free();
+	gDownTexture.free();
+	gLeftTexture.free();
+	gRightTexture.free();
 
 	//Destroy window	
 	SDL_DestroyRenderer( gRenderer );
@@ -303,8 +366,8 @@ int main( int argc, char* args[] )
 			//Event handler
 			SDL_Event e;
 
-			//Modulation component
-			Uint8 a = 255;
+			//Current rendered texture
+			LTexture* currentTexture = NULL;
 
 			//While application is running
 			while( !quit )
@@ -317,50 +380,37 @@ int main( int argc, char* args[] )
 					{
 						quit = true;
 					}
-					//Handle key presses
-					else if( e.type == SDL_KEYDOWN )
-					{
-						//Increase alpha on w
-						if( e.key.keysym.sym == SDLK_w )
-						{
-							//Cap if over 255
-							if( a + 32 > 255 )
-							{
-								a = 255;
-							}
-							//Increment otherwise
-							else
-							{
-								a += 32;
-							}
-						}
-						//Decrease alpha on s
-						else if( e.key.keysym.sym == SDLK_s )
-						{
-							//Cap if below 0
-							if( a - 32 < 0 )
-							{
-								a = 0;
-							}
-							//Decrement otherwise
-							else
-							{
-								a -= 32;
-							}
-						}
-					}
+				}
+
+				//Set texture based on current keystate
+				const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
+				if( currentKeyStates[ SDL_SCANCODE_UP ] )
+				{
+					currentTexture = &gUpTexture;
+				}
+				else if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
+				{
+					currentTexture = &gDownTexture;
+				}
+				else if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
+				{
+					currentTexture = &gLeftTexture;
+				}
+				else if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
+				{
+					currentTexture = &gRightTexture;
+				}
+				else
+				{
+					currentTexture = &gPressTexture;
 				}
 
 				//Clear screen
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( gRenderer );
 
-				//Render background
-				gBackgroundTexture.render( 0, 0 );
-
-				//Render front blended
-				gModulatedTexture.setAlpha( a );
-				gModulatedTexture.render( 0, 0 );
+				//Render current texture
+				currentTexture->render( 0, 0 );
 
 				//Update screen
 				SDL_RenderPresent( gRenderer );

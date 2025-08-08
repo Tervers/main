@@ -11,6 +11,20 @@ and may not be redistributed without written permission.*/
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
+//Button constants
+const int BUTTON_WIDTH = 300;
+const int BUTTON_HEIGHT = 200;
+const int TOTAL_BUTTONS = 4;
+
+enum LButtonSprite
+{
+	BUTTON_SPRITE_MOUSE_OUT = 0,
+	BUTTON_SPRITE_MOUSE_OVER_MOTION = 1,
+	BUTTON_SPRITE_MOUSE_DOWN = 2,
+	BUTTON_SPRITE_MOUSE_UP = 3,
+	BUTTON_SPRITE_TOTAL = 4
+};
+
 //Texture wrapper class
 class LTexture
 {
@@ -23,7 +37,12 @@ class LTexture
 
 		//Loads image at specified path
 		bool loadFromFile( std::string path );
-
+		
+		#if defined(SDL_TTF_MAJOR_VERSION)
+		//Creates image from font string
+		bool loadFromRenderedText( std::string textureText, SDL_Color textColor );
+		#endif
+		
 		//Deallocates texture
 		void free();
 
@@ -37,7 +56,7 @@ class LTexture
 		void setAlpha( Uint8 alpha );
 		
 		//Renders texture at given point
-		void render( int x, int y, SDL_Rect* clip = NULL );
+		void render( int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE );
 
 		//Gets image dimensions
 		int getWidth();
@@ -50,6 +69,30 @@ class LTexture
 		//Image dimensions
 		int mWidth;
 		int mHeight;
+};
+
+//The mouse button
+class LButton
+{
+	public:
+		//Initializes internal variables
+		LButton();
+
+		//Sets top left position
+		void setPosition( int x, int y );
+
+		//Handles mouse event
+		void handleEvent( SDL_Event* e );
+	
+		//Shows button sprite
+		void render();
+
+	private:
+		//Top left position
+		SDL_Point mPosition;
+
+		//Currently used global sprite
+		LButtonSprite mCurrentSprite;
 };
 
 //Starts up SDL and creates window
@@ -67,10 +110,12 @@ SDL_Window* gWindow = NULL;
 //The window renderer
 SDL_Renderer* gRenderer = NULL;
 
-//Scene textures
-LTexture gModulatedTexture;
-LTexture gBackgroundTexture;
+//Mouse button sprites
+SDL_Rect gSpriteClips[ BUTTON_SPRITE_TOTAL ];
+LTexture gButtonSpriteSheetTexture;
 
+//Buttons objects
+LButton gButtons[ TOTAL_BUTTONS ]; 
 
 LTexture::LTexture()
 {
@@ -127,6 +172,42 @@ bool LTexture::loadFromFile( std::string path )
 	return mTexture != NULL;
 }
 
+#if defined(SDL_TTF_MAJOR_VERSION)
+bool LTexture::loadFromRenderedText( std::string textureText, SDL_Color textColor )
+{
+	//Get rid of preexisting texture
+	free();
+
+	//Render text surface
+	SDL_Surface* textSurface = TTF_RenderText_Solid( gFont, textureText.c_str(), textColor );
+	if( textSurface == NULL )
+	{
+		printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
+	}
+	else
+	{
+		//Create texture from surface pixels
+        mTexture = SDL_CreateTextureFromSurface( gRenderer, textSurface );
+		if( mTexture == NULL )
+		{
+			printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
+		}
+		else
+		{
+			//Get image dimensions
+			mWidth = textSurface->w;
+			mHeight = textSurface->h;
+		}
+
+		//Get rid of old surface
+		SDL_FreeSurface( textSurface );
+	}
+	
+	//Return success
+	return mTexture != NULL;
+}
+#endif
+
 void LTexture::free()
 {
 	//Free texture if it exists
@@ -157,7 +238,7 @@ void LTexture::setAlpha( Uint8 alpha )
 	SDL_SetTextureAlphaMod( mTexture, alpha );
 }
 
-void LTexture::render( int x, int y, SDL_Rect* clip )
+void LTexture::render( int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip )
 {
 	//Set rendering space and render to screen
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
@@ -170,7 +251,7 @@ void LTexture::render( int x, int y, SDL_Rect* clip )
 	}
 
 	//Render to screen
-	SDL_RenderCopy( gRenderer, mTexture, clip, &renderQuad );
+	SDL_RenderCopyEx( gRenderer, mTexture, clip, &renderQuad, angle, center, flip );
 }
 
 int LTexture::getWidth()
@@ -181,6 +262,86 @@ int LTexture::getWidth()
 int LTexture::getHeight()
 {
 	return mHeight;
+}
+
+LButton::LButton()
+{
+	mPosition.x = 0;
+	mPosition.y = 0;
+
+	mCurrentSprite = BUTTON_SPRITE_MOUSE_OUT;
+}
+
+void LButton::setPosition( int x, int y )
+{
+	mPosition.x = x;
+	mPosition.y = y;
+}
+
+void LButton::handleEvent( SDL_Event* e )
+{
+	//If mouse event happened
+	if( e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP )
+	{
+		//Get mouse position
+		int x, y;
+		SDL_GetMouseState( &x, &y );
+
+		//Check if mouse is in button
+		bool inside = true;
+
+		//Mouse is left of the button
+		if( x < mPosition.x )
+		{
+			inside = false;
+		}
+		//Mouse is right of the button
+		else if( x > mPosition.x + BUTTON_WIDTH )
+		{
+			inside = false;
+		}
+		//Mouse above the button
+		else if( y < mPosition.y )
+		{
+			inside = false;
+		}
+		//Mouse below the button
+		else if( y > mPosition.y + BUTTON_HEIGHT )
+		{
+			inside = false;
+		}
+
+		//Mouse is outside button
+		if( !inside )
+		{
+			mCurrentSprite = BUTTON_SPRITE_MOUSE_OUT;
+		}
+		//Mouse is inside button
+		else
+		{
+			//Set mouse over sprite
+			switch( e->type )
+			{
+				case SDL_MOUSEMOTION:
+				mCurrentSprite = BUTTON_SPRITE_MOUSE_OVER_MOTION;
+				break;
+			
+				case SDL_MOUSEBUTTONDOWN:
+				mCurrentSprite = BUTTON_SPRITE_MOUSE_DOWN;
+				break;
+				
+				case SDL_MOUSEBUTTONUP:
+				mCurrentSprite = BUTTON_SPRITE_MOUSE_UP;
+				break;
+			}
+		}
+	}
+}
+	
+void LButton::render()
+{
+	//Show current button sprite
+	gButtonSpriteSheetTexture.render( mPosition.x, mPosition.y, &gSpriteClips[ mCurrentSprite ] );
 }
 
 bool init()
@@ -211,8 +372,8 @@ bool init()
 		}
 		else
 		{
-			//Create renderer for window
-			gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED );
+			//Create vsynced renderer for window
+			gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
 			if( gRenderer == NULL )
 			{
 				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -242,33 +403,37 @@ bool loadMedia()
 	//Loading success flag
 	bool success = true;
 
-	//Load front alpha texture
-	if( !gModulatedTexture.loadFromFile( "13_alpha_blending/fadeout.png" ) )
+	//Load sprites
+	if( !gButtonSpriteSheetTexture.loadFromFile( "17_mouse_events/button.png" ) )
 	{
-		printf( "Failed to load front texture!\n" );
+		printf( "Failed to load button sprite texture!\n" );
 		success = false;
 	}
 	else
 	{
-		//Set standard alpha blending
-		gModulatedTexture.setBlendMode( SDL_BLENDMODE_BLEND );
+		//Set sprites
+		for( int i = 0; i < BUTTON_SPRITE_TOTAL; ++i )
+		{
+			gSpriteClips[ i ].x = 0;
+			gSpriteClips[ i ].y = i * 200;
+			gSpriteClips[ i ].w = BUTTON_WIDTH;
+			gSpriteClips[ i ].h = BUTTON_HEIGHT;
+		}
+
+		//Set buttons in corners
+		gButtons[ 0 ].setPosition( 0, 0 );
+		gButtons[ 1 ].setPosition( SCREEN_WIDTH - BUTTON_WIDTH, 0 );
+		gButtons[ 2 ].setPosition( 0, SCREEN_HEIGHT - BUTTON_HEIGHT );
+		gButtons[ 3 ].setPosition( SCREEN_WIDTH - BUTTON_WIDTH, SCREEN_HEIGHT - BUTTON_HEIGHT );
 	}
 
-	//Load background texture
-	if( !gBackgroundTexture.loadFromFile( "13_alpha_blending/fadein.png" ) )
-	{
-		printf( "Failed to load background texture!\n" );
-		success = false;
-	}
-	
 	return success;
 }
 
 void close()
 {
 	//Free loaded images
-	gModulatedTexture.free();
-	gBackgroundTexture.free();
+	gButtonSpriteSheetTexture.free();
 
 	//Destroy window	
 	SDL_DestroyRenderer( gRenderer );
@@ -303,9 +468,6 @@ int main( int argc, char* args[] )
 			//Event handler
 			SDL_Event e;
 
-			//Modulation component
-			Uint8 a = 255;
-
 			//While application is running
 			while( !quit )
 			{
@@ -317,37 +479,11 @@ int main( int argc, char* args[] )
 					{
 						quit = true;
 					}
-					//Handle key presses
-					else if( e.type == SDL_KEYDOWN )
+					
+					//Handle button events
+					for( int i = 0; i < TOTAL_BUTTONS; ++i )
 					{
-						//Increase alpha on w
-						if( e.key.keysym.sym == SDLK_w )
-						{
-							//Cap if over 255
-							if( a + 32 > 255 )
-							{
-								a = 255;
-							}
-							//Increment otherwise
-							else
-							{
-								a += 32;
-							}
-						}
-						//Decrease alpha on s
-						else if( e.key.keysym.sym == SDLK_s )
-						{
-							//Cap if below 0
-							if( a - 32 < 0 )
-							{
-								a = 0;
-							}
-							//Decrement otherwise
-							else
-							{
-								a -= 32;
-							}
-						}
+						gButtons[ i ].handleEvent( &e );
 					}
 				}
 
@@ -355,12 +491,11 @@ int main( int argc, char* args[] )
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( gRenderer );
 
-				//Render background
-				gBackgroundTexture.render( 0, 0 );
-
-				//Render front blended
-				gModulatedTexture.setAlpha( a );
-				gModulatedTexture.render( 0, 0 );
+				//Render buttons
+				for( int i = 0; i < TOTAL_BUTTONS; ++i )
+				{
+					gButtons[ i ].render();
+				}
 
 				//Update screen
 				SDL_RenderPresent( gRenderer );

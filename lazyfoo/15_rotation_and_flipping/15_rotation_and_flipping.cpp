@@ -1,11 +1,12 @@
 /*This source code copyrighted by Lazy Foo' Productions 2004-2024
 and may not be redistributed without written permission.*/
 
-//Using SDL, SDL_image, standard IO, and strings
+//Using SDL, SDL_image, standard IO, math, and strings
 #include <SDL.h>
 #include <SDL_image.h>
 #include <stdio.h>
 #include <string>
+#include <cmath>
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
@@ -37,7 +38,7 @@ class LTexture
 		void setAlpha( Uint8 alpha );
 		
 		//Renders texture at given point
-		void render( int x, int y, SDL_Rect* clip = NULL );
+		void render( int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE );
 
 		//Gets image dimensions
 		int getWidth();
@@ -67,9 +68,8 @@ SDL_Window* gWindow = NULL;
 //The window renderer
 SDL_Renderer* gRenderer = NULL;
 
-//Scene textures
-LTexture gModulatedTexture;
-LTexture gBackgroundTexture;
+//Scene texture
+LTexture gArrowTexture;
 
 
 LTexture::LTexture()
@@ -157,7 +157,7 @@ void LTexture::setAlpha( Uint8 alpha )
 	SDL_SetTextureAlphaMod( mTexture, alpha );
 }
 
-void LTexture::render( int x, int y, SDL_Rect* clip )
+void LTexture::render( int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip )
 {
 	//Set rendering space and render to screen
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
@@ -170,7 +170,7 @@ void LTexture::render( int x, int y, SDL_Rect* clip )
 	}
 
 	//Render to screen
-	SDL_RenderCopy( gRenderer, mTexture, clip, &renderQuad );
+	SDL_RenderCopyEx( gRenderer, mTexture, clip, &renderQuad, angle, center, flip );
 }
 
 int LTexture::getWidth()
@@ -211,8 +211,8 @@ bool init()
 		}
 		else
 		{
-			//Create renderer for window
-			gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED );
+			//Create vsynced renderer for window
+			gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
 			if( gRenderer == NULL )
 			{
 				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -242,40 +242,27 @@ bool loadMedia()
 	//Loading success flag
 	bool success = true;
 
-	//Load front alpha texture
-	if( !gModulatedTexture.loadFromFile( "13_alpha_blending/fadeout.png" ) )
+	//Load arrow
+	if( !gArrowTexture.loadFromFile( "15_rotation_and_flipping/arrow.png" ) )
 	{
-		printf( "Failed to load front texture!\n" );
+		printf( "Failed to load arrow texture!\n" );
 		success = false;
-	}
-	else
-	{
-		//Set standard alpha blending
-		gModulatedTexture.setBlendMode( SDL_BLENDMODE_BLEND );
 	}
 
-	//Load background texture
-	if( !gBackgroundTexture.loadFromFile( "13_alpha_blending/fadein.png" ) )
-	{
-		printf( "Failed to load background texture!\n" );
-		success = false;
-	}
-	
 	return success;
 }
 
 void close()
 {
 	//Free loaded images
-	gModulatedTexture.free();
-	gBackgroundTexture.free();
+	gArrowTexture.free();
 
 	//Destroy window	
 	SDL_DestroyRenderer( gRenderer );
 	SDL_DestroyWindow( gWindow );
 	gWindow = NULL;
 	gRenderer = NULL;
-
+	
 	//Quit SDL subsystems
 	IMG_Quit();
 	SDL_Quit();
@@ -303,8 +290,11 @@ int main( int argc, char* args[] )
 			//Event handler
 			SDL_Event e;
 
-			//Modulation component
-			Uint8 a = 255;
+			//Angle of rotation
+			double degrees = 0;
+
+			//Flip type
+			SDL_RendererFlip flipType = SDL_FLIP_NONE;
 
 			//While application is running
 			while( !quit )
@@ -317,36 +307,29 @@ int main( int argc, char* args[] )
 					{
 						quit = true;
 					}
-					//Handle key presses
 					else if( e.type == SDL_KEYDOWN )
 					{
-						//Increase alpha on w
-						if( e.key.keysym.sym == SDLK_w )
+						switch( e.key.keysym.sym )
 						{
-							//Cap if over 255
-							if( a + 32 > 255 )
-							{
-								a = 255;
-							}
-							//Increment otherwise
-							else
-							{
-								a += 32;
-							}
-						}
-						//Decrease alpha on s
-						else if( e.key.keysym.sym == SDLK_s )
-						{
-							//Cap if below 0
-							if( a - 32 < 0 )
-							{
-								a = 0;
-							}
-							//Decrement otherwise
-							else
-							{
-								a -= 32;
-							}
+							case SDLK_a:
+							degrees -= 60;
+							break;
+							
+							case SDLK_d:
+							degrees += 60;
+							break;
+
+							case SDLK_q:
+							flipType = SDL_FLIP_HORIZONTAL;
+							break;
+
+							case SDLK_w:
+							flipType = SDL_FLIP_NONE;
+							break;
+
+							case SDLK_e:
+							flipType = SDL_FLIP_VERTICAL;
+							break;
 						}
 					}
 				}
@@ -355,12 +338,8 @@ int main( int argc, char* args[] )
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( gRenderer );
 
-				//Render background
-				gBackgroundTexture.render( 0, 0 );
-
-				//Render front blended
-				gModulatedTexture.setAlpha( a );
-				gModulatedTexture.render( 0, 0 );
+				//Render arrow
+				gArrowTexture.render( ( SCREEN_WIDTH - gArrowTexture.getWidth() ) / 2, ( SCREEN_HEIGHT - gArrowTexture.getHeight() ) / 2, NULL, degrees, NULL, flipType );
 
 				//Update screen
 				SDL_RenderPresent( gRenderer );
