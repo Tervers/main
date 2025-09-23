@@ -1,0 +1,2 @@
+#total folder size
+du -sh /path/to/folder
