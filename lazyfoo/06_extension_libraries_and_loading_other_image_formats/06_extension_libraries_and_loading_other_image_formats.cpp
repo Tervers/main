@@ -55,9 +55,8 @@ bool init()
 		else
 		{
 			//Initialize PNG loading
-			int imgFlags = IMG_INIT_PNG;   //create imgFlags variable to store PNG Flag
-			if( !( IMG_Init( imgFlags ) & imgFlags ) )   //bitwise &. if IMG_Init calls correctly, then &s with imgFlags (IMG_INIT_PNG),
-								     //producing value equaling IMG_INIT_PNG. if NOT imgFlags, then...
+			int imgFlags = IMG_INIT_PNG;
+			if( !( IMG_Init( imgFlags ) & imgFlags ) )
 			{
 				printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
 				success = false;

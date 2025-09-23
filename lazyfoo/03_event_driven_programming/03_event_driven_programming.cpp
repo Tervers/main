@@ -63,7 +63,7 @@ bool loadMedia()
 	bool success = true;
 
 	//Load splash image
-	gXOut = SDL_LoadBMP( "x.bmp" );
+	gXOut = SDL_LoadBMP( "03_event_driven_programming/x.bmp" );
 	if( gXOut == NULL )
 	{
 		printf( "Unable to load image %s! SDL Error: %s\n", "03_event_driven_programming/x.bmp", SDL_GetError() );
@@ -107,7 +107,7 @@ int main( int argc, char* args[] )
 			bool quit = false;
 
 			//Event handler
-			SDL_Event e;  // declaration with variable (like 'int i; but with a union)
+			SDL_Event e;
 
 			//While application is running
 			while( !quit )

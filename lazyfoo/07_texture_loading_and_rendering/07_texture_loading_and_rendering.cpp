@@ -11,9 +11,6 @@ and may not be redistributed without written permission.*/
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
-
-/*** Function Declarations ***/
-
 //Starts up SDL and creates window
 bool init();
 
@@ -26,9 +23,6 @@ void close();
 //Loads individual image as texture
 SDL_Texture* loadTexture( std::string path );
 
-
-/*** Pointers ***/
-
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
 
@@ -37,9 +31,6 @@ SDL_Renderer* gRenderer = NULL;
 
 //Current displayed texture
 SDL_Texture* gTexture = NULL;
-
-
-/*** Function Definitions ***/
 
 bool init()
 {
@@ -55,7 +46,7 @@ bool init()
 	else
 	{
 		//Set texture filtering to linear
-		if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )   //if NOT 1
+		if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
 		{
 			printf( "Warning: Linear texture filtering not enabled!" );
 		}
@@ -79,7 +70,7 @@ bool init()
 			else
 			{
 				//Initialize renderer color
-				SDL_SetRenderDrawColor( gRenderer, 0x00, 0x00, 0x00, 0xff );
+				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 
 				//Initialize PNG loading
 				int imgFlags = IMG_INIT_PNG;
