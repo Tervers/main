@@ -37,7 +37,7 @@ int check(int x, int y, int n)
     the integers m and n. (Programming Project 2 in Chapter 6 describes
     Euclid's algorithm for computing the GCD.)
 
-gcd(int m, int n)
+int gcd(int m, int n)
 {
     int remainder = 0;
 
@@ -410,15 +410,17 @@ int gcd(m, n)
         return gcd(n, m % n);
 
 
-gcd(int m, int n)
-{
-    int remainder = 0;
-
-	while (n != 0) {
-        remainder = m % n;
-        m = n;
-        n = remainder;
+19. Consider the following "mystery" function:
+    void pb(int n)
+    {
+        if (n != 0) {
+            pb(n / 2);
+            putchar('0' + n % 2);
+        }
     }
-    
-    return m;
-}
+
+    Trace the execution of the function by hand. Then write a program that
+    calls the function, passing it a number entered by the user. What does the
+    function do?
+
+The program produces a binary representation of the entered number.
