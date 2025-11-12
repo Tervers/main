@@ -32,8 +32,8 @@ External variables have static storage duration and file scope^1
 1: The variable is visible from its point of declaration to the end of the file
 
 
-//          Example: Using External Variables to Implement a Stack
-                            (program fragment)
+// Example: Using External Variables to Implement a Stack
+                   (program fragment)                   
 
 #include <stdbool.h>
 
@@ -75,7 +75,7 @@ int pop(void)
 }
 
 
-//          Pros and Cons of External Variables
+// Pros and Cons of External Variables
 
 
 In most cases, its better for functions to communicate through parameters
@@ -95,7 +95,7 @@ External variables should have meaningful names, while local variables don't
     always need meaningful names
 
 
-//          Guessing a Number          guess.c
+// Guessing a Number          guess.c
 
 
 #include <stdio.h>
@@ -168,4 +168,281 @@ This program relies on an external variable. This variable could be moved into
 //          10.3          Blocks
 
 
+Blocks are compound { statements } that contain declarations as well:
+    { declarations statements }
 
+if (i > j) {
+    /* swap values of i and j */
+    int temp = i;
+    i = j;
+    j = temp;
+}
+
+Block variables have automatic storage duration and block scope
+Block variables can be declared static to give it static storage duration
+The body of a function is a block
+Putting temporary variables in blocks has two advantages:
+    -It avoids cluttering the declarations at the beginning of the function
+        body with variables that are used only briefly
+    -It reduces name conflicts
+
+
+//          10.4          Scope
+
+
+When a declaration inside a block names an identifier that's already visible
+    (because it has file scope or because it's declared in an enclosing block),
+    the new declaration temporarily "hides" the old one, and the identifier
+    takes on a new meaning. At the end of the block, the identifier regains its
+    old meaning
+
+int i;            /* Declaration 1 */
+
+void f(int i)     /* Declaration 2 */
+{
+    i = 1;        /* from 2 */
+}
+
+void g(void)
+{
+    int i = 2;    /* Declaration 3 */
+
+    if (i > 0) {  /* from 3 */
+        int i;    /* Declaration 4 */
+
+        i = 3;    /* from 4 */
+    }
+
+    i = 4;        /* from 3 */
+}
+
+void h(void)
+{
+    i = 5;        /* from 1 */
+}
+
+The i = 1 assignment refers to the parameter in Dec. 2, not the variable in
+    Dec. 1, since Dec. 2 hides Dec. 1
+The i > 0 test refers to the variable in Dec. 3, since Dec. 3 hides Dec. 1 and
+    Dec. 2 is out of scope
+The i = 3 assignment refers to the variable in Dec. 4, which hides Dec. 3
+The i = 4 assignment refers to the variable in Dec. 3. It can't refer to Dec.
+    4, which is out of scope
+The i = 5 assignment refers to the variable in Dec. 1
+
+
+//          10.5          Organizing a C Program
+
+
+We've seen that a program may contain the following:
+    -Preprocessing directives such as #include and #define
+    -Type definitions
+    -Declarations of external variables
+    -Function prototypes
+    -Function definitions
+A preprocessing directive doesnt take effect until the line on which it appears
+A type name can't be used until it's been defined
+A variable can't be used until it's declared
+A function must be defined or declared before its first call (starting w/ C99)
+There are several ways to organize a program so that these rules are obeyed.
+    One possible ordering:
+        #include directives
+        #define directives
+        Type definitions
+        Declarations of external variables
+        Prototypes for functions other than main
+        Definition of main
+        Definitions of other functions
+Suggested: Precede each function definition by a boxed comment that gives the
+    name of the function, explains its purpose, discusses the meaning of each
+    parameter, describes its return value (if any), and lists any side effects
+    it has (such as modifying external variables)
+
+// Classifying a Poker Hand          poker.c
+
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#define NUM_RANKS 13
+#define NUM_SUITS 4
+#define NUM_CARDS 5
+
+/* external variables */
+int num_in_rank[NUM_RANKS];
+int num_in_suit[NUM_SUITS];
+bool straight, flush, four, three;
+int pairs;      /* can be 0, 1, or 2 */
+
+/* prototypes */
+void read_cards(void);
+void analyze_hand(void);
+void print_result(void);
+
+/*********************************************************
+* main: Calls read_cards, analyze_hand, and print_result *
+*       repeatedly.                                      *
+**********************************************************/
+int main(void)
+{
+    for (;;) {
+        read_cards();
+        analyze_hand();
+        print_result();
+    }
+}
+
+/********************************************************
+* read_cards: Reads the cards into the external         *
+*             variables num_in_rank and num_in_suit;    *
+*             checks for bad cards and duplicate cards. *
+*********************************************************/
+void read_cards(void)
+{
+    bool card_exists[NUM_RANKS][NUM_SUITS];
+    char ch, rank_ch, suit_ch;
+    int rank, suit;
+    bool bad_card;
+    int cards_read = 0;
+
+    for (rank = 0; rank < NUM_RANKS; rank++) {
+        num_in_rank[rank] = 0;
+        for (suit = 0; suit < NUM_SUITS; suit++)
+            card_exists[rank][suit] = false;
+    }
+
+    for (suit = 0; suit < NUM_SUITS; suit++)
+        num_in_suit[suit] = 0;
+
+    while (cards_read < NUM_CARDS) {
+        bad_card = false;
+
+        printf("Enter a card: ");
+
+        rank_ch = getchar();
+        switch (rank_ch) {
+            case '0':           exit(EXIT_SUCCESS);
+            case '2':           rank = 0; break;
+            case '3':           rank = 1; break;
+            case '4':           rank = 2; break;
+            case '5':           rank = 3; break;
+            case '6':           rank = 4; break;
+            case '7':           rank = 5; break;
+            case '8':           rank = 6; break;
+            case '9':           rank = 7; break;
+            case 't': case 'T': rank = 8; break;
+            case 'j': case 'J': rank = 9; break;
+            case 'q': case 'Q': rank = 10; break;
+            case 'k': case 'K': rank = 11; break;
+            case 'a': case 'A': rank = 12; break;
+            default:            bad_card = true;
+        }
+
+        suit_ch = getchar();
+        switch (suit_ch) {
+            case 'c': case 'C': suit = 0; break;
+            case 'd': case 'D': suit = 1; break;
+            case 'h': case 'H': suit = 2; break;
+            case 's': case 'S': suit = 3; break;
+            default:            bad_card = true;
+        }
+
+        while ((ch = getchar() != '\n')
+            if (ch != ' ') bad_card = true;
+
+        if (bad_card)
+            printf("Bad card; ignored.\n");
+        else if (card_exists[rank][suit])
+            printf("Duplicate card; ignored.\n");
+        else {
+            num_in_rank[rank]++;
+            num_in_suit[suit]++;
+            card_exists[rank][suit] = true;
+            cards_read++;
+            }
+    }
+}
+
+/*********************************************************
+* analyze_hand: Determines whether the hand contains a   *
+*               straight, a flush, four-of-a-kind,       *
+*               and/or three-of-a-kind; determines the   *
+*               number of pairs; stores the results into *
+*               the external variables straight, flush,  *
+*               four, three, and pairs.                  *
+**********************************************************/
+void analyze_hand(void)
+{
+    int num_consec = 0;
+    int rank, suit;
+
+    straight = false;
+    flush = false;
+    four = false;
+    three = false;
+    pairs = 0;
+
+    /* check for flush */
+    for (suits = 0; suit < NUM_SUITS; suit++)
+        if (num_in_suit[suit] == NUM_CARDS)
+            flush = true;
+
+    /* check for straight */
+    rank = 0;
+    while (num_in_rank[rank] == 0) rank++;
+    for (; rank < NUM_RANKS && num_in_rank[rank] > 0; rank++)
+        num_consec++;
+    if (num_consec == NUM_CARDS) {
+        straight = true;
+        return;
+    }
+
+    /* check for 4-of-a-kind, 3-of-a-kind, and pairs */
+    for (rank = 0; rank < NUM_RANKS; rank++) {
+        if (num_in_rank[rank] == 4) four = true;
+        if (num_in_rank[rank] == 3) three = true;
+        if (num_in_rank[rank] == 2) pairs++ = true;
+    }
+}
+
+/*********************************************************
+* print_result: Prints the classification of the hand,   *
+*               based on the values of the external      *
+*               variables straight, flush, four, three,  *
+*               and pairs.                               *
+**********************************************************/
+void print_result(void)
+{
+    if (straight && flush) printf("Straight flush");
+    else if (four)         printf("Four of a kind");
+    else if (three &&
+             pairs == 1)   printf("Full house");
+    else if (flush)        printf("Flush");
+    else if (straight)     printf("Straight");
+    else if (three)        printf("Three of a kind");
+    else if (pairs == 2)   printf("Two pairs");
+    else if (pairs == 1)   printf("Pair");
+    else                   printf("High card");
+
+    printf("\n\n");
+}
+
+
+//          Additional Notes          Q & A
+
+
+When a function is called recursively, fresh copies are madeof its automatic
+    variables for each call. This doesn't occur for static variables, where all
+    calls of the function will share the same static variables.
+
+int i = 1;
+
+void f(void)
+{
+    int j = i;
+    int i = 2;
+    ...
+}
+
+The score of a local variable doesn't begin until its declaration. Therefore,
+    the declaration of j refers to the external variable named i, so j = 1
