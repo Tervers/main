@@ -443,7 +443,7 @@ int main(void)
 
     srand((unsigned) time(NULL));
 
-    while (1) {
+    while (answer == 'y' || answer == 'Y') {
         result = play_game();
         if (result == true){
             wins++;
@@ -457,9 +457,7 @@ int main(void)
             
         printf("Play again? (press y to play again");
         printf(", or any other button to exit): ");
-        scanf("%c", &answer);
-        if (answer != 'y' || answer != 'Y')
-            break;
+        scanf(" %c", &answer);
     }
 
     printf("Wins: %d  Losses: %d\n", wins, losses);
