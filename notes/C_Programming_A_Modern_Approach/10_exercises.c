@@ -78,4 +78,8 @@
 (d) b, c from main has visibility, d
 
 
-3. 
+3. Suppose that a program has only one function (main). How many different
+    variables named i could this program contain?
+
+Due to block scope, nearly any amount. One external variable, a local variable,
+    and any number of nested block variables.
