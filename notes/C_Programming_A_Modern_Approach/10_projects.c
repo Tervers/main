@@ -508,6 +508,7 @@ int main(void)
     array, each on a single line, producing output such as that shown in the
     example.
 
+//code works, but does not provide error-checking
 #include<stdio.h>
 
 #define MAX_DIGITS 10
