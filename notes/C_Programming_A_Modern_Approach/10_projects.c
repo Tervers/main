@@ -1,5 +1,5 @@
 /*** CHAPTER                        10                            PROJECTS ***/
-
+/*
 
 1. Modify the stack example of Section 10.2 so that it stores characters
     instead of integers. Next, add a main function that asks the user to enter
@@ -507,7 +507,7 @@ int main(void)
     to MAX_DIGITS - 1). print_digits_array will display the rows of the digits
     array, each on a single line, producing output such as that shown in the
     example.
-
+*/
 #include<stdio.h>
 
 #define MAX_DIGITS 10
@@ -527,33 +527,72 @@ const int segments[10][7] = {{1, 1, 1, 1, 1, 1, 0},
 void clear_digits_array(void) {
 	for (int i = 0; i < MAX_DIGITS * 4; i++)
 		for (int j = 0; j < 3; j++)
-			digits[i][j] = 0;
+			digits[j][i] = 0;
 }
 
 void process_digit(int digit, int position) {
-	switch (digit) {
-		case 0:
-			for (int i = position; i < position + 4; i++)
-				digits[0][position]		
-	}
-void print_digits_array(void);
+    for (int i = 0; i < 7; i++) {
+        if (segments[digit][i] == 1) {
+            switch (i) {
+                case 0:
+                    digits[0][(position * 4) + 1] = '_'; break;
+
+                case 1:
+                    digits[1][(position * 4) + 2] = '|'; break; 
+
+                case 2:
+                    digits[2][(position * 4) + 2] = '|'; break; 
+
+                case 3:
+                    digits[2][(position * 4) + 1] = '_'; break;
+
+                case 4:
+                    digits[2][(position * 4)] = '|'; break;
+
+                case 5:
+                    digits[1][(position * 4)] = '|'; break;
+
+                case 6:
+                    digits[1][(position * 4) + 1] = '_'; break;
+	        }
+        }
+    }
+}
+
+void print_digits_array(void) {
+    for (int i = 0; i < MAX_DIGITS * 4; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (digits[i][j] != '_' || digits[i][j] != '|')
+                digits[i][j] = ' ';
+        }
+    }
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < MAX_DIGITS * 4; j++) {
+            printf("%c", digits[i][j]);
+        }
+        printf("\n");
+    }
+}
 
 int main(void)
 {
 	int user_number[MAX_DIGITS];
 	
 	printf("Enter a number (up to 10 digits long): ");
-		for (int i = 0; i < MAX_DIGITS; i++)
-			user_number[i] = getchar();
-			if (user_number[i] < 0 || digits [i] > 9)
-				user_number[i--] = 0;
+
+    for (int i = 0; i < MAX_DIGITS; i++) {
+        user_number[i] = getchar() - '0';
+        if (user_number[i] < 0 || user_number[i] > 9)
+            user_number[i--] = 0;
+        if (user_number[i] == '\n')
+            break;
+    }
 
 	for (int i = 0; i < MAX_DIGITS; i++)
 		process_digit(user_number[i], i);
 
+    print_digits_array();
 
-
-
- _   _   _  _
-|_| |_| |_  _|
-|_|  _|  _| _|
+    return 0;
+}
