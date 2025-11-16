@@ -1,5 +1,5 @@
 /*** CHAPTER                        10                            PROJECTS ***/
-
+/*
 
 1. Modify the stack example of Section 10.2 so that it stores characters
     instead of integers. Next, add a main function that asks the user to enter
@@ -507,7 +507,7 @@ int main(void)
     to MAX_DIGITS - 1). print_digits_array will display the rows of the digits
     array, each on a single line, producing output such as that shown in the
     example.
-
+*/
 #include<stdio.h>
 
 #define MAX_DIGITS 10
