@@ -1,5 +1,5 @@
 /*** CHAPTER                          9                           PROJECTS ***/
-/*
+
 
 1. Write a program that asks the user to enter a series of integers (which it
     stores in an array), then sorts the integers by calling the function
@@ -426,7 +426,7 @@ int main(void)
     the rand function to generate random numbers. See the deal.c program in
     Section 8.2 for an example of how to call rand and the related srand
     function.
-*/
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
