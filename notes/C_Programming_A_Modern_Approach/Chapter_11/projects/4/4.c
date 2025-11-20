@@ -14,9 +14,11 @@ Modify the poker.c program of Section 10.5 by moving all external variables
 #define NUM_SUITS 4
 #define NUM_CARDS 5
 
-void read_cards(void);
-void analyze_hand(void);
-void print_result(void);
+void read_cards(int num_in_rank[], int num_in_suit[]);
+void analyze_hand(int num_in_rank[], int num_in_suit[],bool *straight,
+                    bool *flush, bool *four, bool *three, int *pairs);
+void print_result(bool *straight,  bool *flush, bool *four,
+                    bool *three, int *pairs);
 
 int main(void)
 {
@@ -26,13 +28,14 @@ int main(void)
     int pairs;
 
     for (;;) {
-        read_cards();
-        analyze_hand();
-        print_result();
+        read_cards(num_in_rank, num_in_suit);
+        analyze_hand(num_in_rank, num_in_suit,
+                        &straight, &flush, &four, &three, &pairs);
+        print_result(&straight, &flush, &four, &three, &pairs);
     }
 }
 
-void read_cards(void)
+void read_cards(int num_in_rank[], int num_in_suit[])
 {
     bool card_exists[NUM_RANKS][NUM_SUITS];
     char ch, rank_ch, suit_ch;
@@ -97,21 +100,22 @@ void read_cards(void)
     }
 }
 
-void analyze_hand(void)
+void analyze_hand(int num_in_rank[], int num_in_suit[],bool *straight,
+                    bool *flush, bool *four, bool *three, int *pairs)
 {
     int num_consec = 0;
     int rank, suit;
 
-    straight = false;
-    flush = false;
-    four = false;
-    three = false;
-    pairs = 0;
+    *straight = false;
+    *flush = false;
+    *four = false;
+    *three = false;
+    *pairs = 0;
 
     /* check for flush */
     for (suit = 0; suit < NUM_SUITS; suit++)
         if (num_in_suit[suit] == NUM_CARDS)
-            flush = true;
+            *flush = true;
 
     /* check for straight */
     rank = 0;
@@ -119,29 +123,30 @@ void analyze_hand(void)
     for (; rank < NUM_RANKS && num_in_rank[rank] > 0; rank++)
         num_consec++;
     if (num_consec == NUM_CARDS) {
-        straight = true;
+        *straight = true;
         return;
     }
 
     /* check for 4-of-a-kind, 3-of-a-kind, and pairs */
     for (rank = 0; rank < NUM_RANKS; rank++) {
-        if (num_in_rank[rank] == 4) four = true;
-        if (num_in_rank[rank] == 3) three = true;
-        if (num_in_rank[rank] == 2) pairs++;
+        if (num_in_rank[rank] == 4) *four = true;
+        if (num_in_rank[rank] == 3) *three = true;
+        if (num_in_rank[rank] == 2) *pairs = *pairs + 1;
     }
 }
 
-void print_result(void)
+void print_result(bool *straight,  bool *flush, bool *four,
+                    bool *three, int *pairs)
 {
-    if (straight && flush) printf("Straight flush");
-    else if (four)         printf("Four of a kind");
-    else if (three &&
-             pairs == 1)   printf("Full house");
-    else if (flush)        printf("Flush");
-    else if (straight)     printf("Straight");
-    else if (three)        printf("Three of a kind");
-    else if (pairs == 2)   printf("Two pairs");
-    else if (pairs == 1)   printf("Pair");
+    if (*straight && *flush) printf("Straight flush");
+    else if (*four)         printf("Four of a kind");
+    else if (*three &&
+             *pairs == 1)   printf("Full house");
+    else if (*flush)        printf("Flush");
+    else if (*straight)     printf("Straight");
+    else if (*three)        printf("Three of a kind");
+    else if (*pairs == 2)   printf("Two pairs");
+    else if (*pairs == 1)   printf("Pair");
         else               printf("High card");
 
     printf("\n\n");
