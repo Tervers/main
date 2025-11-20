@@ -313,8 +313,7 @@ void read_cards(void)
 
     for (suit = 0; suit < NUM_SUITS; suit++)
         num_in_suit[suit] = 0;
-
-    while (cards_read < NUM_CARDS) {
+        while (cards_read < NUM_CARDS) {
         bad_card = false;
 
         printf("Enter a card: ");
@@ -323,7 +322,7 @@ void read_cards(void)
         switch (rank_ch) {
             case '0':           exit(EXIT_SUCCESS);
             case '2':           rank = 0; break;
-            case '3':           rank = 1; break;
+                                            case '3':           rank = 1; break;
             case '4':           rank = 2; break;
             case '5':           rank = 3; break;
             case '6':           rank = 4; break;
@@ -347,7 +346,7 @@ void read_cards(void)
             default:            bad_card = true;
         }
 
-        while ((ch = getchar() != '\n')
+        while ((ch = getchar() != '\n'))
             if (ch != ' ') bad_card = true;
 
         if (bad_card)
@@ -383,14 +382,14 @@ void analyze_hand(void)
     pairs = 0;
 
     /* check for flush */
-    for (suits = 0; suit < NUM_SUITS; suit++)
+    for (suit = 0; suit < NUM_SUITS; suit++)
         if (num_in_suit[suit] == NUM_CARDS)
             flush = true;
 
     /* check for straight */
     rank = 0;
     while (num_in_rank[rank] == 0) rank++;
-    for (; rank < NUM_RANKS && num_in_rank[rank] > 0; rank++)
+        for (; rank < NUM_RANKS && num_in_rank[rank] > 0; rank++)
         num_consec++;
     if (num_consec == NUM_CARDS) {
         straight = true;
@@ -401,7 +400,7 @@ void analyze_hand(void)
     for (rank = 0; rank < NUM_RANKS; rank++) {
         if (num_in_rank[rank] == 4) four = true;
         if (num_in_rank[rank] == 3) three = true;
-        if (num_in_rank[rank] == 2) pairs++ = true;
+        if (num_in_rank[rank] == 2) pairs++;
     }
 }
 
@@ -422,7 +421,7 @@ void print_result(void)
     else if (three)        printf("Three of a kind");
     else if (pairs == 2)   printf("Two pairs");
     else if (pairs == 1)   printf("Pair");
-    else                   printf("High card");
+        else                   printf("High card");
 
     printf("\n\n");
 }
