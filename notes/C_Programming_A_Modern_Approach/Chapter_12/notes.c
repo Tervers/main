@@ -5,7 +5,7 @@
 //  12.1                    POINTER ARITHMETIC
 
 
-11.5 showed us how pointers can point to array elements:
+Section 11.5 showed us how pointers can point to array elements:
 
 int a[10], *p;
 
@@ -161,3 +161,95 @@ to sum the elements of the array a, we could write:
 p = &a[0];
 while (p < &a[N])
     sum += *p++;
+
+The * and -- operators mix in the same way as * and ++.
+We can rewrite the stack example of Section 10.2 by including these operators.
+The variable top can be replaced by a pointer variable that points initially to
+    element 0 of the contents array:
+
+int *top_ptr = &contents[0];
+
+Here are the updated push and pop functions:
+
+void push(int i)
+{
+    if (isfull())
+        stack_overflow();
+    else
+        *top_ptr++ = i;
+}
+
+int pop(void)
+{
+    if (is_empty())
+        stack_underflow();
+    else
+        return *--top_ptr;
+}
+
+
+//  12.3                USING AN ARRAY NAME AS A POINTER
+
+
+The name of an array can be used as a pointer to the first element in the array
+For example, suppose a is declared as follows:
+
+int a[10];
+
+Using a as a pointer to the first element in the array, we can modify a[0]:
+
+*a = 7;     //stores 7 in a[0]
+
+We can modify a[1] through the pointer a + 1:
+
+*(a + 1) = 12;
+
+In general, a + i is the same as &a[i] (both represent a pointer to element i
+    of a)
+This can make it easier to write loops that step through an array.
+Consider this loop from Section 12.2:
+
+for (p = &a[0]; p < &a[n]; p++)
+    sum += *p;
+
+To simplify the loop, we can replace &a[0] by a and &a[N] by a + N:
+
+for (p = a; p < a + N; p++)
+    sum += *p;
+
+Although an array name can be used as a pointer, it's not possible to assign it
+    a new value. Attempting to make it point elsewhere is an error:
+
+while (*a != 0)
+    a++;            // WRONG
+
+To fix, we can always copy a into a pointer variable, then change the pointer
+    variable:
+
+p = a;
+while (*p != 0)
+    p++;
+
+ 
+//  reverse3.c      REVERSING A SERIES OF NUMBERS (REVISITED)
+
+
+#include <stdio.h>
+
+#define N 10
+
+int main(void)
+{
+    int a[N], *p;
+
+    printf("Enter %d numbers: ", N);
+    for (p = a; p < a + N; p++)
+        scanf("%d", p);
+
+    printf("In reverse order:");
+    for (p = a + N - 1; p >= a; p--)
+        printf(" %d", *p);
+    printf("\n");
+
+    return 0;
+}
