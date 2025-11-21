@@ -253,3 +253,105 @@ int main(void)
 
     return 0;
 }
+
+
+//  ARRAY ARGUMENTS (REVISITED)
+
+
+When passed to a function, an array name is always treated as a pointer:
+
+int find_largest(int a[], int n)
+{
+    int i, max;
+
+    max = a[0];
+    for (i = 1; i < n; i++)
+        if (a[i] > max)
+            max = a[i];
+    return max;
+}
+
+Suppose we call find_largest as follows:
+
+largest = find_largest(b, N);
+
+This call causes a pointer to the first element of b to be assigned to a; the
+    array itself isn't copied.
+The time required to pass an array to a function doesn't depend on the size of
+    the array. There's no penalty for passing a large array, since no copy of
+    the array is made.
+An array parameter can be declared as a pointer if desired. For example,
+    find_largest could be defined as follows:
+
+int find_largest(int *a, int n)
+{
+    ...
+}
+
+Declaring a to be a pointer is equivalent to declaring it to be an array; the
+    compiler treats the declarations as though they were identical.
+A function with an array parameter can be passed an array 'slice.' Suppose we
+    want find_largest to locate the largest element in a portion of array b:
+
+largest = find_largest(&b[5], 10);
+
+This will examine elements b[5] through b[14]
+
+
+//  USING A POINTER AS AN ARRAY NAME
+
+
+#define N 10
+...
+int a[N], i, sum = 0, *p = a;
+...
+for (i = 0; i < N; i++)
+    sum += p[i];
+
+the compiler treats p[i] as *(p + i), which is legal pointer arithmetic.
+
+
+//  12.4                POINTERS AND MULTIDIMENSIONAL ARRAYS
+
+
+Section 8.2 explained how two-dimensional arrays are stored in row-major order.
+    This means that the elements of row 0 come first, then row 1, and so forth.
+This is the previously shown way to initialize all elements of a multi-
+    dimensional array to zero:
+
+int row, col;
+...
+for (row = 0; row < NUM_ROWS; row++)
+    for (col = 0; col < NUM_COLS; col++)
+        a[row][col] = 0;
+
+But if we view a as a one-dimensional array of integers, we can replace the
+    pair of loops by a single loop:
+
+int *p;
+...
+for (p = &a[0][0]; p <= &a[NUM_ROWS-1][NUM_COLS-1]; p++)
+    *p = 0;
+
+Each increment of p will point it from a[0][0] to a[0][1] to a[0][2] to
+    a[0][NUM_COLS - 1] to a[1][0] to a[1][1] to ...
+
+
+//  PROCESSING THE ROWS OF A MULTIDIMENSIONAL ARRAY
+
+
+To visit the elements of row i, we'd initialize p to point to element 0 in row
+    i in the array a:
+
+p = &a[i][0];
+
+or we could simply write
+
+p = a[i];
+
+since, for any two-dimensional array a, the expression a[i] is a pointer to the
+    first element of row i. For any array a, the expression a[i] is equivalent
+    to *(a + i). Thus, &a[i][0] is the same as &( *(a[i] + 0)), which is
+    equivalent to &*a[i], which is the same as a[i]:
+
+
