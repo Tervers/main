@@ -443,4 +443,25 @@ void f(int m, int n)
 
 Since the type of p depends on n, which isn't constant, p is said to have a
 	"variably modified type."
+Note that the validity of an assignment such as p = a can't always be deter-
+    mined by the compiler. For example, the following code will compile but is
+    correct only if m and n are equal:
 
+//risky code
+int a[m][n], (*p)[m];
+    p = a;
+
+The declaration of a variably modified type must be inside the body of a
+    function or in a function prototype.
+Pointer arithmetic works with VLAs just as it does for ordinary arrays:
+
+int a[m][n];
+
+A pointer capable of pointing to a row of a would be declared as follows:
+
+int (*p)[n];
+
+The loop to clear column i is almost identical to the one used in Section 12.4:
+
+for (p = a; p < a + m; p++)
+    (*p)[i] = 0;
