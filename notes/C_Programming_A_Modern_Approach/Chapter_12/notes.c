@@ -354,4 +354,93 @@ since, for any two-dimensional array a, the expression a[i] is a pointer to the
     to *(a + i). Thus, &a[i][0] is the same as &( *(a[i] + 0)), which is
     equivalent to &*a[i], which is the same as a[i]:
 
+int a[NUM_ROWS][NUM_COLS], *p, i;
+...
+for (p = a[i]; p < a[i] + NUM_COLS; p++)\
+	*p = 0;
+
+Since a[i] is a pointer to row i of the array a, we can pass a[i] to a function
+	that's expecting a one-dimensional array as its argument. We can just as easily use find_largest to determine the largest element in row i of the two-
+	dimensional array a:
+
+largest = find_largest(a[i], NUM_COLS);
+
+
+//	PROCESSING THE COLUMNS OF A MULTIDIMENSIONAL ARRAY
+
+
+int a[NUM_ROWS][NUM_COLS], (*p)[NUM_COLS], i;
+...
+for (p = &a[0]; p < &a[NUM_ROWS]; p++)
+	(*p)[i] = 0;
+
+The parentheses around *p in (*p)[NUM_COLS] are required, as the compiler would
+	treat p as an array of pointers without them. p++ advances p to the
+	beginning of the next row. With (*p)[i], *p represents an entire row of a,
+	so (*p)[i] selects the element in column i of that row. The parentheses in
+	(*p)[i] are essential, as the compiler would interpret *p[i] as *(p[i]).
+
+
+//	USING THE NAME OF A MULTIDIMENSIONAL ARRAY AS A POINTER
+
+
+The name of any array can be used as a pointer, regardless of how many dimen-
+	sions it has.
+
+int a[NUM_ROWS][NUM_COLS];
+
+a is NOT a pointer to a[0][0]; instead, it's a pointer to a[0].
+C regards a not as a two-dimensional array but as a one-dimensional array whose
+	elements are one-dimensional arrays. When used as a pointer, a has type
+	int (*)[NUM_COLS]  (pointer to an integer array of length NUM_COLS).
+Knowing that a points to a[0] is useful for simplifying loops that process the
+	elements of a two-dimensional array. For example, instead of writing:
+
+for (p = &a[0]; p < &a[NUM_ROWS]; p++)
+	(*p)[i] = 0;
+
+to clear column i of the array a, we can write
+
+for (p = a; p < a + NUM_ROWS; p++)
+	(*p)[i] = 0;
+
+You can 'trick' a function to accept a multidimensional array into thinking it
+	is a one-dimensional array, although you need to be careful:
+
+largest = find_largest(a, NUM_ROWS * NUM_COLS);	//WRONG
+
+The compiler will reject this because the type of a is int (*)[NUM_COLS] but
+	find_largest is expecting an argument of type int *. The correct call is:
+
+largest = find_largest(a[0], NUM_ROWS * NUM_COLS);
+
+a[0] points to element 0 in row 0, and it has type int * (after conversion by
+	the compiler), so the latter call will work correctly.
+
+
+//	12.5				POINTERS AND VARIABLE-LENGTH ARRAYS (C99)
+
+
+An ordinary pointer variable being used to point to an element of a one-
+	dimensional array:
+
+void f(int n)
+{
+	int a[n], *p;
+	p = a;
+	...
+}
+
+When the VLA has more than one dimension, the type of the pointer depends on
+	the length of each dimension except for the first:
+
+void f(int m, int n)
+{
+	int a[m][n], (*p)[n];
+	p = a;
+	...
+}
+
+Since the type of p depends on n, which isn't constant, p is said to have a
+	"variably modified type."
 
