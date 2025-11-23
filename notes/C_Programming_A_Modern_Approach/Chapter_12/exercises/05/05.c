@@ -10,4 +10,4 @@
 (d) p[0] == a[0]
 */
 
-
+b, c, d are all true
