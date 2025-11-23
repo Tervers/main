@@ -394,7 +394,7 @@ this next example shows how to initialize an array as an "identity matrix":
 
 #define N 10
 
-double ident [N][N];
+double ident[N][N];
 int row, col;
 
 for (row = 0; row < N; row++)
