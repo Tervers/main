@@ -1,8 +1,9 @@
 /*
 
-Rewrite the following function to use pointer arithmetic instead of array sub-
-    scripting. (In other words, eliminate the variables i and j and all uses of
-    the [] operator.) Use a single loop instead of nested loops.
+Rewrite the following function to use pointer arithmetic
+instead of array subscripting. (In other words, elimin-
+ate the variables i and j and all uses of the [] opera-
+tor.) Use a single loop instead of nested loops.
 
 int sum_two_dimensional_array(const int a[][LEN], int n)
 {
@@ -17,4 +18,12 @@ int sum_two_dimensional_array(const int a[][LEN], int n)
 
 */
 
+int sum_two_dimensional_array(const int a + LEN, int n)
+{
+    int *p, sum = 0;
 
+    for (p = a; p < a + n; p++)
+	    sum += *p;
+
+    return sum;
+}
