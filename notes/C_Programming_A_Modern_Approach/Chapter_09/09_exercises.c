@@ -314,6 +314,7 @@ int evaluate_position(char board[8][8])
         }
 
     return white - black;
+}
 
 
 14. The following function is supposed to return true if any element of the
