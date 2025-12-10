@@ -37,10 +37,27 @@ int evaluate_position(char board[8][8])
 
 */
 
-int evaluate_position(char *board[8][8], int *score)
+int evaluate_position(char board[8][8])
 {
-    int white = 0, black = 0;
-    char *positions = board;
+    int score = 0;
+    char *position = board[0];
 
-    for (positions = board; positions < board + 63; positions++)
-        
+    for (position = board[0]; position < board[0] + 64; position++) {
+        switch (*p) {
+            case 'Q': score += 9;  break;
+            case 'q': score -= 9;  break;
+            case 'R': score += 5;  break;
+            case 'r': score -= 5;  break;
+            case 'B': score += 3;  break;
+            case 'b': score -= 3;  break;
+            case 'N': score += 3;  break;
+            case 'n': score -= 3;  break;
+            case 'P': score += 1;  break;
+            case 'p': score -= 1;  break;
+            default:  break;
+        }
+    }
+
+    return score;
+
+}
