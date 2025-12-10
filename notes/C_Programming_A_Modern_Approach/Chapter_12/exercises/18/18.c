@@ -1,8 +1,7 @@
 /*
 
-Write the evaluate_position function described in Exer-
-    cise 13 of Chapter 9. Use pointer arithmetic - not
-    array subscripting - to visit array elements. Use a
+Write the evaluate_position function described in Exercise 13 of Chapter 9. Use
+    pointer arithmetic - not array subscripting - to visit array elements. Use a
     single loop instead of nested loops.
 
 int evaluate_position(char board[8][8])
@@ -38,4 +37,10 @@ int evaluate_position(char board[8][8])
 
 */
 
+int evaluate_position(char *board[8][8], int *score)
+{
+    int white = 0, black = 0;
+    char *positions = board;
 
+    for (positions = board; positions < board + 63; positions++)
+        
