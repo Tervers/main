@@ -14,6 +14,34 @@ of positions in the array.
 */
 
 
-(a)
+//(a)
 
+#include <stdio.h>
+#include <stdbool.h>
 
+int main(void)
+{
+    bool mismatch = false;
+    int i = 1;
+    char message[i], *p = message, *q = message;
+
+    printf("Enter a message to see if it is a palindrome:\n");
+    while (*p = getchar() != '\n') {
+	if (*p >= 'a' && *p <= 'z' || *p >= 'A' && *p <= 'Z')
+	    i++;
+	    p++;
+    }
+
+    for (p = message + i - 2, q = message; q < message + i - 1; p--, q++)
+        if (*p != *q) {
+            mismatch = true;
+            break;
+        }
+
+    if (mismatch)
+        printf("Not a palindrome\n");
+    else if (!mismatch)
+        printf("Palindrome\n");
+
+    return 0;
+}
