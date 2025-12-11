@@ -27,12 +27,14 @@ int main(void)
 
     printf("Enter a message to see if it is a palindrome:\n");
     while (*p = getchar() != '\n') {
-	if (*p >= 'a' && *p <= 'z' || *p >= 'A' && *p <= 'Z')
+	    if (*p >= 'a' && *p <= 'z' || *p >= 'A' && *p <= 'Z') {
+        *message = *p;
 	    i++;
 	    p++;
+        }
     }
 
-    for (p = message + i - 2, q = message; q < message + i - 1; p--, q++)
+    for (p = message + i; q < message + i - 1; p--, q++)
         if (*p != *q) {
             mismatch = true;
             break;
