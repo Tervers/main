@@ -22,13 +22,12 @@ of positions in the array.
 int main(void)
 {
     bool mismatch = false;
-    int i = 1;
+    int i = 0;
     char message[i], *p = message, *q = message;
 
     printf("Enter a message to see if it is a palindrome:\n");
     while (*p = getchar() != '\n') {
 	    if (*p >= 'a' && *p <= 'z' || *p >= 'A' && *p <= 'Z') {
-        *message = *p;
 	    i++;
 	    p++;
         }
