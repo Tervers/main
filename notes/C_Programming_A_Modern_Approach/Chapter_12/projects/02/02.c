@@ -19,21 +19,24 @@ of positions in the array.
 #include <stdio.h>
 #include <stdbool.h>
 
+#define MAX 100
 int main(void)
 {
     bool mismatch = false;
     int i = 0;
-    char message[i], *p = message, *q = message;
+    char message[MAX], *p = message, *q = message;
 
     printf("Enter a message to see if it is a palindrome:\n");
-    while (*p = getchar() != '\n') {
+    while ((*p = getchar()) != '\n') {
 	    if (*p >= 'a' && *p <= 'z' || *p >= 'A' && *p <= 'Z') {
-	    i++;
-	    p++;
+	        p++;
+            i++;
         }
     }
 
-    for (p = message + i; q < message + i - 1; p--, q++)
+    p--;
+
+    for (; q < message + i - 1; p--, q++)
         if (*p != *q) {
             mismatch = true;
             break;
