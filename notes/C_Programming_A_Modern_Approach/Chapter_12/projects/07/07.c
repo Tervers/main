@@ -4,7 +4,6 @@ Modify the maxmin.c program of Section 11.4 so that the max_min function uses a
 pointer instead of an integer to keep track of the current position in the
 array.
 
-*/
 
 #include <stdio.h>
 
@@ -40,3 +39,7 @@ void max_min(int a[], int n, int *max, int *min)
             *min = a[i];
     }
 }
+
+*/
+
+
