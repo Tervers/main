@@ -118,4 +118,18 @@ char date4[] = "June14";
 // Character Arrays versus Character Pointers
 
 
+char date[] = "June 14";
+vs.
+char *date = "June 14";
+
+We can use either version of date as a string, due to the close relationship be-
+	tween arrays and pointers.
+Any function expecting to be passed a character array or character pointer will
+	accept either version of date as an argument.
+!! However, there are still differences between the two:
+	In date[], the characters stored in date can be modified, like the elements
+		of an array. *date points to a string literal, which shouldn't be
+		modified.
+	In date[], date is an array name. *date is a variable that can be made to
+		point to other strings during program execution.
 
