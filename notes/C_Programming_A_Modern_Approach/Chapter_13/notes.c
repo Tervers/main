@@ -2,7 +2,7 @@
 
 
 
-// 13.1 STRING LITERALS
+//              13.1 STRING LITERALS
 
 
 A "string literal" is a sequence of characters enclosed within double quotes:
@@ -79,8 +79,7 @@ A string literal containing a single character ins't the same as a character
 	by an integer (the numerical code for a character).
 
 
-// String Variables
-
+//              13.2 STRING VARIABLES
 
 A string variable can be initialized at the same time it's declared:
 
@@ -132,4 +131,71 @@ Any function expecting to be passed a character array or character pointer will
 		modified.
 	In date[], date is an array name. *date is a variable that can be made to
 		point to other strings during program execution.
+If you need a modifiable string, you must set up an array of characters; a
+    pointer variable isn't enough and won't allocate enough memory for a string
+    since a string length was never indicated.
+To use a pointer as a string:
+
+char str[STR_LEN+1], *p;
+
+p = str;
+
+p now points to the first character of str. Another possibility is to make p
+    point to a dynamically allocated string.
+
+
+//              13.3 READING AND WRITING STRINGS
+
+
+// Writing Strings Using printf and puts
+
+
+%s allows printf to write a string:
+
+char str[] = "Are we having fun yet?";
+
+printf("%s\n", str);
+
+To print only part of a string, you can use %.ps, where p is the number of char-
+    acters to be displayed:
+
+printf("%.6s\n", str);      // This will print "Are we"
+
+The %ms conversion will display a string in a field of size m (strings longer
+    than m will be printed in full, not truncated). If the string is shorter
+    than m, it will be right-justified. To force left justification, use a minus
+    sign in front of m. m and p can be combined in the form of %m.ps
+You can also use puts to write strings:
+
+puts(str);
+
+puts only has one argument (the string to be printed). Puts always writes an
+    additional new-line character.
+
+
+// Reading Strings Using scanf and gets
+
+
+%s allows scanf to read a string into a character array:
+
+scanf("%s", str);
+
+!! There is no need to put the & operator in front of str, as it is an array and
+    is treated as a pointer when passed to a function.
+When scanf is called, it skips white space, then reads characters and stores
+    them in str until it encounters a white-space character.
+scanf always stores a null character at the end of the string.
+A string _read_ using scanf will never (!should never?) contain white space.
+    scanf also won't usually read a full line of input due to a new-line or tab 
+    character.
+Use gets to be able to read an entire line of input at a time.
+gets reads input characters into an array, then stores a null character.
+gets doesn't skip white space before reading a string.
+gets reads until it finds a new-line character, but instead of storing the new-
+    line character, it will discard it and store a null character instead.
+
+
+// Reading Strings Character by Character
+
+
 
