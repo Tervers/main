@@ -198,4 +198,50 @@ gets reads until it finds a new-line character, but instead of storing the new-
 // Reading Strings Character by Character
 
 
+scanf and gets are risky and insufficiently flexible for many applications.
+As an alternative, we can write our own input functions. One such prototype may
+	look like this:
 
+int read_line(char str[], int n);
+
+str is the array into which we'll store the input, and n is the maximum number
+	of characters to be read. If the input contains more than n characters,
+	read_line will discard the additional characters. We'll have read_line
+	return the number of characters it actually stores, even if we don't always
+	need this value. The loop terminates when the new-line character is read.
+	!! We should also have the loop terminate if getchar fails to read a char-
+	acter, but this will be ignored for now. The completed function:
+
+int read_line(char str[], int n)
+{
+	int ch, i = 0;
+
+	while ((ch = getchar()) != '\n')
+		if (i < n)
+			str[i++] = ch;
+	str[i] = '\0';		/* terminates string */
+	return i;			/* number of characters stored */
+}
+
+! Note that ch has int type rather than char, since getchar returns the numeric
+	value of the character that it reads.
+! Since scanf and gets automatically put a null character at the end of an input
+	string, it is now our responsibility to do so with our function.
+
+
+//				13.4 ACCESSING THE CHARACTERS IN A STRING
+
+
+Since strings are stored as arrays, we can use subscripting to access characters
+	in a string.
+Suppose we need a function that counts the number of spaces in a string:
+
+int count_spaces(const char s[])
+{
+	int count = 0, i;
+
+	for (i = 0; s[i] != '\0'; i++)
+		if (s[i] == ' ')
+			count++;
+	return count;
+}
