@@ -245,3 +245,90 @@ int count_spaces(const char s[])
 			count++;
 	return count;
 }
+
+const will indicate that the function won't alter the array.
+If s were not a string, the function would need a second argument specifying the
+    length of the array. But since s is a string, we can just test for the null
+    character.
+Most C programmers wouldn't write count_spaces this way; they would instead use
+    pointer arithmetic:
+
+int count_spaces(const char *s)
+{
+    int count = 0;
+
+    for (; *s != '\0'; s++)
+        if (*s == ' ')
+            count++;
+    return count;
+}
+
+!! const here does NOT prevent count_spaces from modifying s; it's there to
+    prevent the function from modifying what s points to. And since s is a copy
+    of the pointer that is passed to count_spaces, incrementing s doesn't affect
+    the original pointer.
+The form of the parameter (s[] or *s) does not affect what can be supplied to
+    the argument. It can be either an array name, a pointer variable, or a
+    string literal; count_spaces cannot tell the difference.
+
+
+//              13.5 USING THE C STRING LIBRARY
+
+
+!! Direct attempts to copy or compare strings will fail:
+
+char str1[10], str2[10];
+
+str1 = "abc";   /*** WRONG ***/
+str2 = str1;    /*** WRONG ***/
+
+Initializing an array using = is legal:
+
+char str1[10] = "abc"; // While declarating, = is NOT the assignment operator
+
+Attempting to compare strings using a relational or equality operator is legal
+    but won't produce the desired result:
+
+if (str1 == str2) ...   /*** WRONG ***/
+
+This statement compares str1 and str2 as pointers; it doesn't compare the con-
+    tents of the two arrays. Since str1 and str2 have different addresses, the
+    expression str1 == str2 must have the value 0.
+
+string.h provides functions for performing operations on strings.
+Most functions of string.h require at least one string as an argument.
+String parameters are declared to have type char *, allowing the argument to be
+    a character array, a variable of type char *, or a string literal.
+!! Watch out for string paramters that aren't declared const, as such parameters
+    may be modified when the function is called (i.e. the corresponding argu-
+    ment shouldn't be a string literal).
+
+
+// The strcpy (String Copy) Function
+
+
+char *strcpy(char *s1, const char *s2);
+
+strcpy copies the string pointed to by s2 into the array pointed to by s1.
+strcpy copies characters from s2 to s1 up to (and including) the first null
+    character in s2.
+strcpy returns s1 (a pointer to the destination string).
+strcpy compensates for the inability to use the assignment operator to copy
+    strings. Suppose we want to store the string "abcd" in str2:
+
+str2 = "abcd";  /*** WRONG ***/
+
+Instead, we can use strcpy:
+
+strcpy(str2, "abcd");   /* str2 now contains "abcd" */
+
+We can't assign str2 to str1 directly, but we can call strcpy:
+
+strcpy(str1, str2);     /* str1 now contains "abcd" */
+
+We don't usually need the value that strcpy returns. Occasionally, we can use
+    strcpy as part of a larger expression:
+
+strcpy(str1, strcpy(str2, "abcd"));   //both str1 and str2 now contain "abcd"
+
+
