@@ -331,4 +331,84 @@ We don't usually need the value that strcpy returns. Occasionally, we can use
 
 strcpy(str1, strcpy(str2, "abcd"));   //both str1 and str2 now contain "abcd"
 
+strcpy has no way to verify that str2 will fit into str1. If str2 is longer than
+	str1, undefined behavior occurs.
+strncpy is a safer, yet slower, way to copy a string. strncpy provides a third
+	argument that limits the number of characters to be copied:
+
+strncpy(str1, str2, sizeof(str1));
+
+!! If str2 is longer than str1, strncpy will not append a null character to
+	str1. A safer way of using strncpy:
+
+strncpy(str1, str2, sizeof(str1) - 1);
+str1[sizeof(str1)-1] = '\0';
+
+
+// The strlen (String Length) Function
+
+
+strlen prototype:
+
+size_t strlen(const char *s);
+
+size_t is a typedef name that represents an unsigned integer type.
+strlen returns the length of a string s, not including the first null character:
+
+int len;
+
+len = strlen("abc");	// 3
+len = strlen("");		// 0
+strcpy(str1, "abc");	//
+len = strlen(str1);		// 3
+
+
+// The strcat (String Concatenation) Function
+
+
+strcat prototype:
+
+char *strcat(char *s1, const char *s2);
+
+strcat appends s2 to the end of s1, then returns s1 (a pointer to the resulting
+	string):
+
+strcpy(str1, "abc");
+strcat(str1, "def");	/* str1 now contains "abcdef" */
+strcpy(str1, "abc");
+strcpy(str2, "def");
+strcat(str1, str2);		/* str1 now contains "abcdef" */
+
+The value returned by strcat is normally discarded.
+Some examples of how the return value may be used, though:
+
+strcpy(str1, "abc");
+strcpy(str2, "def");
+strcat(str1, strcat(str2, "ghi"));
+	/* str1 now contains "abcdefghi"; str2 contains "defghi" */
+
+!! The effect of strcat is undefined if the array pointed to by str1 isn't long
+	enough to accommodate str2:
+
+char str1[6] = "abc";
+
+strcat(str1, "def");	/*** WRONG ***/
+
+!! strcat will attempt to add d, e, f, and \0 to the end of str1.
+strncat is a safer but slower version of strcat:
+
+strncat(str1, str2, sizeof(str1) - strlen(str1) - 1);
+
+strncat will terminate str1 with a null character, which isn't included in the
+	third argument. The third argument calculates the amount of space remaining
+	in str1 and then subtracts 1 to ensure that there will be room for the \0.
+
+
+The strcmp (String Comparison) Function
+
+
+strcmp prototype:
+
+int strcmp(const char *s1, const char *s2);
+
 
