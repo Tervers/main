@@ -411,4 +411,107 @@ strcmp prototype:
 
 int strcmp(const char *s1, const char *s2);
 
+strcmp compares s1 to s2, returning a value less than, equal to, or greater than
+	0, depending on whether s1 is less than, equal to, or greater than s2:
+
+if (strcmp(str1, str2) < 0)		/* is str1 < str2? */
+	...
+
+if (strcmp(str1, str2) <= 0)	/* is str1 <= str2? */
+	...
+
+strcmp compares strings based on their lexicographic ordering (dictionary-like).
+strcmp considers s1 to be less than s2 if either one of the following conditions
+	is satisfied:
+	- The first i characters of s1 and s2 match, but the (i+1)st character of s1
+		is less than the (i+1)st character of s2. ("abd" < "abe")
+	- All characters of s1 match s2, but s1 is shorter than s2. ("abc" < "abcd")
+strcmp compares characters by looking at their ASCII numerical codes.
+Helpful ASCII character set properties:
+	- The characters in each of the sequences A-Z, a-z, and 0-9 have consecutive
+   		codes.
+	- All upper-case letters are less than all lower-case letters (In ASCII, 65-
+		90 represent upper-case letters; 97-122 represent lower-case letters).
+	- Digits are less than letters (48-57 represent digits).
+	- Spaces are less than all printing characters (space char has the value 32)
+
+
+// Printing a One-Month Reminder List 		REMIND.C
+
+
+sprintf is a library function that writes output into a string:
+
+sprintf(day_str, "%2d", day);	/* writes the value of day into day_str */
+
+sprintf automatically adds a null character when it's done writing.
+
+
+								REMIND.C
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_REMIND 50
+#define MSG_LEN 60
+
+int read_line(char str[], int n);
+
+int main(void)
+{
+	char reminders[MAX_REMIND][MSG_LEN+3];
+	char day_str[3], msg_str[MSG_LEN+1];
+	int day, i, j, num_remind = 0;
+
+	for (;;) {
+		if (num_remind == MAX_REMIND) {
+			printf("-- No space left --\n");
+			break;
+		}
+
+		printf("Enter day and reminder: ");\
+		scanf("%2d", &day);
+		if (day == 0)
+			break;
+		sprintf(day_str, "%2d", day);
+		read_line(msg_str, MSG_LEN);
+
+		for (i = 0; i < num_remind; i++)
+			if (strcmp(day_str, reminders[i]) < 0)
+				break;
+		for (j = num_remind; j > i; j--)
+			strcpy(reminders[j], reminders[j-1]);
+
+		strcpy(reminders[i], day_str);
+		strcat(reminders[i], msg_str);
+
+		num_remind++;
+	}
+
+	printf("/nDay Reminder\n");
+	for (i = 0; i < num_remind; i++)
+		printf(" %s\n", reminders[i]);
+
+	return 0;
+}
+
+int read_line(char str[], int n)
+{
+	int ch, i = 0;
+
+	while ((ch = getchar()) != '\n')
+		if (i < n)
+			str[i++] = ch;
+	str[i] = '\0';
+	return i;
+}
+
+
+remind.c demonstrates the use of strcpy, strcat, and strcmp functions, but lacks
+	many practical features for a reminder program (such as saving reminders in
+	a file when the program terminates).
+
+
+//				13.6 STRING IDIOMS
+
+
 
