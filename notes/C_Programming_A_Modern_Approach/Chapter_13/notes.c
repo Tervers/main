@@ -514,4 +514,244 @@ remind.c demonstrates the use of strcpy, strcat, and strcmp functions, but lacks
 //				13.6 STRING IDIOMS
 
 
+Trying out any of the versions of strlen and strcat in this section will require
+	you to alter the name of the function (we're not allowed to write a function
+	that has the same name as a standard library function; in fact, all names
+	that begin with str and a lower-case letter are reserved).
+
+
+// Searching for the End of a String
+
+
+size_t strlen(const char *s)
+{
+	size_t n;
+
+	for (n = 0; *s != '/0'; s++)
+		n++;
+	return n;
+}
+
+Let's condense the function. First, we'll move the initialization of n to its
+	declaration:
+
+size_t strlen(const char *s)
+{
+	size_t n = 0;
+
+	for (; *s++;)
+		n++;
+	return n;
+}
+
+Replacing the for statement with a while statement:
+
+size_t strlen(const char *s)
+{
+	size_t n = 0;
+
+	while (*s++)
+		n++;
+	return n;
+}
+
+Although we've condensed strlen, we likely haven't increased its speed. This
+	version will run faster (at least with some compilers):
+
+size_t strlen(const char *s)
+{
+	const char *p = s;
+
+	while (*s)
+		s++;
+	return s - p;
+}
+
+This version of strlen computes the length of the string by locating the posi-
+	tion of the null character, then subtracting from it the position of the
+	first character in the string. The improvement in speed comes from not
+	having to increment n inside the while loop. !! Without const, the compiler
+	would notice that assigning s to p places the string that s points to at
+	risk.
+
+while (*s)
+	s++;
+
+and
+
+while (*s++)
+	;
+
+Both these idioms mean "search for the null character at the end of a string."
+	The first version leaves s pointing to the null character. The second ver-
+	sion is more concise, but leaves s pointing just past the null character.
+
+
+// Copying a String
+
+
+First strcat version:
+
+char *strcat(char *s1, const char *s2)
+{
+	char *p = s1;
+
+	while (*p != '\0')
+		p++;
+	while (*s2 != '\0') {
+		*p = *s2;
+		p++;
+		s2++;
+	}
+	*p = '\0';
+	return s1;
+}
+
+This will append the contents of s2 onto the end of s1 and then append a null
+	character to the end of s1.
+The second version of strcat:
+
+char *strcat(char *s1, const char *s2)
+{
+	char *p = s1;
+
+	while (*p)
+		p++;
+	while (*p++ = *s2++)
+		;
+	return s1;
+}
+
+The heart of this function is the "string copy" idiom:
+
+while (*p++ = *s2++)
+	;
+
+Since the primary operator inside the parenthesis is assignment, the while
+	statement tests the value of the assignment (the character that was copied).
+	All characters except the null character test true, so the loop won't term-
+	inate until the null character has been copied. And since the loop termin-
+	ates after the assignment, we don't need a separate statement to put a null
+	character at the end of the new string.
+
+
+//				13.7 ARRAYS OF STRINGS
+
+
+A simple way to store an array of strings:
+
+char planets[][8] = {"Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn",
+					 "Uranus", "Neptune", "Pluto"};
+
+A visualization of what this array will look like:
+
+  0 1 2 3 4 5 6 7 
+0 M e r c u r y \0
+1 V e n u s \0\0\0
+2 E a r t h \0\0\0
+3 M a r s \0\0\0\0
+4 J u p i t e r \0
+5 S a t u r n \0\0
+6 U r a n u s \0\0
+7 N e p t u n e \0
+8 P l u t o \0\0\0
+
+This inefficiency of wasted space (extra null characters) is common when working
+	with strings. We can create a "ragged array" whose rows have different
+	lengths by creating an array whose elements are pointers to strings:
+
+char *planets[] = {"Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn",
+					 "Uranus", "Neptune", "Pluto"};
+
+Now the array will look like:
+
+0 M e r c u r y \0
+1 V e n u s \0
+2 E a r t h \0
+3 M a r s \0
+4 J u p i t e r \0
+5 S a t u r n \0
+6 U r a n u s \0
+7 N e p t u n e \0
+8 P l u t o \0
+
+To access one of the planet names, all we need to do is subscript the planets
+	array (this example searches for strings beginning with the letter M):
+	
+for (i = 0; i < 9; i++)
+	if (planets[i][0] == 'M')
+		printf("%s begins with M\n", planets[i]);
+
+
+// Command-Line Arguments
+
+
+To obtain access to command-line arguments in our programs, we must define main
+	as a function with two parameters (argc and argv):
+
+int main(int argc, char *argv[])
+{
+	...
+}
+
+argc ("argument count") is the number of command-line arguments (including the
+	name of the program itself).
+argv ("argument vector") is an array of pointers to the command-line arguments
+	(which are stored in string form).
+argv[0] points to the name of the program, while argv[1] through argv[argc-1]
+	point to the remaining command-line arguments.
+argv has one additional element, argv[argc], which is always a null pointer (a
+	special pointer that points to nothing). The macro NULL represents a null
+	pointer.
+If the user enters the command line
+
+	ls -l remind.c
+
+then argc will be 3, argv[0] will point to a string containing the program name 	(ls), argv[1] will point to the string "-1", argv[2] will point to the
+	string "remind.c", and argv[3] will be a null pointer.
+The program name may actually include a path (to the program executable) or
+	other information that depends on the operating system. If the program name
+	isn't available, argv[0] points to an empty string.
+A program that expects command-line arguments will set up a loop that examines
+	each argument in turn. One way to write such a loop is to use an integer
+	variable as an index into the argv array. This following loop prints the
+	command-line arguments, one per line:
+
+int i;
+
+for (i = 1; i < argc; i++)
+	printf("%s\n", argv[i]);
+
+Alternatively, we can set up a pointer to argv[1], then increment the pointer
+	repeatedly through the rest of the array, testing for a null pointer to
+	terminate the loop:
+
+char **p;
+
+for (p = &argv[1]; *p != NULL; p++)
+	printf("%s\n", *p);
+
+Setting p equal to &argv[1] makes sense; argv[1] is a pointer to a character, so
+	&argv[1] is a pointer to a pointer. *p != NULL is OK, since *p and NULL are
+	both pointers. p points to an array element, so incrementing it will advance
+	it to the next element. Printing *p is fine, since *p points to the first
+	character in a string.
+
+
+// Checking Planet Names			PLANET.C
+
+
+This next program illustrates how to access command-line arguments. The program
+	will check whether the user-inputed strings are planets or not:
+
+
+									PLANET.C
+
+#include <stdio.h>
+#include <string.h>
+
+#define NUM_PLANETS 9
+
+int main(int argc, char *argv[])
+{
 
