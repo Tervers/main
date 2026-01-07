@@ -83,7 +83,7 @@ A string literal containing a single character ins't the same as a character
 
 A string variable can be initialized at the same time it's declared:
 
-char date1[8] = "June 14";
+char date1[8] = "June 14";// date1 is a string variable, "June 14" initializer
 
 "June 14" is NOT a string literal right here. C views it as an abbreviation for
 	an initializer. We could have written:
@@ -754,4 +754,53 @@ This next program illustrates how to access command-line arguments. The program
 
 int main(int argc, char *argv[])
 {
+	char *planets[] = {"Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn",
+					   "Uranus", "Neptune", "Pluto"};
+
+	int i, j;
+
+	for (i = 1; i < argc; i++) {
+		for (j = 0; j < NUM_PLANETS; j++)
+			if (strcmp(argv[i], planets[j]) == 0) {
+				printf("%s is planet %d\n", argv[i], j + 1);
+				break;
+			}
+		if (j == NUM_PLANETS)
+			printf("%s is not a planet\n", argv[i]);
+	}
+
+	return 0;
+}
+
+
+// 								Additional Notes
+
+
+Minimum string literal length allowed by compiler: 509 (C89), 4095 (C99)
+Not every array of characters requires a null character since not every array of
+	characters is used as a string. You do NOT need a null chracter if you'll
+	only be performing operations on individual characters.
+printf and scanf expect their first argument to have type char *, which means
+	that a string 'variable' can be used instead of a string literal:
+
+char fmt[] = "%d\n";
+int i;
+...
+printf(fmt, i);
+
+if getchar can't read a character, either because of an error or because of end-
+	of-file, getchar returns the value EOF, which has type int. Here's a revised
+	version of read_line that tests whether the return value of getchar is EOF:
+
+int read_line(char str[], int n)
+{
+	int ch, i = 0;
+
+	while ((ch = getchar()) != '\n' && ch != EOF)
+		if (i < n)
+			str[i++] = ch;
+	str[i] = '\0';
+	return i;
+}
+
 
