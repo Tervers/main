@@ -108,10 +108,57 @@ whenever a macro "invocation" of the form identifier(y1, y2, ..., yn) appears
     for x2, and so forth:
         #define MAX(x,y)    ((x)>(y)?(x):(y))
         #define IS_EVEN(n)  ((n) %2==0)
-suppose that we invoke the two macros in the following way:
+the two above macros can be invoked in the following way:
     i = MAX(j+k, m-n);
     if (IS_EVEN(i)) i++;
 MAX behaves like a function that computes the larger of two values
 IS_EVEN behaves like a function that returns 1 if its argument is an even number
     and 0 otherwise
+a more complicated macro:
+    #define TOUPPER(c) ('a'<=(c)&&(c)<='z'?(c)-'a'+'A':(c))
+a parameterized macro may have an empty parameter list:
+    #define getchar() getc(stdin)
+!* this is the same getchar that belongs to <stdio.h> *!
+parameterized macros have a couple of advantages:
+-the program *may* be slightly faster. function calls usually require some over-    head during program execution; context information must be saved, arguments
+    copied, etc. (although inline functions provide a way to avoid this overhead
+    without the use of macros)
+-macros are "generic," meaning they have no particular type. This means a macro
+    can accept arguments of any type, provided the resulting program, after pre-
+    processing, is valid
+-parameterized macros are useful for segments of code that we find ourselves
+    often repeating
+parameterized macros also have some disadvantages:
+-the compiled code can often be larger, especially with nested macros:
+    n = MAX(i, MAX(j, k));
+    becomes
+    n = ((i)>(((j)>(k)?(j):(k)))?(i):(((j)>(k)?(j):(k))));
+-arguments aren't type-checked, which means the compiler will not check if the
+    argument is converted to the proper type, nor will the compiler produce an
+    error message
+-it is not possible to have a pointer to a macro.
+-a macro may evaluate its arguments more than once, which can cause unexpected
+    behavior if the argument has side effects
+
+
+//  The # Operator
+
+
+macros may contain the # and ## operators
+neither # or ## are recognized by the compiler; both are executed during pre-
+    processing
+# converts a macro argument into a string literal ("stringization"). it can only
+    appear in the replacement list of a parameterized macro:
+    #define PRINT_INT(n) printf(#n " = %d\n", n)
+if the above #define is invocated in the following way:
+    PRINT_INT(i/j);
+the result will be:
+    printf("i/j" " = %d\n", i/j);
+which then becomes:
+    printf("i/j = %d\n", i/j);   // C combines adjacent strings
+
+
+//  The ## Operator
+
+
 
