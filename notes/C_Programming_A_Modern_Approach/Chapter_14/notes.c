@@ -115,9 +115,9 @@ MAX behaves like a function that computes the larger of two values
 IS_EVEN behaves like a function that returns 1 if its argument is an even number
     and 0 otherwise
 a more complicated macro:
-    #define TOUPPER(c) ('a'<=(c)&&(c)<='z'?(c)-'a'+'A':(c))
+#define TOUPPER(c) ('a'<=(c)&&(c)<='z'?(c)-'a'+'A':(c))
 a parameterized macro may have an empty parameter list:
-    #define getchar() getc(stdin)
+#define getchar() getc(stdin)
 !* this is the same getchar that belongs to <stdio.h> *!
 parameterized macros have a couple of advantages:
 -the program *may* be slightly faster. function calls usually require some over-    head during program execution; context information must be saved, arguments
@@ -149,7 +149,7 @@ neither # or ## are recognized by the compiler; both are executed during pre-
     processing
 # converts a macro argument into a string literal ("stringization"). it can only
     appear in the replacement list of a parameterized macro:
-    #define PRINT_INT(n) printf(#n " = %d\n", n)
+#define PRINT_INT(n) printf(#n " = %d\n", n)
 if the above #define is invocated in the following way:
     PRINT_INT(i/j);
 the result will be:
@@ -159,6 +159,28 @@ which then becomes:
 
 
 //  The ## Operator
+
+
+The ## operator can 'paste' two tokens together to form a single token:
+#define MK_ID(n) i##n
+Suppose you invoke:
+    int MK_ID(1), MK_ID(2), MK_ID(3);
+After preprocessing, the above declaration becomes
+    int i1, i2, i3;
+Suppose we want to make a MAX function, but the MAX function may need to compare
+    int values, float values, and other types. Instead of writing a MAX function
+    for each type, we can create a macro that will create a MAX function of each
+    type while also giving each MAX function it's own name:
+#define GENERIC_MAX(type)       \
+type type##_max(type x, type y) \
+{                               \
+    return x > y ? x : y;       \
+}
+If we invoke GENERIC_MAX(float), the preprocessor will expand it into:
+float float_max(float x, float y) { return x > y ? x : y; }
+
+
+//  General Properties of Macros
 
 
 
