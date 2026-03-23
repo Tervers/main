@@ -226,4 +226,58 @@ the WORD_H macro protects word.h from being included more than once (although
 //              line.h
 
 
+the outline for our main loop reveals the need for functions that perform the
+    following operations:
+-write contents of line buffer without justification
+-determine how many characters are left in line buffer
+-write contents of line buffer with justification
+-clear line buffer
+-add word to line buffer
+
+
+#ifndef LINE_H
+#define LINE_H
+
+void clear_line(void);
+void add_word(const char *word);
+int space_remaining(void);
+void write_line(void);
+void flush_line(void);
+
+#endif
+
+
+//              justify.c
+
+
+#include <string.h>
+#include "line.h"
+#include "word.h"
+
+#define MAX_WORD_LEN 20
+
+int main(void)
+{
+    char word[MAX_WORD_LEN+2];
+    int word_len;
+
+    clear_line();
+    for (;;) {
+        read_word(word, MAX_WORD_LEN+1);
+        word_len = strlen(word);
+        if (word_len == 0) {
+            flush_line();
+            return 0;
+        }
+        if (word_len > MAX_WORD_LEN)
+            word[MAX_WORD_LEN] = '*';
+        if (word_len +1 > space_remaining()) {
+            write_line();
+            clear_line();
+        }
+        add_word(word);
+    }
+}
+
+
 
