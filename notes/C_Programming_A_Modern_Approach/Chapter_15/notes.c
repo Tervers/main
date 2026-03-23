@@ -143,4 +143,87 @@ to prevent a header file from being used with older, nonstandard compilers, you
 //              15.3 DIVIDING A PROGRAM INTO FILES
 
 
+each set of functions will go into a separate source file (let's say foo.c)
+foo.h will contain the prototypes for the functions defined in foo.c (functions
+    designed for use only within foo.c shouldn't be declared in foo.h)
+include foo.h in each source file that needs to call a function defined in foo.c
+include foo.h in foo.c so that the compiler can check that the function proto-
+    types in foo.h are consistent with the definitions in foo.c
+the main function will go in a file whose name matches the name of the program
+    (so if we want the program to be known as bar, then main should be in the
+    file bar.c)
+it's possible that there are other functions in the same file as main, so long
+    as they're not called from other files in the program.
+
+
+// Text Formatting
+
+
+we'll write a small text-formatting program named justify. As sample input to
+    justify, we'll use a file named 'quote' that contains a (poorly formatted)
+    quotation.
+to run the program from a UNIX or Windows prompt:
+
+justify <quote
+
+the < symbol informs the OS that justify will read from the file quote
+using < is known as input redirection
+this normally just prints the file on the screen, but you can save it to a file
+    by using output redirection:
+
+justify <quote >newquote
+
+justify will delete extra spaces and blank lines, and lines will be filled and
+    justified. Filling a line means adding words until one more word would cause
+    the line to overflow. Justifying a line means adding extra spaces between
+    words so that each line has exactly the same length (60 characters). The
+    last line won't be justified. We'll assume that no word is longer than 20
+    characters. After the first 20 characters, the rest will be replaced with a
+    single asterisk.
+now to think about program design. We observe that the program can't write the
+    words one by one as they're read. Instead, the program will have to store
+    them in a 'line buffer' until there are enough to fill a line. The program
+    will be a loop that goes something like this:
+
+for (;;) {
+    read word;
+    if (can't read word) {
+        write contents of line buffer without justification;
+        terminate program;
+    }
+
+    if (word doesn't fit in line buffer) {
+        write contents of line buffer with justification;
+        clear line buffer;
+    }
+    add word to line buffer;
+}
+
+since we'll need functions that deal with words and functions that deal with
+    the line buffer, let's split the prograinto three source files, putting all
+    functions related to words in one file(word.c) and all functions related to
+    the line buffer in another file (line.c). A third file (justify.c) will con-
+    tain the main function. We'll also need word.h and line.h. word.h will con-
+    tain prototypes for the functions in word.c; line.h will play a similar role
+    for line.c.
+
+
+//              word.h
+
+
+#ifndef WORD_H
+#define WORD_H
+
+void read_word(char *word, int len);
+
+#endif
+
+
+the WORD_H macro protects word.h from being included more than once (although
+    word.h doesn't really need, it's good practice to protect all header files)
+
+
+//              line.h
+
+
 
