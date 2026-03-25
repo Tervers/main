@@ -280,4 +280,103 @@ int main(void)
 }
 
 
+//              readword.c
 
+
+#include <stdio.h>
+#include "word.h"
+
+int read_char(void)
+{
+    int ch = getchar();
+
+    if (ch == '\n' || ch == '\t')
+        return ' ';
+    return ch;
+}
+
+void read_word(char *word, int len)
+{
+    int ch, pos = 0;
+
+    while ((ch = read_char()) == ' ')
+        ;
+    while (ch != ' ' && ch != EOF) {
+        if (pos < len)
+            word[pos++] = ch;
+        ch = read_char();
+        }
+    word[pos] = '\0';
+}
+
+
+//              line.c
+
+
+#include <stdio.h>
+#include <string.h>
+#include "line.h"
+
+#define MAX_LINE_LEN 60
+
+char line[MAX_LINE_LEN+1];
+int line_len = 0;
+int num_words = 0;
+
+void clear_line(void)
+{
+    line[0] = '\0';
+    line_len = 0;
+    num_words = 0;
+}
+
+void add_word(const char *word)
+{
+    if (num_words > 0) {
+        line[line_len] = ' ';
+        line[line_len+1] = '\0';
+        line_len++;
+    }
+    strcat(line, word);
+    num_words++;
+}
+
+int space_remaining(void)
+{
+    return MAX_LINE_LEN - line_len;
+}
+
+void write_line(void)
+{
+    int extra_spaces, spaces_to_insert, i, j;
+
+    extra_spaces = MAX_LINE_LEN - line_len;
+    for (i = 0; i < line_len; i++) {
+        if (line[i] != ' ')
+            putchar(line[i]);
+        else {
+            spaces_to_insert = extra_spaces / (num_words - 1);
+            for (j = 1; j <= spaces_to_insert + 1; j++)
+                putchar(' ');
+            extra_spaces -= spaces_to_insert;
+            num_words--;
+        }
+    }
+    putchar('\n');
+}
+
+void flush_line(void)
+{
+    if (line_len > 0)
+        puts(line);
+}
+
+
+//              15.3 BUILDING A MULTIPLE-FILE PROGRAM
+
+
+Building a large program requires the same basic steps as building a small one:
+-Compiling: Each source file must be compiled separately. For each source file,
+    the compiler generates a file containing object code (.o in UNIX, .obj in
+    Windows)
+-Linking
