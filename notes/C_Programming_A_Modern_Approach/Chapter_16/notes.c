@@ -412,4 +412,62 @@ word.o: word.c word.h
 line.o: line.c line.h
     gcc -c line.c
 
+the above example has four 'rules'. The first line in each rule gives a 'target'
+    file, followed by the files on which it depends. On the first rule, justify
+    is the target file, which is an executable file that is to be created. The
+    second line is a 'command' to be executed if the target should need to be
+    rebuilt because of a change to one of its dependent files. The -o option
+    allows us to name the file it creates.
+in the second rule, justify.o is the target that needs to be rebuilt if there is
+    a change to justify.c, word.h, or line.h. The -c option tells the compiler
+    to compile justify.c into an object file but not attempt to link it.
+you can use the make utility to build or rebuild the program. make can determine
+    which files are out of date by checking the time and date associated with
+    each file.
+each command in a makefile must be preceded by a tab character, not a series of
+    spaces
+a makefile is normally stored in a file named Makefile (or makefile). when make
+    is used, it automatically checks the current directory for a file with one
+    of these names.
+to invoke make, use the command:
+
+make target
+
+where target is one of the targets listed in the makefile
+to build the justify executable:
+
+make justify
+
+if no target is specified, it will build the target of the first rule:
+
+make
+
+this will build the justify executable, since it is the first rule in our make-
+    file
+
+
+// Errors During Linking
+
+
+Common causes:
+-misspellings: if a variable or function is misspelled, the linker will report
+    it as missing
+-missing files: if the linker can't find functions that are in file foo.c, it
+    may not know about the file. Check the makefile or project file to make sure
+    that foo.c is listed there.
+-missing libraries: the linker may not be able to find all library functions
+    used in the program. An example that occurs in UNIX programs that use the
+    <math.h> header. Simply using the header in a program may not be enough;
+    many versions of UNIX require the the -lm option be specified when the pro-
+    gram is linked, causing the linker to search a system file that contains
+    compiled versions of the <math.h> functions. Failing to use this option may
+    cause "undefined reference" messages during linking.
+
+ 
+// Rebuilding a Program
+
+
+// Defining Macros Outside a Program
+
+
 
