@@ -490,3 +490,20 @@ if the -D option names a macro without specifyin its value, the value is taken
 the -U option undefines a macro as if by using #undef
 we can use -U to undefine a predefined macro or one that was defined earlier in
 	the command line using -D
+
+
+//				NOTES
+
+
+!! avoid using source (.c) files in #include directives. If you have foo.c, with
+	function f, and you #include foo.c in two or more additional source files
+	(like bar.c and baz.c), the linker will discover two copies of object code
+	for f. !!
+!! Q: I needed to call a function in the file foo.c, so I included the matching
+	header file, foo.h. My program compiled, but it won't link. Why?
+A: Compilation and linking are completely separate in C. Header files exist to
+	provide information to the compiler, not the linker. If you want to call a
+	function in foo.c, then you have to make sure that foo.c is compiled and
+	that the linker is aware that it must search the object file for foo.c.
+	Usually this means naming foo.c in the program's makefile or project file.
+
