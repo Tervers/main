@@ -375,8 +375,41 @@ void flush_line(void)
 //              15.3 BUILDING A MULTIPLE-FILE PROGRAM
 
 
-Building a large program requires the same basic steps as building a small one:
+building a large program requires the same basic steps as building a small one:
 -Compiling: Each source file must be compiled separately. For each source file,
     the compiler generates a file containing object code (.o in UNIX, .obj in
     Windows)
--Linking
+-Linking: The linker combines the object files (along with code for library
+    functions) to produce an executable file. The linker is also responsible for
+    resolving external references left behind by the compiler (an external
+    reference occurs when a function in one file calls a function defined in
+    another file or accesses a variable defined in another file).
+using GCC, we can build the justify program as so:
+
+gcc -o justify justify.c line.c word.c
+
+
+// Makefiles
+
+
+instead of putting the names of all the source files on the command line, we can
+    save time by writing a makefile
+makefiles not only lists the files that are part of the program, but also de-
+    scribes dependencies among the files. Suppose foo.c includes bar.h. We say
+    that foo.c depends on bar.h, because a change to bar.h will require is to
+    recompile foo.c.
+UNIX makefile example:
+
+justify: justify.o word.o line.o
+    gcc -o justify justify.o word.o line.o
+
+justify.o: justify.c word.h line.h
+    gcc -c justify.c
+
+word.o: word.c word.h
+    gcc -c word.c
+
+line.o: line.c line.h
+    gcc -c line.c
+
+
