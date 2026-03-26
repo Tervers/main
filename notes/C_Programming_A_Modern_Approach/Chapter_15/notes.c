@@ -280,7 +280,7 @@ int main(void)
 }
 
 
-//              word.c
+//              readword.c
 
 
 #include <stdio.h>
@@ -301,11 +301,192 @@ void read_word(char *word, int len)
 
     while ((ch = read_char()) == ' ')
         ;
-    while (ch != ' ' && ch != EOF) {1
+    while (ch != ' ' && ch != EOF) {
         if (pos < len)
             word[pos++] = ch;
         ch = read_char();
-    }
+        }
     word[pos] = '\0';
 }
 
+
+//              line.c
+
+
+#include <stdio.h>
+#include <string.h>
+#include "line.h"
+
+#define MAX_LINE_LEN 60
+
+char line[MAX_LINE_LEN+1];
+int line_len = 0;
+int num_words = 0;
+
+void clear_line(void)
+{
+    line[0] = '\0';
+    line_len = 0;
+    num_words = 0;
+}
+
+void add_word(const char *word)
+{
+    if (num_words > 0) {
+        line[line_len] = ' ';
+        line[line_len+1] = '\0';
+        line_len++;
+    }
+    strcat(line, word);
+    num_words++;
+}
+
+int space_remaining(void)
+{
+    return MAX_LINE_LEN - line_len;
+}
+
+void write_line(void)
+{
+    int extra_spaces, spaces_to_insert, i, j;
+
+    extra_spaces = MAX_LINE_LEN - line_len;
+    for (i = 0; i < line_len; i++) {
+        if (line[i] != ' ')
+            putchar(line[i]);
+        else {
+            spaces_to_insert = extra_spaces / (num_words - 1);
+            for (j = 1; j <= spaces_to_insert + 1; j++)
+                putchar(' ');
+            extra_spaces -= spaces_to_insert;
+            num_words--;
+        }
+    }
+    putchar('\n');
+}
+
+void flush_line(void)
+{
+    if (line_len > 0)
+        puts(line);
+}
+
+
+//              15.3 BUILDING A MULTIPLE-FILE PROGRAM
+
+
+building a large program requires the same basic steps as building a small one:
+-Compiling: Each source file must be compiled separately. For each source file,
+    the compiler generates a file containing object code (.o in UNIX, .obj in
+    Windows)
+-Linking: The linker combines the object files (along with code for library
+    functions) to produce an executable file. The linker is also responsible for
+    resolving external references left behind by the compiler (an external
+    reference occurs when a function in one file calls a function defined in
+    another file or accesses a variable defined in another file).
+using GCC, we can build the justify program as so:
+
+gcc -o justify justify.c line.c word.c
+
+
+// Makefiles
+
+
+instead of putting the names of all the source files on the command line, we can
+    save time by writing a makefile
+makefiles not only lists the files that are part of the program, but also de-
+    scribes dependencies among the files. Suppose foo.c includes bar.h. We say
+    that foo.c depends on bar.h, because a change to bar.h will require is to
+    recompile foo.c.
+UNIX makefile example:
+
+justify: justify.o word.o line.o
+    gcc -o justify justify.o word.o line.o
+
+justify.o: justify.c word.h line.h
+    gcc -c justify.c
+
+word.o: word.c word.h
+    gcc -c word.c
+
+line.o: line.c line.h
+    gcc -c line.c
+
+the above example has four 'rules'. The first line in each rule gives a 'target'
+    file, followed by the files on which it depends. On the first rule, justify
+    is the target file, which is an executable file that is to be created. The
+    second line is a 'command' to be executed if the target should need to be
+    rebuilt because of a change to one of its dependent files. The -o option
+    allows us to name the file it creates.
+in the second rule, justify.o is the target that needs to be rebuilt if there is
+    a change to justify.c, word.h, or line.h. The -c option tells the compiler
+    to compile justify.c into an object file but not attempt to link it.
+you can use the make utility to build or rebuild the program. make can determine
+    which files are out of date by checking the time and date associated with
+    each file.
+each command in a makefile must be preceded by a tab character, not a series of
+    spaces
+a makefile is normally stored in a file named Makefile (or makefile). when make
+    is used, it automatically checks the current directory for a file with one
+    of these names.
+to invoke make, use the command:
+
+make target
+
+where target is one of the targets listed in the makefile
+to build the justify executable:
+
+make justify
+
+if no target is specified, it will build the target of the first rule:
+
+make
+
+this will build the justify executable, since it is the first rule in our make-
+    file
+
+
+// Errors During Linking
+
+
+Common causes:
+-misspellings: if a variable or function is misspelled, the linker will report
+    it as missing
+-missing files: if the linker can't find functions that are in file foo.c, it
+    may not know about the file. Check the makefile or project file to make sure
+    that foo.c is listed there.
+-missing libraries: the linker may not be able to find all library functions
+    used in the program. An example that occurs in UNIX programs that use the
+    <math.h> header. Simply using the header in a program may not be enough;
+    many versions of UNIX require the the -lm option be specified when the pro-
+    gram is linked, causing the linker to search a system file that contains
+    compiled versions of the <math.h> functions. Failing to use this option may
+    cause "undefined reference" messages during linking.
+
+ 
+// Rebuilding a Program
+
+
+// Defining Macros Outside a Program
+
+
+C compilers usually provide some method of specifying the value of a macro at
+	the time a program is compiled. This ability makes it easy to change the
+	value of a macro without editing any of the program's files. It's especially
+	valuable when programs are built automatically using makefiles.
+most compilers support the -D option, which allows the value of a macro to be
+	specified on the command line:
+
+gcc -DDEBUG=1 foo.c
+
+in this example, the DEBUG macro is defined to have the value 1 in the program
+	foo.c, just as if the line:
+
+#define DEBUG 1
+
+appeared at the beginning of foo.c
+if the -D option names a macro without specifyin its value, the value is taken
+	to be 1
+the -U option undefines a macro as if by using #undef
+we can use -U to undefine a predefined macro or one that was defined earlier in
+	the command line using -D
