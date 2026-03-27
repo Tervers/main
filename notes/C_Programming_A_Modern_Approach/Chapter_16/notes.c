@@ -236,4 +236,123 @@ here's how build_part might be called:
 
 part1 = build_part(528, "Disk drive", 10);
 
+! Passing a structure to a function and returning a structure from a function
+    both require making a copy of all members in the structure. As a result,
+    these operations impose a fair amount of overhead on a program. To avoid
+    this, it's sometimes advisable to pass a pointer to a structure instead of
+    passing the structure itself.
+Additionally, <stdio.h> defines a type named FILE, which is typically a
+    structure. Each FILE structure stores information about the state of an open
+    file and therefore must be unique in a program. Every function in <stdio.h>
+    that opens a file returns a pointer to a FILE structure, and every function
+    that performs an operation on an open file requires a FILE pointer as an
+    argument. !
+
+initializing a structure variable inside a function to match another structure:
+
+void f(struct part part1)
+{
+    struct part part2 = part1; // part2 is the variable being initialized
+    ...
+}
+
+
+// Compound Literals
+
+
+compound literals can be used to create a structure without first storing it in
+    a variable:
+
+print_part((struct part) {528, "Disk drive", 10});
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+the compound literal, pointed at above, creates a part structure containing the
+    members 528, "Disk drive", and 10, in that order. This structure is then
+    passed to print_part, which displays it.
+assigning a compound literal to a variable:
+
+part1 = (struct part) {528, "Disk drive", 10};
+
+a compound literal may contain designators, just like a designated initializer:
+
+print_part((struct part) {.on_hand = 10,
+                          .name = "Disk drive",
+                          .number = 528});
+
+
+//              16.3 NESTED ARRAYS AND STRUCTURES
+
+
+arrays may have structures as their elements, and structures may contain arrays
+    and structures as members
+
+
+// Nested Structures
+
+
+suppose we have this first structure:
+
+struct person_name {
+    char first[FIRST_NAME_LEN+1];
+    char middle_initial;
+    char last[LAST_NAME_LEN+1];
+};
+
+we can use the person_name structure as part of a larger structure:
+
+struct student {
+    struct person_name name;
+    int id, age;
+    char sex;
+} student1, student2;
+
+accessing student1's first name, middle initial, or last name requires two
+    applications of the . operator:
+
+strcpy(student1.name.first, "Fred");
+
+one advantage of making name a structure (instead of having first,
+    middle_initial, and last be members of the student structure) is that we can
+    more easily treat names as units of data. For example, if we were to write a
+    function that displays a name, we could pass it just one argument (a
+    person_name structure) instead of three arguments:
+
+display_name(student1.name);
+
+likewise, copying the information from a person_name structure to the name mem-
+    ber of a strudent structure would take on assignment instead of three:
+
+struct person_name new_name;
+...
+student1.name = new_name;
+
+
+// Arrays of Structures
+
+
+a common combination of arrays and structures is to have an array whose elements
+    are structures:
+
+struct part inventory [100];
+
+to access one of the parts in the array, we'd use subscripting. To print the
+    part stored in position i, for example, we could write:
+
+print_part(inventory[i]);
+
+accessing a member within a part structure requires a combination of subscript-
+    ing and member selection. To assign 883 to member of inventory[i]:
+
+inventory[i].number = 883;
+
+accessing a single character in a part name requires subscripting, followed by
+    selection, followed by subscripting. To change the name stored in
+    inventory[i] to an empty string:
+
+inventory[i].name[0] = '\0';
+
+
+// Initializing an Array of Structures
+
+
 
