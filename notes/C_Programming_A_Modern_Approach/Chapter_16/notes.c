@@ -447,6 +447,56 @@ int main(void)
             ;
 // if the user enters abc, a would get stored in code, bc\n would be left in the
 // buffer, so the while loop clears the buffer so the leftover chars aren't
-// present when the loop restarts at printf
+// present when the for loop restarts
         switch (code) {
+            case 'i': insert();
+                      break;
+            case 's': search();
+                      break;
+            case 'u': update();
+                      break;
+            case 'p': print();
+                      break
+            case 'q': return 0;
+            default: printf("Illegal code\n");
+        }
+        printf("\n");
+    }
+}
 
+int find_part(int number)
+{
+    int i;
+
+    for (i = 0; i < num_parts; i++)
+        if (inventory[i].number == number)
+            return i;
+    return -1;
+}
+
+void insert(void)
+{
+    int part_number;
+
+    if (num_parts == MAX_PARTS) {
+        printf("Database is full; can't add more parts.\n");
+        return;
+    }
+
+    printf("Enter part number: ");
+    scanf("%d", &part_number);
+    if (find_part(part_number) >= 0) {
+        printf("part already exists.\n");
+        return;
+    }
+
+    inventory[num_parts].number = part_number;
+    printf("Enter part name: ");
+    read_line(inventory[num_parts].name, NAME_LEN);
+    printf("Enter quantity on hand: ");
+    scanf("%d", &inventory[num_parts].on_hand);
+    num_parts++;
+}
+
+void search(void)
+{
