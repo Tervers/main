@@ -355,4 +355,98 @@ inventory[i].name[0] = '\0';
 // Initializing an Array of Structures
 
 
+suppose we're working on a program that will need access to the country codes
+    used when making international telephone calls:
+
+struct dialing_code {
+    char *country;
+    int code;
+};
+
+note that country is a pointer, which would be a problem if we were planning to
+    use dialing_code structures as variables, but we're not. When we initialize
+    a dialing_code structure, country will end up pointing to a string literal.
+to declare an array of these structures and initialize it to contain the codes
+    for some of the world's most populous nations:
+
+const struct dialing_code country_codes[] =
+    {{"Argentina",          54}, {"Bangladesh",          880},
+     {"Brazil",             55}, {"Burma (Myanmar)",      95},
+     ("China",              86}, {"Colombia",             57},
+...
+     {"United States",       1}, {"Vietnam",              84}};
+
+the inner braces around each structure value are optional
+suppose we want to initialize the inventory array to contain a single part:
+
+struct part inventory[100] = 
+    {[0].number = 528, [0].on_hand = 10, [0].name[0] = '\0'};
+
+
+// Maintaining a Parts Database
+
+
+this will be an example program that maintains a database of parts stored in a
+    warehouse. the program will offer operations that insert (i), search (s),
+    update (u), print (p), and quit (q):
+
+Enter operation code: _i_
+Enter part number: _528_
+Enter part name: _Disk_drive_
+Enter quantity on hand: _10_
+
+Enter operation code: _s_
+Enter part number: _528_
+Part name: _Disk_drive_
+Quantity on hand: _10_
+
+Enter operation code: _u_
+Enter part number: _528_
+Enter change in quantity on hand: _-2_
+
+Enter operation code: _p_
+Part Number     Part Name                   Quantity on Hand
+    528         Disk drive                          8
+    924         Printer cable                       5
+
+for now, this program will be split into three files: inventory.c, readline.h,
+    and readline.c
+
+
+//              inventory.c     (maintains a parts database (array version))
+
+
+#include <stdio.h>
+#include "readline.h"
+
+#define NAME_LEN 25
+#define MAX_PARTS 100
+
+struct part {
+    int number;
+    char name[NAME_LEN+1];
+    int on_hand;
+} inventory[MAX_PARTS];
+
+int num_parts = 0;
+
+int find_part(int number);
+void insert(void);
+void search(void);
+void update(void);
+void print(void);
+
+int main(void)
+{
+    char code;
+
+    for (;;) {
+        printf("Enter operation code: ");
+        scanf(" %c", &code);
+        while (getchar() != '\n')   // skips to end of line
+            ;
+// if the user enters abc, a would get stored in code, bc\n would be left in the
+// buffer, so the while loop clears the buffer so the leftover chars aren't
+// present when the loop restarts at printf
+        switch (code) {
 
