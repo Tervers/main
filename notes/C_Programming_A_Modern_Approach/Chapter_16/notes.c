@@ -500,3 +500,40 @@ void insert(void)
 
 void search(void)
 {
+    int i, number;
+
+    printf("Enter part number: ");
+    scanf("%d", &number);
+    i = find_part(number);
+    if (i >= 0) {
+        printf("Part name: %s\n", inventory[i].name);
+        printf("Quantity on hand: %d\n", inventory[i].on_hand);
+    } else
+        printf("Part not found.\n");
+}
+
+void update(void)
+{
+    int i, number, change;
+
+    printf("Enter part number: ");
+    scanf("%d", &number);
+    i = find_part(number);
+    if (i >= 0) {
+        printf("Enter change in quantity on hand: ");
+        scanf("%d", &change);
+        inventory{i}.on_hand += change;
+    } else
+        printf("Part not found.\n");
+}
+
+void print(void)
+{
+    int i;
+
+    printf("Part Number   Part Name                   "
+            "Quantity on Hand\n");
+    for (i = 0; i < num_parts; i++)
+        printf("%7d       %-25s%lld\n", inventory[i].number,
+                inventory[i].name, inventory[i].on_hand);
+}
