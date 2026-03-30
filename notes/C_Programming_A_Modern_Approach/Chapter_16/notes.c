@@ -587,4 +587,114 @@ ch has type int because getchar() returns an int value
 //              16.4 UNIONS
 
 
+unions only allocate enough space for the largest of the members, which overlay
+    each other within this space
+union members are stored at the same memory address, while structure members are
+    stored at different memory addresses
+assigning a value to one member alters the values of the other members as well
 
+union {
+    int i;
+    double d;
+} u;
+
+members of a union are accessed in the same way as members of a structure
+
+u.i = 82;
+u.d = 74.8;
+
+since the compiler overlays storage for the members of a union, storing 74.8 in
+    u.d causes the value of u.i to become lost
+we can declare union tags and union types in the same way declare structure tags
+    and types
+unions can also be copied using the = operator, passed to functions, and return-    ed by functions
+unions can even be initialized in a manner similar to structures
+
+union {
+    int i;
+    double d;
+} u = {0};
+
+designated initializers can also be used with unions
+
+union {
+    int i;
+    double d;
+} u = {.d = 10.0};
+
+only one member can be initialized, but it doesn't have to be the first one
+
+
+// Using Unions to Save Space
+
+
+suppose we are designing a structure that will contain this information:
+-Books: Title, author, number of pages
+-Mugs: Design
+-Shirts: Design, colors available, sizes available
+
+our first design attempt might result in the following structure
+
+struct catalog_item {
+    int stock_number;
+    double price;
+    int item_type;
+    char title[TITLE_LEN+1];
+    char author[AUTHOR_LEN+1];
+    int num_pages;
+    char design[DESIGN_LEN+1];
+    int colors;
+    int sizes;
+};
+
+item_type would have on of the values BOOK, MUG, or SHIRT
+colors and sizes would store encoded combinations of colors and sizes
+although this structure is usable, it wastes space since only part of the infor-
+    mation in the structure is common to all items in the catalog
+
+struct catalog_item {
+    int stock_number;
+    double price;
+    int item_type;
+    union {
+        struct {
+            char title[TITLE_LEN+1];
+            char author[AUTHOR_LEN+1];
+            int num_pages;
+        } book;
+        struct {
+            char design[DESIGN_LEN+1];
+        } mug;
+        struct {
+            char design[DESIGN_LEN+1];
+            int colors;
+            int sizes;
+        } shirt;
+    } item;
+};
+
+notice that the union (named item) is a member of the catalog_item structure,
+    and the book, mug, and shirt structures are members of item
+if c is a catalog_item structure that represents a book, we can print the book's
+    title in the following way:
+
+printf("%s", c.item.book.title);
+
+normally, it's not a good idea to store a value into one member of a union and
+    then access the data through a different member, because assigning to one
+    member of a union causes the values of the other members to be undefined.
+! however, you can do this if two or more of the members of the union are
+    structures, and the structures begin with one or more matching members.
+    These members need to be in the same order and have compatible types, but
+    do not need to have the same name. If one of the structures is currently
+    valid, then the matching members in the other structures will also be
+    valid. !
+the union embedded in catalog_item contains three structures as members, two of
+    which (mug and shirt) begin with a matching member (design). If we assign a
+    value to one of the design members:
+
+strcpy(c.item.mug.design, "Cats");
+
+the design member in the other structure will be defined and have the same value
+
+printf("%s", c.item.shirt.design); //prints "Cats
