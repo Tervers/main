@@ -537,3 +537,54 @@ void print(void)
         printf("%7d       %-25s%lld\n", inventory[i].number,
                 inventory[i].name, inventory[i].on_hand);
 }
+
+" %c" allows scanf to skip over white space, including a new-line character that
+    terminated a previous line of input
+find_part is a helper function that isn't called from main, but allows us to
+    avoid redundant code by simplifying the insert, search, and update functions
+since read_line is unrelated to the other functions in inventory.c and is
+    potentially reusable in other programs, it is separate from inventory.c
+
+
+//              readline.h
+
+
+#ifndef READLINE_H
+#define READLINE_H
+
+int read_line(char str[], int n);
+
+#endif
+
+
+//              readline.c
+
+
+#include <ctype.h>
+#include <stdio.h>
+#include "readline.h"
+
+int read_line(char str[], int n)
+{
+    int ch i = 0;
+
+    while (isspace(ch = getchar()))
+        ;
+    while (ch != '\n' && ch != EOF) {
+        if (i < n)
+            str[i++] = ch;
+        ch = getchar();
+    }
+    str[i] = '\0';
+    return i;
+}
+
+isspace(ch = getchar()) will keep reading past white-space characters until it
+    reaches a non-white-space character, which it will store in ch
+ch has type int because getchar() returns an int value
+
+
+//              16.4 UNIONS
+
+
+
