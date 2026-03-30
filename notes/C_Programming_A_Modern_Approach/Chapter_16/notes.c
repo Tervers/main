@@ -697,4 +697,104 @@ strcpy(c.item.mug.design, "Cats");
 
 the design member in the other structure will be defined and have the same value
 
-printf("%s", c.item.shirt.design); //prints "Cats
+printf("%s", c.item.shirt.design); //prints "Cats"
+
+
+// Using Unions to Build Mixed Data Structures
+
+
+let's say we need an array whose elements are a mixture of int and double
+    values. Since array elements must be of the same type, it seems impossible
+    to create such an array. To get around this, we can define a union type
+    whose members represent the different kinds of data to be stored:
+
+typedef union {
+    int i;
+    double d;
+} Number;
+
+Next, we create an array whose elements are Number values:
+
+Number number_array[1000];
+
+each element of number_array is a Number union. A Number union can store either
+    an int value or a double value, making it possible to store a mixture of int
+    and double values in number_array:
+
+number_array[0].i = 5;
+number_array[1].d = 8.395;
+
+
+// Adding a "Tag Field" to a Union
+
+
+there's no easy way to tell which member of a union was last changed and there-
+    fore contains a meaningful value. Consider the problem of writing a function
+    that displays the value currently stored in a Number union:
+
+void print_number(Number n)
+{
+    if (n contains an integer)
+        printf("%d", n.i);
+    else
+        printf("%g", n.d);
+}
+
+unfortunately, there's no way for print_number to determine whether n contains
+    an integer or a floating-point number
+to keep track of this information, we can embed the union within a structure
+    that has one other member: a "tag field" or "discriminant," whose purpose is
+    to remind us what's currently stored in the union. In the catalog_item
+    structure, item_type served this purpose
+
+#define INT_KIND 0
+#define DOUBLE_KIND 1
+
+typedef struct {
+    int kind;  // tag field
+    union {
+        int i;
+        double d;
+    } u;
+} Number;
+
+each time we assign a value to a member of u, we'll also change kind to remind
+    us which member of u we modified
+
+n.kind = INT_KIND;
+n.u.i = 82;
+
+when we need to retrieve the number stored in a NUmber variable, kind will tell
+    us which member of the union was the last to be assigned a value
+
+void print_number(Number n)
+{
+    if (n.kind == INT_KIND)
+        printf("%d", n.u.i);
+    else
+        printf("%g", n.u.d);
+}
+
+
+//              16.5 ENUMERATIONS
+
+
+the "enumerated type" is a type whose values are listed ("enumerated") by the
+    programmer, who must create a name (an "enumeration constant") for each of
+    the values. The following example enumerates the values that can be assigned
+    to the variables s1 and s2:
+
+enum {CLUBS, DIAMONDS, HEARTS, SPADES} s1, s2;
+
+enumerations have little in common with structures and unions, though they are
+    declared in a similar way
+the names of enumeration constants must be different from other identifiers
+    declared in the enclosing scope
+enumeration constants are similar to constants created with the #define
+    directive, but not equivalent. For one thing, enumeration constants are sub-    ject to C's scope rules
+
+
+// Enumeration Tags and Type Names
+
+
+
