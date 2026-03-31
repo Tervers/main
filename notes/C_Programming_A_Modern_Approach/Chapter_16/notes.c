@@ -128,7 +128,7 @@ the = operator can be used only with structures of "compatible" types. Two
 //              16.2 STRUCTURE TYPES
 
 
-if several structure variables with identical membersare declared at the same
+if several structure variables with identical members are declared at the same
     time, there will be no problem. But if we need to declare the variables at
     different points in the program, then problems arise:
 
@@ -901,4 +901,59 @@ typedef struct part {
     int on_hand;
 } part;
 
-to share a structure type among several files
+to share a structure type among several files in a program, put a declaration of
+    a structure tag (or a typedef) in a header file, then include the header
+    file where the structure is needed
+
+struct part {
+    int number;
+    char name[NAME_LEN+1];
+    int on_hand;
+};
+
+declare only the structure tag, not variables of this type. This applies
+    similarly to unions and enumerations
+if you include the Declaration of the part structure into two different files,
+    the parts variables in one file will NOT be of the same type as the part
+    variables in the other file. However, the C standard says that the part
+    variables in one file have a type that's compatible with the type of the
+    parts variables in the other file. Variables with compatible types can be
+    assigned to each other, so there's little practical difference between types
+    being 'compatible' and being 'the same. In C89, structures defined in
+    different files are compatible if their members have the same names and
+    appear in the same order, with corresponding members having compatible
+    types. C99 adds one additional step: it requires that either both structures
+    have the same tag or neither has a tag. Similar compatibility rules apply to
+    unions and enumerations.
+you can have a pointer to a compound literal. Consider print_part() from 16.2.
+    Currently, the parameter to this function is a part structure. To accept a
+    pointer to a part structure instead, prefix the argument with the & address
+    operator:
+
+print_part(&(struct part) {528, "Disk drive", 10});
+
+you can modify the compound literal using a pointer, since compound literals are
+    lvalues that can be modified, although doing so is rare
+you can add a "trailing comma" at the end of an enumeration as a way to make it
+    easier to modify
+
+enum gray_values {
+    BLACK = 0,
+    DARK_GRAY = 64,
+    GRAY = 128,
+    LIGHT_GRAY = 192,
+    WHITE = 255,
+};
+
+the values of an enumerated type can be used as subscripts. They are integers
+    and have, by default, values that start at 0 and count upward. In C99, enum-
+    eration constants can be used as subscripts in designated initializers:
+
+enum weekdays {MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY};
+const char *daily_specials[] = {
+    [MONDAY] = "Beef ravioli",
+    [TUESDAY] = "BLTs",
+    [WEDNESDAY] = "Pizza",
+    [THURSDAY] = "Chicken fajitas",
+    [FRIDAY] = "Macaroni and cheese"
+};
