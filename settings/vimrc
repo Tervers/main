@@ -1,6 +1,0 @@
-" append to /usr/share/vim/vimrc
-
-set expandtab
-set shiftwidth=2
-set softtabstop=-1
-set smarttab
