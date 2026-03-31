@@ -797,4 +797,108 @@ enumeration constants are similar to constants created with the #define
 // Enumeration Tags and Type Names
 
 
+as with structures and unions, there are two ways to name an enumeration: by
+    declaring a tag or by using typedef to create a genuine type name
+enumeration tags resemble structure and union tags
 
+enum suit {CLUBS, DIAMONDS, HEARTS, SPADES};
+
+suit variables would be declared in the following way
+
+enum suit s1, s2;
+
+as an alternative, we could use typedef to make Suit a type name
+
+typedef enum {CLUBS, DIAMONDS, HEARTS, SPADES} Suit;
+Suit s1, s2;
+
+in C89, using typedef to name an enumeration is an excellent way to create a
+    Boolean type
+
+typedef enum {FALSE, TRUE} Bool;
+
+
+// Enumerations as Integers
+
+
+C treats enumeration variables and constants as integers
+by default, the compiler assigns the inegers 0, 1, 2, ... to the constants in a
+    particular enumeration
+we can choose different values for enumeration constants if we like
+
+enum suit {CLUBS = 1, DIAMONDS = 2, HEARTS = 3, SPADES = 4};
+
+the values of enumeration constants may be arbitrary integers, listed in no par-
+    ticular order
+
+enum dept {RESEARCH = 20, PRODUCTION = 10, SALES = 25};
+
+it's even legal for two or more enumeration constants to have the same value
+when no value is specified for an enumeration constant, its value is one greater
+    than the value of the previous constant
+
+enum EGA_colors {BLACK, LT_GRAY = 7, DK_GRAY, WHITE = 15
+                   0                    8
+
+since enumeration values are nothing but thinly disguised integers, C allows us
+    to mix them with ordinary integers
+
+int i;
+enum {CLUBS, DIAMONDS, HEARTS, SPADES} s;
+
+i = DIAMONDS;   // i is now 1
+s = 0;          // s is now 0 (CLUBS)
+s++;            // s is now 1 (DIAMONDS)
+i = s + 2;      // i is now 3
+
+the compiler treats s as a variable of some integer type; CLUBS, DIAMONDS,
+    HEARTS, and SPADES are just names for the integers 0, 1, 2, and 3
+
+! it's dangerous to use an integer as an enumeration value. For example, we
+    might accidentally store the number 4 (which doesn't correspond to any suit)    into s. !
+
+
+// Using Enumerations to Declare "Tag Fields"
+
+
+enumerations are perfect for determining which member of a union was the last to
+    be assigned a value
+
+typedef struct {
+    enum {INT_KIND, DOUBLE_KIND} kind;
+    union {
+        int i;
+        double d;
+    } u;
+} Number;
+
+the advantages are that we've done away with the INT_KIND and DOUBLE_KIND macros    (they're now enumeration constants), and it's now obvious that kind has only
+    two possible values
+
+
+//              NOTES
+
+
+using sizeof to determine the number of bytes in a structure can yield a larger
+    size than expected. Some computers require that the address of certain data
+    items be a multiple of some number of bytes (typically two, four, or eight,
+    depending on the item's type). To satisfy this requirement, a compiler will
+    align the members of a structure by leaving unused bytes between adjacent
+    members. If we assume that data items must begin on a multiple of four
+    bytes, the 'char a' member of an s structure will be followed by a three-
+    byte hole. This can happen even if the hole would be applied at the end of
+    a structure. But, there cannot be a hole at the beginning of a structure;
+    holes are only allowed between or after the last member. One consequence is
+    that a pointer to the first member of a structure is guaranteed to be the
+    same as a pointer to the entire structure (note that the two pointers won't
+    have the same type).
+a structure can have both a tag and a typedef name. In fact, the tag and the
+    typedef name can even be the same, although that's not required:
+
+typedef struct part {
+    int number;
+    char name[NAME_LEN+1];
+    int on_hand;
+} part;
+
+to share a structure type among several files
