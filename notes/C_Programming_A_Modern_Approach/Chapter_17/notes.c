@@ -646,7 +646,7 @@ struct node *search_list(struct node *list, int n)
 
 Deleting a node, like creating one, involves three steps:
     1. Locate the node to be deleted.
-    2. Alter the previous node so that it "bypasses" the deleted node.
+    2. Alter the previous node so that it bypasses the deleted node.
     3. Call free to reclaim the space occupied by the deleted node.
 Step 1 is harder than it looks. If we search the list in the obvious way, we'll
     end up with a pointer to the node to be deleted. Unfortunately, we won't be
@@ -692,6 +692,16 @@ struct node *delete_from_list(struct node *list, int n)
 
 
 // Ordered Lists
+
+
+When the nodes of a list are kept in order (sorted by the data stored inside the
+    nodes), we say that the list is ordered. Inserting a node into an ordered
+    list is more difficult, but searching is faster. The following program
+    illustrates both the increased difficulty of inserting a node and the faster
+    search.
+
+
+// PROGRAM: Maintaining a Parts Database (Revisited)
 
 
 
