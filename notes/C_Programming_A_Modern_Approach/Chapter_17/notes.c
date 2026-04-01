@@ -250,4 +250,237 @@ int read_line(char str[], int n)
 //              17.3 DYNAMICALLY ALLOCATED ARRAYS
 
 
+Although malloc can allocate space for an array, the calloc function is some-
+    times used instead, since it initializes the memory that it allocates. The
+    realloc function allows us to make an array grow or shrink as needed.
+
+
+// Using malloc to Allocate Storage for an Array
+
+
+We can use malloc to allocate space for an array in much the same way we used it
+    to allocate space for a string. The primary difference is that the elements
+    of an arbitrary array won't necessarily be one byte long, as they are in a
+    string. As a result, we'll need to use the sizeof operator to calculate the
+    amount of space required for each element.
+Suppose we're writing a program that needs an array of n integers, where n is to
+    be computed during the execution of the program. We'll first declare a
+    pointer variable:
+
+int *a;
+
+once the value of n is known, we'll have the program call malloc to allocate
+    space for the array:
+
+a = malloc(n * sizeof(int));
+
+! Always use sizeof when calculating how much space is needed for an array. !
+Once it points to a dynamically allocated block of memory, we can ignore the
+    fact that a is a pointer and use it instead as an array name. For example,
+    we could use the following loop to initialize the array that a points to:
+
+for (i = 0; i < n; i++)
+    a[i] = 0;
+
+We also have the option of using pointer arithmetic instead of subscripting to
+    access the elements of the array.
+
+
+// The calloc Function
+
+
+calloc has the following prototype in <stdlib.h>:
+
+void *calloc(size_t nmemb, size_t size);
+
+calloc allocates space for an array with nmemb elements, each of which is size
+    bytes long; it returns a null pointer if the requested space isn't avail-
+    able. After allocating the memory, calloc initializes it by setting all bits
+    to 0. For example, the following call of calloc allocates space for an array
+    of n integers, which are all guaranteed to be zero initially:
+
+a = calloc(n, sizeof(int));
+
+Since calloc clears the memory that it allocates but malloc doesn't, we may
+    occasionally want to use calloc to allocate space for an object other than
+    an array. By calling calloc with 1 as its first argument, we can allocate
+    space for a data item of any type:
+
+struct point { int x, y; } *p;
+
+p = calloc(1, sizeof(struct point));
+
+After this statement has been executed, p will point to a structure whose x and
+    y members have been set to zero.
+
+
+// The realloc Function
+
+
+realloc can resize an array if we later find that it's too large or too small.
+    This is the prototype for realloc that appears in <stdlib.h>:
+
+void *realloc(void *ptr, size_t size);
+
+When realloc is called, ptr must point to a memory block obtained by a previous
+    call of malloc, calloc, or realloc. The size parameter represents the new
+    size of the block, which may be larger or smaller than the original size.
+    Although realloc doesn't require that ptr point to memory that's being used
+    as an array, in practice it usually does.
+A few C standard rules concerning realloc:
+> When it expands a memory block, realloc doesn't initialize the bytes that are
+    added to the block.
+> If realloc can't enlarge the memory block as requested, it returns a null
+    pointer; the data in the old memory block is unchanged.
+> If realloc is called with a null pointer as its first argument, it behaves
+    like malloc.
+> If realloc is called with 0 as its second argument, it frees the memory block.
+The C standard stops short of specifying exactly how realloc works. When reduc-
+    ing a memory block, realloc should shrink the block in place, not moving the
+    data stored in the block. realloc will always attempt to expand a memory
+    block without moving it. If it's unable to enlarge the block, realloc will
+    allocate a new block elsewhere, then copy the contents of the old block in-
+    to the new one.
+! Once realloc has returned, be sure to update all pointers to the memory block,
+    since it's possible that realloc has moved the block elsewhere. !
+
+
+//              17.4 DEALLOCATING STORAGE
+
+
+malloc and the other memory allocation functions obtain memory blocks from a
+    storage pool known as the "heap." Calling these functions too often, or ask-
+    ing them for large blocks of memory, can exhaust the heap, cause the func-
+    tions to return a null pointer.
+To make matters worse, a program may allocate blocks of memory and then lose
+    track of them, wasting space. Consider the following example:
+
+p = malloc(...);
+q = malloc(...);
+p = q;
+
+After the first two statements have been executed, p points to one memory block,
+    while q points to another. After q is assigned to p, both variables now
+    point to the second memory block. There are no pointers to the first block,
+    so we'll never be able to use it again.
+A block of memory that's no longer accessible to a program is said to be
+    "garbage." A program that leaves garbage behind has a "memory leak." Some
+    languages provide a "garbage collector" that automatically locates and re-
+    cycles garbage, but C doesn't. Instead, each C program is responsible for
+    recycling its own garbage by calling the free function to release unneeded
+    memory.
+
+
+// The free Function
+
+
+The free function has the following prototype in <stdlib.h>:
+
+void free(void *ptr);
+
+Using free is easy; we simply pass it a pointer to a memory block that we no
+    longer need:
+
+p = malloc(...);
+q = malloc(...);
+free(p);
+p = q;
+
+! The argument to free must be a pointer that was previously returned by a mem-
+    ory allocation function (or it can be a null pointer, in which case the call
+    of free has no effect). Passing free a pointer to any other object (such as
+    a variable to array element) causes undefined behavior. !
+
+
+// The "Dangling Pointer" Problem
+
+
+! Although the free function allows us to reclaim memory that's no longer need-
+    ed, using it leads to a new problem: "dangling pointers." The call free(p)
+    deallocates the memory block that p points to, but doesn't change p itself.
+    Attempting to modify the memory that p points to is a serious error, since
+    our program no longer has control of that memory. This is undefined behav-
+    ior, which may cause a program crash. !
+
+
+//              17.5 LINKED LISTS
+
+
+A "linked list" consists of a chain of structures (called "nodes"), with each
+    node containing a pointer to the next node in the chain. The last node in
+    the list contains a null pointer.
+Previously, we've used an array whenever we've needed to store a collection of
+    data items; linked lists give us an alternative. A linked list is more flex-
+    ible than an array: we can easily insert and delete nodes in a linked list,
+    allowing the list to grow and shrink as needed. On the other hand, we lose
+    the 'random access' capability of an array. Any element of an array can be
+    accessed in the same amount of time; accessing a node in a linked list is
+    fast if the node is close to the beginning of the list, slow if it's near
+    the end.
+
+
+// Declaring a Node Type
+
+
+To set up a linked list, the first thing we'll need is a structure that repre-
+    sents a single node in the list. For simplicity, this node will contain
+    nothing but an integer (the node's data) and a pointer to the next node:
+
+struct node {
+    int value;
+    struct node *next;
+};
+
+notice that the next member has type struct node *, which means that it can
+    store a pointer to a node structure.
+When a structure has a member that points to the same kind of structure, as node
+    does, we're required to use a structure tag. Without the node tag, we'd have
+    no way to declare the type of next.
+We need a way to keep track of where the list begins. We can create a variable
+    that always points to the first node in the list:
+
+struct node *first = NULL;
+
+Setting first to NULL indicates that the list is initially empty.
+
+
+// Creating a Node
+
+
+As we construct a linked list, we'll want to create nodes one by one. Creating a
+    node requires three steps:
+1. Allocate memory for the node.
+2. Store data in the node.
+3. Insert the node into the list.
+When we create a node, we'll need a variable that can point to the node tempor-
+    arily, until it's been inserted into the list:
+
+struct node *new_node;
+
+We'll use malloc to allocate memory for the new node, saving the return value in
+    new_node:
+
+new_node = malloc(sizeof(struct node));
+
+! Be careful to give sizeof the name of the Type to be allocated, not the name
+    of a pointer to that type:
+
+new_node = malloc(sizeof(new_node));    // WRONG
+
+Doing this will cause malloc to only allocate enough memory for a pointer to a
+    node structure. !
+Next, we'll store data in the value member of the new node:
+
+(*new_node).value = 10;
+
+to access the value member of the node, we've applied the indirection operator *
+    (to reference the structure to which new_node points), then the selection
+    operator . (to select a member of the structure). The parentheses around
+    *new_node are mandatory because the . operator would otherwise take prece-
+    dence over the * operator.
+
+
+// The -> Operator
+
+
 
