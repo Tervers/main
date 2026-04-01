@@ -483,4 +483,46 @@ to access the value member of the node, we've applied the indirection operator *
 // The -> Operator
 
 
+Accessing a member of a structure using a pointer is so common that C provides a
+    special operator just for this purpose. Known as "right arrow selection", we
+    can use the -> operator as so:
 
+new_node->value = 10;
+
+instead of 
+
+(*new_node).value = 10;
+
+The -> operator is a combination of the * and . operators; it performs indirec-
+    tion on new_node to locate the structure that it points to, then selects the
+    value member of the structure.
+The -> operator produces an lvalue, so we can use it wherever an ordinary vari-
+    able would be allowed:
+
+scanf("%d", &new_node->value);
+
+Notice that the & operator is still required, even though new_node is a pointer.
+    Without the &, we'd be passing scanf the 'value' of new_node->value, which
+    has type int.
+
+
+// Inserting a Node at the Beginning of a Linked List
+
+
+One advantage of linked lists is that nodes can be added at any point in the
+    list: at the beginning, at the end, or anywhere in the middle. The beginning
+    is the easiest, so we start there.
+If new_node is pointing to the node to be inserted, and first is pointing to the
+    first node in the linked list, then we'll need two statements to insert the
+    node into the list. First, we'll modify the new node's next member to point
+    to the node that was previously at the beginning of the list:
+
+new_node->next = first;
+
+Second, we'll make first point to the new node:
+
+first = new_node;
+
+Will these statements work if the list is empty when we insert a node? Yes. To
+    make sure this is true, let's trace the process of inserting two nodes into
+    an empty list.
