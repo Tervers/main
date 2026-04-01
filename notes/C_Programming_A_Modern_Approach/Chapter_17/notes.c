@@ -525,4 +525,123 @@ first = new_node;
 
 Will these statements work if the list is empty when we insert a node? Yes. To
     make sure this is true, let's trace the process of inserting two nodes into
-    an empty list.
+    an empty list. We'll insert a node containing the number 10 first, followed
+    by a node containing 20.
+
+first = NULL;
+new_node = malloc(sizeof(struct node));
+new_node->value = 10;
+new_node->next = first;
+first = new_node;
+new_node = malloc(sizeof(struct node));
+new_node->value = 20;
+new_node->next = first;
+first = new_node;
+
+Inserting a node into a linked list is such a common operation that we'll prob-     ably want to write a function for that purpose:
+
+struct node *add_to_list(struct node *list, int n)
+{
+    struct node *new_node;
+
+    new_node = malloc(sizeof(struct node));
+    if (new_node == NULL) {
+        printf("Error: malloc failed in add_to_list\n");
+        exit(EXIT_FAILURE);
+    }
+    new_node->value = n;
+    new_node->next = list;
+    return new_node;
+}
+
+Note that add_to_list doesn't modify the list pointer. Instead, it returns a
+    pointer to the newly created node (now at the beginning of the list). When
+    we call add_to_list, we'll need to store its return value into first:
+
+first = add_to_list(first, 10);
+first = add_to_list(first, 20);
+
+These statements add nodes containing 10 and 20 to the list pointed to by first.
+    Getting add_to_list to update first directly, rather than return a new value
+    for first, turns out to be tricky (the next section, 17.6, discusses this).
+The following function uses add_to_list to create a linked list containing num-
+    bers entered by the user:
+
+struct node *read_numbers(void)
+{
+    struct node *first = NULL;
+    int n;
+
+    printf("Enter a series of integers (0 to terminate): ");
+    for (;;) {
+        scanf("%d", &n);
+        if (n == 0)
+            return first;
+        first = add_to_list(first n);
+    }
+}
+
+The numbers will be in reverse order within the list, since first always points
+    to the node containing the last number entered.
+
+
+// Searching a Linked List
+
+
+for (p = first; p != NULL; p = p->next)
+    ...
+
+The assignment p = p->next advances the p pointer from one node to the next.
+Let's write a function named search_list that searches a list (pointed to by the
+    parameter list) for an integer n. If it finds n, search_list will return a
+    pointer to the node containing n; otherwise, it will return a null pointer:
+
+struct node *search_list(struct node *list, int n)
+{
+    struct node *p;
+
+    for (p = list; p != NULL; p = p->next)
+        if (p->value == n)
+            return p;
+    return NULL;
+}
+
+We can eliminate the p variable and instead use list itself to keep track of the
+    current node:
+
+struct node *search_list(struct node *list, int n)
+{
+    for (; list != NULL; list = list->next)
+        if (list->value == n)
+            return list;
+    return NULL;
+}
+
+Since list is a copy of the original list pointer, there's no harm in changing
+    it within the function.
+Another alternative is to combine the list->value == n test with the list !=
+    NULL test:
+
+struct node *search_list(struct node *list, int n)
+{
+    for (; list != NULL && list->value != n; list = list->next)
+        ;
+    return list;
+}
+
+Since list is NULL if we reach the end of the list, returning list is correct
+    even if we don't find n. This version of search_list might be a bit clearer
+    if we used a while statement:
+
+struct node *search_list(struct node *list, int n)
+{
+    while (list != NULL && list->value != n)
+        list = list->next;
+    return list;
+}
+
+
+// Deleting a Node from a Linked List
+
+
+
