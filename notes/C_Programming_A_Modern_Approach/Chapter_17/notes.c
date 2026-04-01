@@ -644,4 +644,54 @@ struct node *search_list(struct node *list, int n)
 // Deleting a Node from a Linked List
 
 
+Deleting a node, like creating one, involves three steps:
+    1. Locate the node to be deleted.
+    2. Alter the previous node so that it "bypasses" the deleted node.
+    3. Call free to reclaim the space occupied by the deleted node.
+Step 1 is harder than it looks. If we search the list in the obvious way, we'll
+    end up with a pointer to the node to be deleted. Unfortunately, we won't be
+    able to perform step 2, which requires changing the previous node.
+One way to solve step 2 is by creating a 'trailing pointer': as we search the
+    list in step 1, we'll keep a pointer to the previous node (prev) as well as
+    a pointer to the current node (cur). If list points to the list to be
+    searched and n is the integer to be deleted, the following loop implements
+    step 1:
+
+for (cur = list, prev = NULL;
+    cur != NULL && cur->value != n;
+    prev = cur, cur = cur->next)
+;
+
+Now for step 3, we just need to release the memory occupied by the current node:
+
+free(cur);
+
+The following function, delete_from_list, uses the strategy that we've just out-
+    lined. when given a list and an integer n, the function deletes the first
+    node containing n. If no node contains n, delete_from_list does nothing. In
+    either case, the function returns a pointer to the list.
+
+struct node *delete_from_list(struct node *list, int n)
+{
+    struct node *cur, *prev;
+
+    for (cur = list, prev = NULL;
+         cur != NULL && cur->value != n;
+         prev = cur, cur = cur->next)
+        ;
+    if (cur == NULL)  // if end of list
+        return list;
+    if (prev == NULL)  // if n is the first node 
+        list = list->next;  // moves list to second node so its position as
+                            // first node can be removed
+    else
+        prev->next = cur->next;
+    free(cur);
+    return list;
+}
+
+
+// Ordered Lists
+
+
 
