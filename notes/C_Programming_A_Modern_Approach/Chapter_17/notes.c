@@ -851,4 +851,93 @@ Notice the use of free in the insert function. insert allocates memory for a
 //              17.6 POINTERS TO POINTERS
 
 
+In section 13.7, we came across the notion of a pointer to a pointer. In that
+    section, we used an array whose elements were of type char *; a pointer to
+    one of the array elements itself had type char **. The concept of pointers
+    to pointers also pops up frequently in the context of linked data stuct-
+    ures. In particular, when an argument to a function is a pointer variable,
+    we'll sometimes want the function to be able to modify the variable by mak-
+    ing it point somewhere else. Doing so requires the use of a pointer to a
+    pointer.
+Consider add_to_list in 17.5:
+
+struct node *add_to_list(struct node *list, int n)
+{
+    struct node *new_node;
+
+    new_node = malloc(sizeof(struct node));
+    if (new_node == NULL) {
+        printf("Error: malloc failed in add_to_list\n");
+        exit(EXIT_FAILURE);
+    }
+    new_node->value = n;
+    new_node->next = list;
+    return new_node;
+}
+
+Suppose we modify the function so that it assigns new_node to list instead of
+    returning new_node. In other words, lets remove the return statement and re-
+    place it by
+
+list = new_node;
+
+Unfortunately, this doesn't work. Suppose we call add_to_list in the following
+    way:
+
+add_to_list(first, 10);
+
+At the point of the call, first is copied into list (pointers, like all argu-
+    ments, are passed by value). The last line in the function changes the value
+    of list, making it point to the new node. This assignment doesn't affect
+    first, however.
+Getting add_to_list to modify first is possible, but it requires passing
+    add_to_list a pointer to first. Here's the correct version of the function:
+
+void *add_to_list(struct node **list, int n)
+{
+    struct node *new_node;
+
+    new_node = malloc(sizeof(struct node));
+    if (new_node == NULL) {
+        printf("Error: malloc failed in add_to_list\n");
+        exit(EXIT_FAILURE);
+    }
+    new_node->value = n;
+    new_node->next = *list;
+    *list = new_node;
+}
+
+When we call the new version of add_to_list, the first argument will be the
+    address of first:
+
+add_to_list(&first, 10);
+
+Since list is assigned the address of first, we can use *list as an alias for
+    first. In particular, assigning new_node to *list will modify first.
+
+
+//              17.7 POINTERS TO FUNCTIONS
+
+
+Functions occupy memory locations, so every function has an address.
+
+
+// Function Pointers as Arguments
+
+
+Suppose that we're writing a function named integrate that integrates a mathe-
+    matical function f between points a and b. We'd like to make integrate as
+    general as possible by passing it f as an argument. To achieve this, we'll
+    declare f to be a pointer to a function. Assuming that we want to integrate
+    functions that have a double parameter and return a double result, the
+    prototype for integrate will look like this:
+
+double integrate(double (*f)(double), double a, double b);
+
+The parentheses around *f indicate that f is a pointer to a function, not a
+    function that returns a pointer. It's also legal to declare f as though it
+    were a function:
+
+double integrate(double f(double), double a, double b);
+
 

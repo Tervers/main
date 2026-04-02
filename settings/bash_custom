@@ -137,3 +137,7 @@ addnotes() {
     git commit -m "added notes to C"$1"";
     git push;
 }
+
+notes() {
+    vim ~/main/notes/C_Programming_A_Modern_Approach/Chapter_"$1"/notes.c
+}
