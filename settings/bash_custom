@@ -132,10 +132,12 @@ alias kb3='sudo brightnessctl --device='asus::kbd_backlight' s 3'
 export PATH="$PATH:/home/tervs/.local/bin"
 
 addnotes() {
+    cd ~/main/;
     git add ~/main/notes/C_Programming_A_Modern_Approach/Chapter_"$1"/notes.c;
     git status;
     git commit -m "added notes to C"$1"";
     git push;
+    cd -
 }
 
 notes() {
