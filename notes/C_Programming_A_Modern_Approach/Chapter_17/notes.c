@@ -940,4 +940,33 @@ The parentheses around *f indicate that f is a pointer to a function, not a
 
 double integrate(double f(double), double a, double b);
 
+From the compiler's standpoint, this prototype is identical to the previous one.
+When we call integrate, we'll supply a function name as the first argument. For
+    example, the following call will integrate the sin(sine) function from 0 to
+    pi/2:
+
+result = integrate(sin, 0.0, PI / 2);
+
+Notice that there are no parentheses after sin. When a function name isn't
+    followed by parentheses, the C compiler produces a pointer to the function
+    instead of generating code for a function call. In our example, we're not
+    calling sin; instead, we're passing integrate a pointer to sin. This is sim-
+    ilar to how C handles arrays. If a is the name of an array, then a[i] repre-
+    sents one element of the array, while a by itself serves as a pointer to the
+    array. In a similar way, if f is a function, C treats f(x) as a call of the
+    function but f by itself as a pointer to the function.
+Within the body of integrate, we can call the function that f points to:
+
+y = (*f)(x);
+
+*f represents the function that f points to; x is the argument to the call. Thus    during the execution of integrate(sin, 0.0, PI / 2), each call of *f is
+    actually a call of sin. As an alternative to (*f)(x), C allows us to write
+    f(x) to call the function the f points to. Although f(x) looks more natural,
+    I'll stick with (*f)(x) as a reminder that f is a pointer to a function, not
+    a function name.
+
+
+// The qsort Function
+
+
 
