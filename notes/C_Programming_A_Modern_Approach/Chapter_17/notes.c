@@ -1185,4 +1185,92 @@ tabulate uses the ceil function, which is also in <math.h>. When given an argu-
 //              17.8 RESTRICTED POINTERS (C99)
 
 
+ADVANCED FEATURE.
+In C99, the keyword restrict may appear in the declaration of a pointer:
+
+int * restrict p;
+
+A pointer that's been declared using restrict is called a "restricted pointer."
+    The intent is that if p points to an object that is later modified, then
+    that onject is not accessed in any way other than through p (alternative
+    ways to access the object include having another pointer to the same object
+    or having p point to a named variable). Having more than one way to access
+    an object is often called "aliasing."
+Let's look at an example of the kind of behavior that restricted pointers are
+    supposed to discourage. Suppose that p and q have been declared as follows:
+
+int * restrict p;
+int * restrict q;
+
+Now suppose that p is made to point to a dynamically allocated block of memory:
+
+p = malloc(sizeof(int));
+
+(A similar situation would arise if p were assigned the address of a variable
+    or an array element.) Normally it would be legal to copy p into q and then
+    modify the integer through q:
+
+q = p;
+*q = 0;     // causes undefined behavior
+
+Because p is a restricted pointer, however, the effect of executing the state-
+    ment *q = 0; is undefined. By making p and q point to the same object, we
+    caused *p and *q to be aliases.
+If a restricted pointer p is declared as a local variable without the extern
+    storage class, restrict applies only to p when the block in which p is de-
+    clared is being executed (note that the body of a function is a block).
+    restrict can be used with function parameters of pointer type, in which case
+    it applies only when the function is executing. When restrict is applied to
+    a pointer variable with file scope, however, the restriction lasts for the
+    entire execution of the program.
+There are some situations in which an alias created from a restricted pointer is
+    legal. For example, a restricted pointer p can be legally copied into an-
+    other restricted pointer variable q, provided that p is local to a function
+    and q is defined inside a block nested within the function's body.
+To illustrate the use of restrict, let's look at the memcpy and memmove func-
+    tions, which belong to <string.h>. memcpy has the following prototype in
+    C99:
+
+void *memcpy(void * restrict s1, const void * restrict s2, size_t n);
+
+memcpy is similar to strcpy, except that it copies bytes from one object to an-
+    other. s2 points to the data to be copied, s1 points to the destination of
+    the copy, and n is the number of bytes to be copied. The use of restrict
+    with both s1 and s2 indicates that the source of the copy and the destina-
+    tion shouldn't overlap (it doesn't guarantee that they don't overlap...).
+In contrast, restrict doesn't appear in the prototype for memmove:
+
+void *memmove(void *s1, const void *s2, size_t n);
+
+memmove does the same thing as memcpy: it copies bytes from one place to an-
+    other. The difference is that memmove is guaranteed to work even if the
+    source and destination overlap. For example, we couse use memmove to shift
+    the elements of an array by one position:
+
+int a[100];
+...
+memmove(&a[0], &a[1], 99 * sizeof(int));
+
+Prior to C99, there was no way to document the difference between memcpy and
+    memmove. The prototypes for the two functions were nearly identical:
+
+void *memcpy(void *s1, const void *s2, size_t n);
+void *memmove(void *s1, const void *s2, size_t n);
+
+restrict can provide information to the compiler that may enable it to produce
+    more efficient code -- a process known as "optimization." (The register
+    storage class serves the same purpose.) Not every compiler attempts to opti-
+    mize programs, however, and the ones that do normally allow the programmer
+    to disable optimization. As a result, the C9 standard guarantees that
+    restrict has no effect on the behavior of a program that conforms to the
+    standard: if all uses of restrict are removed from such a program, it should
+    behave the same.
+Most programmers won't use restrict unless they're fine-tuning a program to
+    achieve the best possible performance.
+
+
+//              17.9 FLEXIBLE ARRAY MEMBERS (C99)
+
+
+ADVANCED FEATURE.
 
