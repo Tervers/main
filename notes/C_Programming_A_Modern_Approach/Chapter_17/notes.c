@@ -1073,4 +1073,116 @@ All compare_parts has to do is call strcmp, which conveniently returns a nega-
 // Other Uses of Function Pointers
 
 
+We can store function pointers in variables or use them as elements of an array
+    or as members of a structure or union. We can even write functions that re-
+    turn function pointers.
+An example of a variable that can store a pointer to a function:
+
+void (*pf)(int);
+
+pf can point to any function with an int parameter and a return type of void. If
+    f is sunch a function, we can make pf point to f in the following way:
+
+pf = f;
+
+Notice that there's no ampersand preceding f. Once pf points to f, we can call f
+    by writing either
+
+(*pf)(i);
+
+or
+
+pf(i);
+
+Arrays whose elements are function pointers have a surprising number of applica-
+    tions. For example, suppose that we're writing a program that displays a
+    menu of commands for the user to choose from. We can write functions that
+    implement these commands, then store pointers to the functions in an array:
+
+void (*file_cmd[])(void) = {new_cmd;
+                            open_cmd,
+                            close_cmd,
+                            close_all_cmd,
+                            save_cmd,
+                            save_as_cmd,
+                            save_all_cmd,
+                            print_cmd,
+                            exit_cmd
+                           };
+
+If the user selects command n, where n falls between 0 and 8, we can subscript
+    the file_cmd array and call the corresponding function:
+
+(*file_cmd[n])();   // or file_cmd[n]();
+
+We could get a similar effect with a switch statement. Using an array of func-
+    tion pointers gives us more flexibility, however, since the elements of the
+    array can be changed as the program is running.
+
+
+// Tabulating the Trigonometric Functions
+
+
+The following program prints tables showing the values of the cos, sin, and tan
+    functions (from <math.h>). The program is built around a function named
+    tabulate that, when passed a function pointer f, prints a table showing the
+    values of f.
+
+
+//              tabulate.c
+
+
+#include <math.h>
+#include <stdio.h>
+
+void tabulate(double (*f)(double), double first, double last, double incr);
+
+int main(void)
+{
+    double final, increment, initial;
+
+    printf("Enter initial value: ");
+    scanf("%lf", &initial);
+
+    printf("Enter final value: ");
+    scanf("%lf", &final);
+
+    printf("Enter increment: ");
+    scanf("%lf", &increment);
+
+    printf("\n      x        cos(x)"
+           "\n   -------    -------\n");
+    tabulate(cos, initial, final, increment);
+
+    printf("\n      x        sin(x)"
+           "\n   -------    -------\n");
+    tabulate(sin, initial, final, increment);
+
+    printf("\n      x        tan(x)"
+           "\n   -------    -------\n");
+    tabulate(tan, initial, final, increment);
+
+    return 0;
+}
+
+void tabulate(double (*f)(double), double first, double last, double incr)
+{
+    double x;
+    int i, num_intervals;
+
+    num_intervals = ceil((last - first) / incr);
+    for (i = 0; i <= num_intervals; i++) {
+        x = first + i * incr;
+        printf("%10.5f %10.5f\n", x, (*f)(x));
+    }
+}
+
+tabulate uses the ceil function, which is also in <math.h>. When given an argu-
+    ment of double type, ceil returns the smallest integer that's greater than
+    or equal to x.
+
+
+//              17.8 RESTRICTED POINTERS (C99)
+
+
 
