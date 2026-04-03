@@ -1273,4 +1273,74 @@ Most programmers won't use restrict unless they're fine-tuning a program to
 
 
 ADVANCED FEATURE.
+Every once in a while, we'll need to define a structure that contains an array
+    of an unknown size. For example, we might want to store strings in a form
+    that's different from the usual one. Normally, a string is an array of char-
+    acters, with a null character marking the end. However, there are advantages
+    to storing strings in other ways. One alternative is to store the length of
+    the string along with the string's characters (but with no null character).
+    The length and the characters could be stored in a structure such as this:
 
+struct vstring {
+    int len;
+    char chars[N];
+};
+
+Here N is a macro that represents the maximum length of a string. Using a fixed-
+    length array such as this is undesirable, however, because it forces us to
+    limit the length of the string, plus it wastes memory (since most strings
+    won't need all N characters in the array).
+C programmers have traditionally solved this problem by declaring the length of
+    chars to be 1 and then dynamically allocating each string:
+
+struct vstring {
+    int len;
+    char chars[1];
+};
+...
+// declaring a pointer variable named str and initializing it with malloc(...)
+struct vstring *str = malloc(sizeof(struct vstring) + n - 1);
+str->len = n;
+
+We're 'cheating' by allocating more memory than the structure is declared to
+    have (in this case, an extra n - 1 characters), and then using the memory to
+    store additional elements of the chars array. This technique has become so
+    common over the years that it has a name: the "struct hack."
+The struct hack isn't limited to character arrays; it has a variety of uses.
+    Over time, it has become popular enough to be supported by many compilers.
+    Some (including GCC) even allow the chars array to have zero length, which
+    makes this trick a little more explicit. Unfortunately, the C89 standard
+    doesn't guarantee that the struct hack will work, nor does it allow zero-
+    length arrays.
+In recognition of the struct hack's usefulness, C99 has a feature known as the
+    flexible array member that serves the same purpose. When the last member of
+    a structure is an array, its length may be omitted:
+
+struct vstring {
+    int len;
+    char chars[];   // flexible array member - C99 only
+};
+
+The length of the chars array isn't determined until memory is allocated for a
+    vstring structure, normally using a call of malloc:
+
+struct vstring *str = malloc(sizeof(struct vstring) + n);
+str->len = n;
+
+In this example, str points to a vstring structure in which the chars array
+    occupies n characters. The sizeof operator ignores the chars member when
+    computing the size of the structure. (A flexible array member is unusual in
+    that it takes up no space within a structure.)
+The flexible array member must appear last in the structure, and the structure
+    must have at least one other member. Copying a structure that contains a
+    flexible array member will copy the other members but not the flexible array
+    itself.
+A structure that contains a flexible array member is an "incomplete type." An
+    incomplete type is missing part of the information needed to determine how
+    much memory it requires. Incomplete types, which are discussed further in
+    one of the Q&A questions at the end of this chapter and in 19.3, are subject
+    to various restrictions. In particular, an incomplete type (and hence a
+    structure that contains a flexible array member) can't be a member of an-
+    other structure or an element of an array. However, an array may contain
+    pointers to structures that have a flexible array member; Programming Pro-
+    ject 7 at the end of this chapter is built around such an array.
