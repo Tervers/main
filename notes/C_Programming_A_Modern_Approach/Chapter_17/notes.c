@@ -961,12 +961,116 @@ y = (*f)(x);
 
 *f represents the function that f points to; x is the argument to the call. Thus    during the execution of integrate(sin, 0.0, PI / 2), each call of *f is
     actually a call of sin. As an alternative to (*f)(x), C allows us to write
-    f(x) to call the function the f points to. Although f(x) looks more natural,
-    I'll stick with (*f)(x) as a reminder that f is a pointer to a function, not
-    a function name.
+    f(x) to call the function that f points to. Although f(x) looks more
+    natural, I'll stick with (*f)(x) as a reminder that f is a pointer to a
+    function, not a function name.
 
 
 // The qsort Function
+
+
+Some of the most useful functions in the C library require a function pointer as
+    an argument. One of these is qsort, which belongs to <stdlib.h>. qsort is a
+    general purpose sorting function that's capable of sorting any array, based
+    on any criteria that we choose.
+Since the elements of the array that sorts may be of any type--even a structure
+    or union type--qsort must be told how to determine which of two array ele-
+    ments is 'smaller.' We'll provide this information to qsort by writing a
+    "comparison function." When given two pointers p and q to array elements,
+    the comparison function must return an integer that is Negative if *p is
+    'less that' *q, Zero if *p is 'equal to' *q, and Positive if *p is 'greater'
+    than *q. The terms 'less than,' 'equal to,' and 'greater than' are in quotes
+    because it's our responsibility to determine how *p and *q are compared.
+qsort has the following prototype:
+
+void qsort(void *base, size_t nmemb, size_t size,
+           int (*compar)(const void *, const void *));
+
+base must point to the first element in the array (if only a portion of the
+    array is to be sorted, we'll make base point to the first element in this
+    portion). In the simplest case, base is just the name of the array, nmemb is
+    the number of elements ot be sorted (not necessarily the number of elements
+    in the array. Size is the size of each array element, measured in bytes.
+    compar is a pointer to the comparison function. When qsort is called, it
+    sorts the array into ascending order, calling the comparison function when-
+    ever it needs to compare array elements.
+To sort the inventory array of Section 16.3, we'd use the following call of
+    qsort:
+
+qsort(inventory, num_parts, sizeof(struct part), compare_parts);
+
+Notice that the second argument is num_parts, not MAX_PARTS; we don't want to
+    sort the entire inventory array, just the portion in which parts are
+    currently stored. The last argument, compare_parts, is a function that com-
+    pares two part structures.
+qsort requires that the compare_parts function's parameters have type void *,
+    but we can't access the members of a part structure through a void * point-
+    er; we need a pointer of type struct part * instead. To solve the problem,
+    we'll have compare_parts assign its parameters, p and q, to variables of
+    type struct part *, thereby converting them to the desired type. Assuming
+    that we want to sort the inventory array into ascending order by part num-
+    ber, here's how the compare_parts function might look:
+
+int compare_parts(const void *p, const void *q)
+{
+    const struct part *p1 = p;
+    const struct part *q1 = q;
+
+    if (p1->number < q1->number)
+        return -1;
+    else if (p1->numer == q1->number)
+        return 0;
+    else
+        return 1;
+}
+
+The declarations of p1 and q1 include the word const to avoid getting a warning
+    from the compiler. Since p and q are const pointers (indicating that the ob-
+    jects to which they point should not be modified), they should be assigned
+    only to pointer variables that are also declared to be const.
+Although this version of compare_parts works, most C programmers would write the
+    function more concisely. First, notice that we can replace p1 and q1 by cast
+    expressions:
+
+int compare_parts(const void *p, const void *q)
+{
+    if (((struct part *) p)->number <
+        ((struct part *) q)->number)
+        return -1;
+    else if (((struct part *) p)->number ==
+             ((struct part *) q)->number)
+        return 0;
+    else
+        return 1;
+}
+
+The parentheses around ((struct part *) p) are necessary; without them, the com-
+    piler would try to cast p->number to type struct part *.
+We can make compare_parts even shorter by removing te if statements:
+
+int compare_parts(const void *p, const void *q)
+{
+    return ((struct part *) p)->number -
+           ((struct part *) q)->number;
+}
+
+! Note that subtracting two integers is potentially risky because of the danger
+    of overflow. We're assuming that part numbers are positive integers, so that
+    shouldn't happen here. !
+To sort the inventory array by part name instead of part number,we'd use the
+    following bersion of compare_parts:
+
+int compare_parts(const void *p, const void *q)
+{
+    return strcmp(((struct part *) p)->name,
+                  ((struct part *) q)->name);
+}
+
+All compare_parts has to do is call strcmp, which conveniently returns a nega-
+    tive, zero, or positive result.
+
+
+// Other Uses of Function Pointers
 
 
 
