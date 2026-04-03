@@ -135,7 +135,7 @@ addnotes() {
     cd ~/main/;
     git add ~/main/notes/C_Programming_A_Modern_Approach/Chapter_"$1"/notes.c;
     git status;
-    git commit -m "added notes to C"$1"";
+    git commit -m "added notes to C"$1"."$2"";
     git push;
     cd -
 }
