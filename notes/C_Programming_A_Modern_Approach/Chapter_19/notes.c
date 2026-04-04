@@ -40,4 +40,23 @@ Maintainability is the most critical advantage. Designing a program in a modular
 // Cohesion and Coupling
 
 
+Good module interfaces aren't random collections of declarations. In a well-
+    designed program, modules should have two properties:
+> "High cohesion": The elements of each module should be closely related to one
+    another; we might think of them as cooperating toward a common goal. High
+    cohesion makes modules easier to use and makes the entire program easier to
+    understand.
+> "Low coupling": Modules should be as independent of each other as possible.
+    Low coupling makes it easier to modify the program and reuse modules.
+In our calculator problem, the stack module is clearly cohesive: its functions
+    represent operations on a stack. There's little coupling in the program. The
+    calc.c file depends on stack.h (and stack.c depends on stack.h, of course),
+    but there are no other apparent dependencies.
 
+
+// Types of Modules
+
+
+Because of the need for high cohesion and low coupling, modules tend to fall in-
+    to certain typical categories:
+> A "data pool" is a collection of related variables and/or constants.
