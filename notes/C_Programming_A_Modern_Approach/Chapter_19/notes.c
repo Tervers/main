@@ -176,4 +176,213 @@ int pop(void)
 	return contents[--top];
 }
 
+The variables that make up the stack (contents and top) are both declared
+    static, since there's no reason for the rest of the program to access them
+    directly. terminate is also declared static. This function isn't part of the
+    module's interface; instead, it's designed for use solely within the imple-
+    mentation of the module.
+As a matter of style, some programmers use macros to indicate which functions
+    and variables are 'public' (accessible elsewhere in the program) and which
+    are 'private' (limited to a single file):
+
+#define PUBLIC   // empty
+#define PRIVATE static
+
+The reason for writing PRIVATE instead of static is that the latter has more
+    than one use in C; PRIVATE makes it clear that we're using it to enforce
+    information hiding:
+
+PRIVATE int contents[STACK_SIZE];
+PRIVATE int top = 0;
+
+PRIVATE void terminate(const char *message) {...}
+
+PUBLIC void make_empty(void) {...}
+
+PUBLIC bool is_empty(void) {...}
+    
+PUBLIC bool is_full(void) {...}
+
+PUBLIC void push(void) {...}
+
+PUBLIC int pop(void) {...}
+
+Now we'll switch to a linked-list implementation of the stack module:
+
+
+//              stack2.c
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "stack.h"
+
+struct node {
+    int data;
+    struct node *next;
+};
+
+static struct node *top = NULL;
+
+static void terminate(const char *message)
+{
+    printf("%s/n", message);
+    exit(EXIT_FAILURE);
+}
+
+void make_empty(void)
+{
+    while (!is_empty())
+        pop();
+}
+
+bool is_empty(void)
+{
+    return top == NULL;
+}
+
+bool is_full(void)
+{
+    return false;
+}
+
+void push(int i)
+{
+    struct node *new_node = malloc(sizeof(struct node));
+    if (new_node == NULL)
+        terminate("Error in push: stack is full.");
+
+    new_node->data = i;
+    new_node->next = top;
+    top = new_node;
+}
+
+int pop(void)
+{
+    struct node *old_top;
+    int i;
+
+    if (is_empty())
+        terminate("Error in pop: stack is empty.");
+
+    old_top = top;
+    i = top->data;
+    top = top->next;
+    free(old_top);
+    return i;
+}
+
+Note that the is_full function returns false every time it's called. A linked
+    list has no limit on its size, so the stack will never be full. It's poss-
+    ible (but not likely) that the program might run out of memory, which will
+    cause the push function to fail, but there's no easy way to test for that
+    condition in advance.
+Our stack example shows clearly the advantage of information hiding: it doesn't
+    matter whether we use stack1.c or stack2.c to implement the stack module.
+    Both versions match the module's interface, so we can switch from one to the
+    other without having to make changes elsewhere in the program.
+
+
+//              19.3 ABSTRACT DATA TYPES
+
+
+A module that serves as an abstract object, like the stack module in the prev-
+    ious section, has a serious disadvantage: there's no way to have multiple
+    instances of the object (more than one stack, in this case). To accomplish
+    this, we'll need to go a step further and create a new 'type.'
+Once we've defined a Stack type, we'll be able to have as many stacks as we
+    want:
+
+Stack s1, s2;
+
+make_empty(&s1);
+make_empty(&s2);
+push(&s1, 1);
+push(&s2, 2);
+if (!is_empty(&s1))
+    printf("%d\n", pop(&s1));   //prints "1"
+
+We're not really sure what s1 and s2 are (structures? pointers?), but it doesn't
+    matter. To clients, s1 and s2 are 'abstractions' that respond to certain op-
+    erations (make_empty, is_empty, is_full, push, and pop).
+Let's convert our stack.h header so that it provides a Stack type, where Stack
+    is a structure. Doing so will require adding a Stack (or Stack *) parameter
+    to each function. The header will now look like this:
+
+#define STACK_SIZE 100
+
+typedef struct {
+    int contents[STACK_SIZE];
+    int top;
+} Stack;
+
+void make_empty(Stack *s);
+bool is_empty(const Stack *s);
+bool is_full(const Stack *s);
+void push(Stack *s, int i);
+int pop(Stack *s);
+
+The stack parameters to make_empty, push, and pop need to be pointers, since
+    these functions modify the stack. The parameter to is_empty and is_full
+    doesn't need to be a pointer, but I've made it one anyway. Passing these
+    functions a Stack 'pointer' instead of a Stack 'value' is more efficient,
+    since the latter would result in a structure being copied.
+
+
+// Encapsulation
+
+
+Unfortunately, Stack isn't an 'abstract' data type, since stack.h reveals what
+    the Stack type really is. Nothing prevents clients from using a Stack vari-
+    able as a structure;
+
+Stack s1;
+
+s1.top = 0;
+s1.contents[top++] = 1;
+
+Providing access to the top and contents members allows clients to corrupt the
+    stack. Worse still, we won't be able to change the way stacks are stored
+    without having to assess the effect of the change on clients.
+What we need is a way to prevent clients from how the Stack type is represented.
+    C has only limited support for "encapsulating" types in this way. Newer C-
+    based languages, including C++, Java, and C#, are better equipped for this
+    purpose.
+
+
+// Incomplete Types
+
+
+The only tool that C gives us for encapsulation is the "incomplete type." (In-
+    complete types were mentioned in 17.9 and in 17's Q&A section). The C stan-
+    dard describes incomplete types as 'types that describe objects but lack in-
+    formation needed to determine their sizes.' For example, the declaration:
+
+struct t;    //incomplete declaration of t
+
+tells the compiler that t is a structure tag but doesn't describe the members of
+    the structure. As a result, the compiler doesn't have enough information to
+    determine the size of such a structure. The intent is that an incomplete
+    type will be completed elsewhere in the program.
+As long as a type remains incomplete, its uses are limited. Since the compiler
+    doesn't know the size of an incomplete type, it can't be used to declare a
+    variable:
+
+struct t s;   //WRONG
+
+However, it's perfectly legal to define a pointer type that references an incom-
+    plete type:
+
+typedef struct t *T;
+
+This type definition states that a variable of type T is a pointer to a struc-      ture with tag t. We can now perform other operations that are legel for
+    pointers. (The size of a pointer doesn't depend on what it points to, which
+    explains why C allows this behavior.) What we can't do, though, is apply the
+    -> operator to one of these variables, since the compiler knows nothing
+    about the members of a t structure.
+
+
+//              19.4 A STACK ABSTRACT DATA TYPE
+
+
 
