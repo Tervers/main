@@ -51,4 +51,56 @@ i >>= 2;       // i is now 13 (binary 0000000000001101
 ^ bitwise exclusisve or
 | bitwise inclusive or
 
-the ~ operator is unary; the integer promotions are 
+The ~ operator is unary; the integer promotions are performed on its operand.
+    The other operators are binary; the usual arithmetic conversions are per-
+    formed on their operands.
+The ~, &, and | operators perform Boolean operations on all bits in their oper-
+    ands. The ~ operator produces the complement of its operands, with zeros re-
+    placed by ones and ones replaced by zeros. The & operator performs a Boolean    'and' operation on all corresponding bits in its two operands. The ^ and |
+    operators are similar (both perform a Boolean 'or' operation on the bits in
+    their operands); however, ^ produces 0 whenever both operands have a 1 bit,
+    whereas | produces 1.
+! Don't confuse the bitwise operators & and | with the logical operators && and
+    ||. The bitwise operators sometimes produce the same results as the logical
+    operators, but they're not equivalent. !
+
+unsigned short i, j, k;
+
+i = 21;      // i is now    21 (binary 0000000000010101)
+j = 56;      // j is now    56 (binary 0000000000111000)
+k = ~i;      // k is now 65514 (binary 1111111111101010)
+k = i & j;   // k is now    16 (binary 0000000000010000)
+k = i ^ j;   // k is now    45 (binary 0000000000101101)
+k = i | j;   // k is now    65 (binary 0000000000111101)
+
+The value shown for ~i is based on the assumption that an unsigned short value
+    occupies 16 bits.
+The ~ operator deserves special mention, since we can use it to help make even
+    low-level programs more portable. Suppose that we need an integer whose bits
+    are all 1. The preferred technique is to write ~0, which doesn't depend on
+    the number of bits in an integer. Similarly, if we need an integer whose
+    bits are all 1 except for the last five, we could write ~0x1f.
+Each of the ~, &, ^, and | operators has a different precedence:
+
+Highest:    ~
+            &
+            ^
+Lowest:     |
+
+As a result, we can combine these operators in expressions without having to use
+    parentheses. For example, we could write i & ~j | k instead of (i & (~j)) |
+    k and i ^ j & ~k instead of i ^ (j & (~k)). Of course, it doesn't hurt to
+    use parentheses to avoid confusion.
+! The precedence of &, ^, and | is lower than the precedence of the relational
+    and equality operators. Consequently, statements like the following one
+    won't have the desired effect:
+
+if (status & 0x4000 != 0) ...
+
+Instead of testing whether status & 0x4000 isn't zero, this statement will eval-
+    uate 0x4000 != 0 (which has the value 1), then test whether the value of
+    status & 1 isn't zero. !
+The compound assignment operators &=, ^=, and |= correspond to the bitwise oper-
+    ators &, ^, and |:
+
+i = 21;
