@@ -103,4 +103,315 @@ Instead of testing whether status & 0x4000 isn't zero, this statement will eval-
 The compound assignment operators &=, ^=, and |= correspond to the bitwise oper-
     ators &, ^, and |:
 
-i = 21;
+i = 21;   // i is now 21 (binary 0000000000010101)
+j = 56;   // j is now 56 (binary 0000000000111000)
+i &= j;   // i is now 16 (binary 0000000000010000)
+i ^= j;   // i is now 40 (binary 0000000000101000)
+i |= j;   // i is now 56 (binary 0000000000111000)
+
+
+// Using the Bitwise Operators to Access Bits
+
+
+When we do low-level programming, we'll often need to store information as sin-
+    gle bits or collections of bits. In graphics programming, for example, we
+    may want to squeeze two or more pixels into a single byte. Using the bitwise
+    operators, we can extract or modify data that's stored in a small number of
+    bits.
+Let's assume that i is a 16-bit unsigned short variable:
+
+> Setting a bit: Suppose that we want to set bit 4 of i. (We'll assume that the
+    leftmost (or "most significant") bit is numbered 15 and the least signifi-
+    cant is numbered 0.) The easiest way to set bit 4 is to 'or' the value of i
+    with the constant 0x0010 (a "mask" that contains a 1 bit in position 4):
+
+i = 0x0000;     // i is now 0000000000000000
+i |= 0x0010;    // i is now 0000000000010000
+
+More generally, if the position of the bit is stored in the variable j, we can
+    use a shift operator to create the mask:
+
+i |= 1 << j;    // sets bit j
+
+For example, if j has the value 3, then 1 << j is 0x0008.
+
+> Clearing a bit: To clear bit 4 of i, we'd use a mask with a 0 bit in position
+    4 and 1 bits everywhere else:
+
+i = 0x00ff;     // i is now 0000000011111111
+i &= ~0x0010;   // i is now 0000000011101111
+
+// First, ~ changes 0x0010 from 0000000000010000 to 1111111111101111, then &
+// compares 1111111111101111 to
+//          0000000011111111, which results in
+//          0000000011101111
+
+Using the same idea, we can easily write a statement that clears a bit whose
+    position is stored in a variable:
+
+i &= ~(1 << j);   // clears bit j
+
+> Testing a bit: The following if statement tests whether bit 4 of i is set:
+
+if (i & 0x0010) ...   // tests bit 4
+
+To test whether bit j is set, we'd use the following statement:
+
+if (i & 1 << j) ...   // tests bit j
+
+To make working with bits easier, we'll often give them names. For example, sup-
+    pose that we want bits 0, 1, and 2 of a number to correspond to the colors
+    blue, green, and red, respectively. First, we d3efine names that represent
+    the three bit positions:
+
+#define BLUE 1
+#define GREEN 2
+#define RED 4
+
+Setting, clearing, and testing the BLUE bit would be done as follows:
+
+i |= BLUE;          // sets BLUE bit
+i &= ~BLUE;         // clears BLUE bit
+if (i & BLUE) ...   // tests BLUE bit
+
+It's also easy to set, clear, or test several bits at a time:
+
+i |= BLUE | GREEN;          // sets BLUE and GREEN bits
+i &= ~(BLUE | GREEN);       // clears BLUE and GREEN bits
+if (i & (BLUE | GREEN)) ... // tests BLUE and GREEN bits
+
+The if statement tests whether either the BLUE bit or the GREEN bit is set.
+
+
+// Using the Bitwise Operators to Access Bit-Fields
+
+
+Dealing with a group of several consecutive bits (a bit-field) is slightly more
+    complicated than working with single bits. Here are examples of the two most
+    common bit-field operations:
+
+> Modifying a bit-field: requires a bitwise 'and' (to clear the bit-field), fol-
+    lowed by a bitwise 'or' (to store new bits in the bit-field). The following
+    statement shows how we might store the binary value 101 in bits 4-6 of the
+    variable i:
+
+i = i & ~0x0070 | 0x0050;       // stores 101 in bits 4-6
+// 0x0070 = 0000000001110000, 0x0050 = 0000000001010000
+// ~0x0070 occurs first, result then & compares to i, finally | 0x0050 happens
+// at the end, producing 0000000001010000
+
+The & operator clears bits 4-6 of i; the | operator then sets bits 6 and 4. No-
+    tice that i |=0x0050 by itself wouldn't always work: it would set bits 6 and
+    4 but not change bit 5. To generalize the example a little, let's assume
+    that the variable j contains the value to be stored in bits 4-6 of i. We'll
+    need to shift j into position before performing the bitwise 'or':
+
+i = (i & ~0x0070) | (j << 4);
+
+The | operator has lower precedence than & and <<, so we can drop the parenthe-
+    ses if we wish:
+
+i = i & ~0x0070 | j << 4;
+
+> Retrieving a bit-field: When the bit-field is at the right end of a number (in
+    the least significant bits), fetching its value is easy:
+
+j = i & 0x0007;         // retrieves bits 0-2
+
+If the bit-field isn't at the right end of i, then we can first shift the bit-
+    field to the end before extracting the field using the & operator:
+
+j = (i >> 4) & 0x0007;  // retrieves bits 4-6
+
+
+// PROGRAM: XOR Encryption
+
+
+One of the simplest ways to encrypt data is to exclusive-or (XOR) each character    with a secret key. Suppose that the key is the & character. If we XOR this
+    key with the character z, we'll get the \ character (assuming that we're us-
+    ing the ASCII character set):
+
+    00100110 (ASCII &)
+XOR 01111010 (ASCII z)
+    01011100 (ASCII \)
+
+To decrypt a message, we just apply the same algorithm. In other words, by en-
+    crypting an already-encrypted message, we'll recover the original message.
+    If we XOR the & character with the \ character, for example, we'll get the
+    original character, z:
+
+    00100110 (ASCII &)
+XOR 01011100 (ASCII \)
+    01111010 (ASCII z)
+
+The following program, xor.c, encrypts a message by XORing each character with
+    the & character. The original message can be entered by the user or read
+    from a file using input redirection; the encrypted message can be viewed on
+    the screen or saved in a file using output redirection.
+To encrypt a file (say, named msg), you can save it the encrypted message as so:
+
+xor <msg >newmsg
+
+To recover the original message, we'd use the command
+
+xor <newmsg
+
+Our program won't change some characters, like digits. XORing these characters
+    with & would produce invisible control characters, which could cause prob-
+    lems with some operating systems. Chapter 22 shows how to avoid these prob-
+    lems, but for now, we'll use the isprint function to make sure that both the
+    original character and the new (encrypted) character are printing characters    (i.e. not control characters). If either character fails this test, we'll
+    have the program write the original character instead of the new character.
+
+
+//              xor.c
+
+
+#include <ctype.h>
+#include <stdio.h>
+
+#define KEY '&'
+
+int main(void)
+{
+    int orig_char, new_char;
+
+    while ((orig_char = getchar()) != EOF) {
+        new_char = orig_char ^ KEY;
+        if (isprint(orig_char) && isprint(new_char))
+            putchar(new_char);
+        else
+            putchar(orig_char);
+    }
+    return 0;
+}
+
+
+//              20.2 BIT-FIELDS IN STRUCTURES
+
+
+Although the techniques of 20.1 allow us to work with bit-fields, these techni-
+    ques can be tricky to use and potentially confusing. As an alternative, we
+    can declare structures whose members represent bit-fields.
+As an example, let's look at how MS-DOS stores the date at which a file was
+    created or last modified. Since days, months, and years are small numbers,
+    storing them as normal integers would waste space. Instead, DOS allocates
+    only 16 bits for a date, with 5 bits for the day, 4 bits for the month, and
+    7 bits for the year.
+
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+|             |       |         |
+     year       month     day
+
+Using bit-fields, we can define a C structure with an identical layout:
+
+struct file_date {
+    unsigned int day: 5;
+    unsigned int month: 4;
+    unsigned int year: 7;
+};
+
+The number after each member indicates its length in bits. Since the members all
+    have the same type, we can condense the declaration if we want:
+
+struct file_date {
+    unsigned int day: 5, month: 4, year: 7;
+};
+
+The type of a bit-field must be either int, unsigned int, or signed int. Using
+    int is ambiguous; some compilers treat the field's high-order bit as a sign
+    bit, but others don't
+! For portability, declare bit-fields to be either unsigned int or signed int. !
+In C99, bit-fields may also have type _Bool. C99 compilers may allow additional
+    bit-field types.
+We can use a bit-field just like any other member of a structure:
+
+struct file_date fd;
+
+fd.day = 28;
+fd.month = 12;
+fd.year = 8;        // represents 1988
+
+Note that the year member is stored relative to 1980 (the year the world began,
+    according to Microsoft). After these assignments, the fd variable will have
+    the following appearance:
+
+ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+|0 0 0 1 0 0 0|1 1 0 0|1 1 1 0 0|
+
+We could have used the bitwise operators to accomplish the same effect; using
+    these operators might even make the program a little faster. However, having
+    a readable program is usually more important than saving a few microseconds.
+Bit-fields do have one restriction that doesn't apply to other members of a
+    structure. Since bit-fields don't have addresses in the usual sense, C
+    doesn't allow us to apply the address operator (&) to a bit-field. Because
+    of this rule, functions such as scanf can't store data directly in a bit-
+    field:
+
+scanf("%d", &fd.day);   // WRONG
+
+Of course, we can always use scanf to read input into an ordinary variable and
+    then assign it to fd.day.
+
+
+// How Bit-Fields Are Stored
+
+
+The rules concerning how the compiler handles bit-fields depend on the notion of
+    'storage units.' The size of a storage unit is implementation-defined; typi-
+    cal values are 8 bits, 16 bits, and 32 bits. As it processes a structure de-
+    claration, the compiler packs bit-fields one by one into a storage unit,
+    with no gaps between the fields, until there's not enough room for the next
+    field. At that point, some compilers skip to the beginning of the next stor-
+    age unit, while others split the bit-field across storage units. (Which one
+    occurs is implementation-defined.) The order in which bit-fields are allo-
+    cated (left to right or right to left) is also implementation-defined.
+Our file_date example assumes that storage units are 16 bits long. (An 8-bit
+    storage unit would also be acceptable, provided that the compiler splits the
+    month field across two storage units.) We also assume that bit-fields are
+    allocated from right to left (with the first bit-field occupying the low-
+    order bits).
+C allows us to omit the name of any bit-field. Unnamed bit-fields are useful as
+    'padding' to ensure that other bit fields are properly positioned. Consider
+    the time associated with a DOS file, which is stored in the following way:
+
+struct file_time {
+    unsigned int seconds: 5;
+    unsigned int minutes: 6;
+    unsigned in hours: 5;
+};
+
+(You may be wondering how it's possible to store the seconds -- a number between
+    0 and 59 -- in a field with only 5 bits. Well, DOS cheats: it divides the
+    number of seconds by 2, so the seconds member is actually between 0 and 29.)
+    If we're not interested in the seconds field, we can leave out its name:
+
+struct file_time {
+    unsigned int : 5;       // not used
+    unsigned int minutes: 6;
+    unsigned int hours: 5;
+};
+
+The remaining bit-fields will be aligned as if the seconds field were still pre-
+    sent.
+Another trick that we can use to control the storage of bit-fields is to specify
+    0 as the length of an unnamed bit-field:
+
+struct s {
+    unsigned int a: 4;
+    unsigned int : 0;
+    unsigned int b: 8;
+};
+
+A 0-length bit-field is a signal to the compiler to align the following bit-
+    field at the beginning of a storage unit. If storage units are 8 bits long,
+    the compiler will allocate 4 bits for the a member, skip 4 bits to the next
+    storage unit, and then allocate 8 bits for b. If storage units are 16 bits
+    long, the compiler will allocate 4 bits for a, skip 12 bits, and then allo-
+    cate 8 bits for b.
+
+
+//              20.3 OTHER LOW-LEVEL TECHNIQUES
+
+
+
