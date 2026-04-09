@@ -472,5 +472,92 @@ When writing low-level applications for x86-based computers, we may need varia-
     the other containing members that match the 8-bit registers. We then create
     a union that encloses the two structures:
 
+union {
+    struct {
+        WORD ax, bx, cx, dx;
+    } word;
+    struct {
+        BYTE al, ah, bl, bh, cl, ch, dl, dh;
+    } byte;
+} regs;
+
+The members of the word structure will be overlaid with the members of the byte
+    structure; for example, ax will occupy the same memory as al and ah. An ex-
+    ample of how the regs union might be used:
+
+regs.byte.ah = 0x12;
+regs.byte.al = 0x34;
+printf("AX: %hx\n", regs.word.ax);
+
+Changing ah and al affects ax, so the output will be
+
+AX: 1234
+
+Note that the byte structure lists al before ah, even though the AL register is
+    the 'low' half of AX and AH is the 'high' half. Here's the reason. When a
+    data item consists of more than one byte, there are two logical ways to
+    store it in memory: with the bytes in the 'natural' order (with the leftmost
+    byte stored first) or with the bytes in reverse order (the leftmost byte is
+    stored last). The first alternative is called "big-endian"; the second is
+    known as "little-endian." C doesn't require a specific byte ordering, since
+    that depends on the CPU on which a program will be executed. Some CPUs use
+    the big-endian approach and some use the little-endian approach. What does
+    this have to do with the byte structure? It turns out that x86 processors
+    assume that data is stored in little-endian order, so the first byte of
+    regs.word.ax is the low byte.
+We don't normally need to worry about byte ordering. However, programs that deal
+    with memory at a low level must be aware of the order in which bytes are
+    stored (as the regs example illustrates). It's also relevant when working
+    with files that contain non-character data.
+
+! Be careful when using unions to provide multiple views of data. Data that is
+    valid in its original format may be invalid when viewed as a different type,
+    causing unexpected problems. !
+
+
+// Using Pointers as Addresses
+
+
+An address often has the same number of bits as an integer (or long integer).
+    Creating a pointer that represents a specific address is easy: we just cast
+    an integer into  apointer. For example, here's how we might store the ad-
+    dress 1000 (hex) in a pointer variable:
+
+BYTE *p;
+
+p = (BYTE *) 0x1000;    // p contains address 0x1000
+
+
+// PROGRAM: Viewing Memory Locations
+
+
+This next program allows the user to view segments of computer memory; it relies
+    on C's willingness to allow an integer to be used as a pointer. Most CPUs
+    execute programs in 'protected mode,' however, which means that a program
+    can access only those portions of memory that belong to the program. This
+    prevents a program from accessing (or changing) memory that belongs to an-
+    other application or to the operating system itself. As a result, we'll only
+    be able to use our program to view areas of memory that have been allocated
+    for use by the program itself. Going outside these regions will cause the
+    program to crash.
+The viewmemory.c program begins by displaying the address of its own main func-
+    tion as well as the address of one of its variables. The program next
+    prompts the user to enter an address (in the form of a hexadecimal integer)
+    plus the number of bytes to view. The program then displays a block of bytes
+    of the chosen length, starting at the specified address.
+Bytes are displayed in groups of 10 (except for the last group, which may have
+    fewer than 10 bytes). The address of a group of bytes is displayed at the
+    beginning of a line, followed by the bytes in the group (displayed as hexa-
+    decimal numbers); followed by the same bytes displayed as characters (just
+    in case the bytes happen to represent characters, as some of them may). Only
+    printing characters (as determined by the isprint function) will be display-
+    ed; other characters will be shown as periods.
+We'll assume that int values are stored using 32 bits and that addresses are al-
+    so 32 bits long. Addresses are displayed in hexadecimal, as is customary.
+
+
+//              viewmemory.c
+
+
 
 
