@@ -141,5 +141,8 @@ addnotes() {
 }
 
 notes() {
+    cd ~/main/;
+    git pull;
+    cd;
     vim ~/main/notes/C_Programming_A_Modern_Approach/Chapter_"$1"/notes.c
 }
