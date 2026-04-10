@@ -603,4 +603,54 @@ int main(void)
     return 0;
 }
 
+-----------------------------------------------------------
+The condition i < 10 && i < n causes the loops to execture 10 times or n times,
+    whichever is smaller. There's also a for statement that compensates for any
+    missing bytes in the last group by displaying three spaces for each missing
+    byte. That way, the characters that follow the last group of bytes will a-
+    lign properly with the chracter groups on previous lines.
+The %X conversion specifier is similar to %x, the difference is that %X displays
+    the hexadecimal digits as upper-case letters while %x displays them in lower    case.
 
+
+// The volatile Type Qualifier
+
+
+On some computers, certain memory locations are "volatile"; the value stored at
+    such a location can change as a program is running, even though the program
+    itself isn't storing new values there. For example, some memory locations
+    might hold data coming directly from input devices.
+The volatile type qualifier allows us to inform the compiler if any of the data
+    used in a program is volatile. volatile typically appears in the declaration
+    of a pointer variable that will point to a volatile memory location:
+
+volatile BYTE *p;   // p will point to a volatile byte
+
+Suppose p points to a memory location that contains the most recent character
+    typed at the user's keyboard. This location is volatile: its value changes
+    each time the user enters a character. We might use the following loop to
+    obtain characters from the keyboard and store them in a buffer array:
+
+while ('buffer not full') {
+    'wait for input';
+    buffer[i] = *p;
+    if (buffer[i++] == '\n')
+        break;
+}
+
+A sophisticated compiler might notice that this loop changes neither p nor *p,
+    so it could optimize the program by altering it so that *p is fetched just
+    once:
+
+'store *p in a register;
+while ('buffer not full') {
+    'wait for input';
+    buffer[i] = 'value stored in register';
+    if (buffer[i++] == '\n')
+        break;
+}
+
+The optimized program will fill the buffer with many copies of the same charac-
+    ter -- not exactly what we had in mind. Declaring that p points to volatile
+    data avoids this problem by telling the compiler that *p must be fetched
+    from memory each time it's needed.
