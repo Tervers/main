@@ -679,4 +679,102 @@ L                 a, A, e, E, f, F, g, G  long double
     ! Be careful to follow the rules described here; the effect of using an in-
     valid conversion specification is undefined. !
 
+Conversion
+Specifier                           Meaning
+  d, i      Converts an int value to decimal form
+o, u, x, X  Converts an unsigned int vale to base 8 (o), base 10 (u), or base 16
+            (x, X). x displays the hexadecimal digits a-f in lower case; X dis-
+            plays them in upper case.
 
+
+//              22.4 CHARACTER I/O
+
+
+You'll notice that the functions in this section treat characters as values of
+    type int, not char. One reason is that input functions indicate an end-of-
+    file (or error) condition by returning EOF, which is a negative integer con-
+    stant.
+
+
+// Output Functions
+
+
+int fputc(int c, FILE *stream);
+int putc(int c, FILE *stream);
+int putchar(int c);
+
+putchar writes one character to the stdout stream:
+
+putchar(ch);
+
+fputc and putc are more general versions of putchar that write a character to an
+    arbitrary stream:
+
+fputc(ch, fp);
+putc(ch, fp);       // both write ch to fp
+
+Although put and fputc do the same thing, putc is usually implemented as a macro
+    (as well as a function), while fputc is implemented only as a function.
+    putchar itself is usually a macro defined in the following way:
+
+#define putchar(c) putc((c), stdout)
+
+It may seem odd that the library provides both putc and fputc. But, as we saw in
+    14.3, macros have several potential problems. The C standard allows the putc
+    macro to evaluate the stream argument more than once, which fputc isn't per-
+    mitted to do. Although programmers usually prefer putc, which gives a faster
+    program, fputc is available as an alternative.
+If a write error occurs, all three functions set the rror indicator for the
+    stream and return EOF; otherwise, they return the character that was writ-
+    ten.
+
+
+// Input Functions
+
+
+int fgetc(FILE *stream);
+int getc(FILE *stream);
+int getchar(void);
+int ungetc(int c, FILE *stream);
+
+getchar reads a character from the stdin stream:
+
+ch = getchar();
+
+fgetc and getc read a character from an arbitrary stream:
+
+ch = fgetc(fp);
+ch = getc(fp);      // both read a character from fp
+
+All three functions treat the character as an unsigned char value (which is then
+    converted to int type before it's returned). As a result, they never return
+    a negative value other than EOF.
+The relationship between getc and fgetc is similar to that between putc and
+    fputc. getc is usually implemented as a macro (as well as a function), while
+    fgetc is implemented only as a function. getchar is normally a macro as
+    well:
+
+#define getchar () getc(stdin)
+
+For reading characters from a file, programmers usually prefer getc over fgetc.
+    Since getc is normally available in macro form, it tends to be faster. fgetc
+    can be used as a backup if getc isn't appropriate. (The standard allows the
+    getc macro to evaluate its argument more than once, which may be a problem.)
+One of the most common uses of fgetc, getc, and getchar is to read characters
+    from a file, one by one, until end-of-file occurs. It's customary to use the
+    following while loop for that purpose:
+
+while ((ch = getc(fp)) != EOF) {
+    ...
+}
+
+    After reading a character from the file associated with fp and storing it in
+    the variable ch (which must be of type int), the while test compared ch with
+    EOF. If ch isn't equal to EOF, we're not at the end of the file yet, so the
+    body of the loop is executed. If ch is equal to EOF, the loop terminates.
+! Always store the return value of fgetc, getc, or getchar in an int variable,
+    not a char variable. Testing a char variable against EOF may give the wrong
+    result. !
+There's one other character input function, ungetc, which 'pushes back' a char-
+    acter read from a stream and clears the stream's end-of-file indicator. This
+    capability
