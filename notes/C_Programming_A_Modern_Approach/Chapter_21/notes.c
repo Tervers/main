@@ -179,4 +179,142 @@ The preprocessor can't spot a parameterized macro unless its name is followed by
         on both sequential and random-access files.
 
 <stdlib.h> General Utilities (26.2)
+    A 'catchall' header for functions that don't fit into any of the other head-
+        ers. The functions in this header can convert strings to numbers, gener-
+        ate pseudo-random numbers, perform memory management tasks, communicate
+        with the operating system, do searching and sorting, and perform conver-
+        sions between multibyte characters and wide characters.
 
+<string.h> String Handling (23.6)
+    Provides functions that perform string operations, including coping, concat-
+        enation, comparison, and searching, as well as functions that operate on
+        arbitrary blocks of memory.
+
+<time.h> Date and Time (26.3)
+    Provides functions for determining the time (and date), manipulating times,
+        and formatting times for display.
+
+
+//              21.3 C99 LIBRARY CHANGES
+
+
+<complex.h> Complex Arithmetic (27.4)
+    Defines the complex and I macros, which are useful when working with complex
+        numbers. Also provides functions for performing mathematical operations
+        on complex numbers.
+
+<fenv.h> Floating-Point Environment (27.6)
+    Provides access to floating-point status flags and control modes. For exam-
+        ple, a program might test a flag to see if overflow occurred during a
+        floating-point operating or set a control mode to specify how rounding
+        should be done.
+
+<inttypes.h> Format Conversion of Integer Types (27.2)
+    Defines macros that can be used in format strings for input/output of the
+        integer types declared in <stdint.h>. Also provides functions for work-
+        ing with greatest-width integers.
+
+<iso646.h> Alternative Spellings (25.3)
+    Defines macros that represent certain operators (the ones containing the
+        characters &, |, ~, !, and ^). These macros are useful for writing pro-
+        grams in an environment where these characters might not be part of the
+        local character set.
+
+<stdbool.h> Boolean Type and Values (21.5)
+    Defines the bool, true, and false macros, as well as a macro that can be
+        used to test whether these macros have been defined.
+
+<stdint.h> Integer Types (27.1)
+    Declares integer types with specified widths and defines related macros
+        (such as macros that specify the maximum and minimum values of each
+        type). Also defines parameterized macros that construct integer con-
+        stants with specific types.
+
+<tgmath.h> Type-generic Math (27.5)
+    In C99, there are multiple versions of many math functions in the <math.h>
+        and <complex.h> headers. The 'type-generic' macros in <tgmath.h> can de-
+        tect the types of the arguments passed to them and substitute a call of
+        the appropriate <math.h> or <complex.h> function.
+
+<wchar.h> Extended Multibyte and Wide-Character Utilities (25.5)
+    Providese functions for wide-character input/output and wide string manipu-
+        lation.
+
+<wctype.h> Wide-Character Classification and Mapping Utilities (25.6)
+    The wide-character version of <ctype.h>. Provides functions for classifying
+        and changing the case of wide characters.
+
+
+//              21.4 THE <stddef.h> HEADER: COMMON DEFINITIONS
+
+
+The <stddef.h> header provides definitions of frequently used types and macros;
+    it doesn't declare any functions. The types are:
+
+> ptrdiff_t: The type of the result when two pointers are subtracted.
+> size_t: The type returned by the sizeof operator.
+> wchar_t: A type large enough to represent all possible characters in all sup-
+    ported locales.
+
+All three are names for integer types; ptrdiff_t must be a signed type, while
+    size_t must be an unsigned type. See 25.2 for more information about
+    wchar_t.
+The <stddef.h> header also defines two macros. One of them is NULL, which repre-
+    sents the null pointer. The other macro, offsetof, requires two arguments:
+    type (a structure type) and member-designator (a member of the structure).
+    offsetof computes the number of bytes between the beginning of the struc-
+    ture and the specified member:
+
+struct s {
+    char a;
+    int b[2];
+    float c;
+};
+
+The value of offsetof(struct s, a) must be 0; C guarantees that the first member
+    of a structure has the same address as the structure itself. We can't say
+    for sure what the offsets of b and c are. One possibility is that offsetof
+    (struct s, b) is 1 (since a is one byte long), and offsetof(struct s, c) is
+    9 (assuming 32-bit integers). However, some compilers leave 'holes' -- un-
+    used bytes -- in structures, which can affect the value produced by
+    offsetof. If a compiler should leave a three-byte hole after a, for example,
+    then the offsets of b and c would be 4 and 12, respectively. But that's the
+    beauty of offsetof: it produces the correct offsets for any compiler, ena-
+    bling us to write portable programs.
+Suppose that we want to save the first two members of an s structure in a file,
+    ignoring the c member. Instead of having the fwrite function write sizeof
+    (struct s) bytes, which would save the entire structure, we'll tell it to
+    write only offsetof(struct s, c) bytes.
+Some of the types and macros defined in <stddef.h> appear in other headers as
+    well. (The NULL macro, for example, is also defined in <locale.h>,
+    <stdio.h>, <stdlib.h>, <string.h>, and <time.h>, as well as in the C99 head-
+    er <wchar.h>.) As a result, few programs need to include <stddef.h>.
+
+
+//              21.5 <stdbool.h> HEADER (C99): BOOLEAN TYPE AND VALUES
+
+
+The <stdbool.h> header defines four macros:
+
+> bool (defined to be _Bool)
+> true (defined to be 1)
+> false (defined to be 0)
+> __bool_true_false_are_defined(defined to be 1)
+
+We've seen many examples of how bool, true, and false are used. Potential uses
+    of the __bool_true_false_are_defined macro are more limited. A program could
+    use a preprocessing directive (such as #if or #ifdef) to test this macro be-
+    fore attempting to define its own version of bool, true, or false.
+
+
+//              Q & A
+
+
+Q: 14.3 described some disadvantages of using parameterized macros in place of
+    functions. In light of these problems, isn't it dangerous to provide a macro
+    substitute for a standard library function?
+
+A: According to the C standard, a parameterized macro that substitutes for a
+    library function must be 'fully protected' by parentheses and must evaluate
+    its arguments exactly once. These rules avoid most of the problems mentioned
+    in 14.3.
