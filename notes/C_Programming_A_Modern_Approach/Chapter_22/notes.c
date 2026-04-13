@@ -777,4 +777,272 @@ while ((ch = getc(fp)) != EOF) {
     result. !
 There's one other character input function, ungetc, which 'pushes back' a char-
     acter read from a stream and clears the stream's end-of-file indicator. This
-    capability
+    capability can be handy if we need a 'lookahead' character during input. For
+    instance, to read a series of digits, stopping at the first nondigit, we
+    could write
+
+while (isdigit(ch = getc(fp))) {
+    ...
+}
+ungetc(ch, fp);     // pushes back last chracter read
+
+The number of characters that can be push back by consecutive calls of ungetc--
+    with no intervening read operations-- depends on the implementation and the
+    type of stream invlolved; only the first call is guaranteed to succeed.
+    Calling a file-positioning function (fseek, fsetpos, or rewind) causes the
+    pushed-back characters to be lost.
+ungetc returns the character it was asked to push back. However, it returns EOF
+    if an attempt is made to push back EOF or to push back more characters than
+    the implementation allows.
+
+
+// PROGRAM: Copying a File
+
+
+The following programmakes a copy of a file. The names of the original file and
+    the new file will be specified on the command line when the program is exe-
+    cuted. For example, to copy the file f1.c to f2.c, we'd use the command
+
+fcopy f1.c f2.c
+
+fcopy will issue an error message if there aren't exactly two file names on the
+    command line or if either file can't be opened.
+
+
+//              fcopy.c
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char *argv[])
+{
+    FILE *source_fp, *dest_fp;
+    int ch;
+
+    if (argc != 3) {
+        fprintf(stderr, "usage: fcopy source dest\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if ((source_fp = fopen(argv[1], "rb")) == NULL) {
+        fprintf(stderr, "Can't open %s\n", argv[1]);
+        exit(EXIT_FAILURE);
+    }
+
+    if ((dest_fp = fopen(argv[2], "wb")) == NULL) {
+        fprintf(stderr, "Can't open %s\n", argv[2]);
+        exit(EXIT_FAILURE);
+    }
+
+    while ((ch = getc(source_fp)) != EOF)
+        putc(ch, dest_fp);
+
+    fclose(source_fp);
+    fclose(dest_fp);
+    return 0;
+}
+
+-----------------------------------------------------------
+Using "rb" and "wb" as the file modes enables fcopy to copy both text and binary
+    files. If we used "r" and "w" instead, the program wouldn't necessarily be
+    able to copy binary files.
+
+
+//              22.5 LINE I/O
+
+
+We'll now turn to library functions that read and write lines. These functions
+    are used mostly with text streams, although it's legal to use them with bi-
+    nary streams as well.
+
+
+// Output Functions
+
+
+int fputs(const char * restrict s, FILE * restrict stream);
+int puts(const char *s);
+
+We ecnountered the puts functions in 13.3; it writes a string of characters to
+    stdout:
+
+puts("Hi, There!");     // writes to stdout
+
+After it writes the characters in the string, puts always adds a new-line char-
+    acter.
+fputs is a more general version of puts. Its second argument indicates the
+    stream to which the output should be written:
+
+fputs("Hi, there!", fp);    // writes to fp
+
+Unlike puts, the fputs function doesn't write a new-line character unless one is
+    present in the string.
+Both functions return EOF if a write error occurs; otherwise, they return a non-
+    negative number.
+
+
+// Input Functions
+
+
+char *fgets(char * restrict s, int n, FILE * restrict stream);
+char *gets(char *s);
+
+The gets function, which we first saw in 13.3, reads a line of input from stdin:
+
+gets(str);  // reads a line from stdin
+
+gets reads characters one by one, storing them in the array pointed to by str,
+     until it reads a new-line character (which it discards).
+fgets is a more general version of gets that can read from any stream. fgets is
+    also safer than gets, since it limits the number of characters that it will
+    store. Here's how we might use fgets, assuming that str is the name of a
+    character array:
+
+fgets(str, sizeof(str), fp);    // reads a line from fp
+
+    This call will cause fgets to read characters until it reaches the first
+    new-line character or sizeof(str) - 1 characters have been read, whichever
+    happens first. If it reads the new-line character, fgets stores it along
+    with the other characters. (Thus, gets never! stores the new-line character,
+    but fgets sometimes! does.)
+Both gets and fgets return a null pointer if a read error occurs or they reach
+    the end of the input stream before storing any characters. (As usual, we can
+    call feof or ferror to determine which situation occurred.) Otherwise, both
+    return their first arrgument, which points to the array in which the input
+    was store. As you'd expect, both functions store a null character at the end
+    of the string.
+Using fgets instead of gets is suggested in most situations. With gets, there's
+    always the possibility of stepping outside the bounds of the receiving
+    array, so it's safe to use only when the string being read is guaranteed! to
+    fit into the array. When there's no guarantee (and there usually isn't),
+    it's much safer to use fgets. Note that fgets will read from the standard
+    input if passed stdin as its third argument:
+
+fgets(str, sizeof(str), stdin);
+
+
+//              22.6 BLOCK I/O
+
+
+size_t fread(void * restrict ptr, size_t size,
+             size_t nmemb, FILE * restrict stream);
+size_t fwrite(const void * restrict ptr, size_t size,
+              size_t nmemb, FILE * restrict stream);
+
+The fread and fwrite functions allow a program to read and write large blocks of
+    data in a single step. fread and fwrite are used primarily with binary
+    streams, although--with care--it's possible to use them with text streams as
+    well.
+fwrite is designed to copy an array from memory to a stream. The first argument
+    in a call of fwrite is the array's address, the second argument is the size
+    of each array element (in bytes), and the third argument is the number of
+    elements to write. The fourth argument is a file pointer, indicating where
+    the data should be written. To write the entire contents of the array a, for
+    instance, we could use the following call of fwrite:
+
+fwrite(a, sizeof(a[0]), sizeof(a) / sizeof(a[0], fp);
+
+    There's no rule that we have to write the entire array; we could just as
+    easily write any portion of it. fwrite returns the number of elements (not!
+    bytes) actually written. This number will be less than the third argument if
+    a write error occurs.
+fread will read the elements of an array from a stream. fread's arguments are
+    similar to fwrite's: the array's address, the size of each element (in
+    bytes), the number of elements to read, and a file pointer. To read the con-
+    tents of a file into the array a, we might use the following call of fread:
+
+n = fread(a, sizeof(a[0]), sizeof(a) / sizeof(a[0]), fp);
+
+    It's important to check fread's return value, which indicates the actual
+    number of elements (not! bytes) read. This number should equal the third
+    argument unless the end of the input file was reached or a read error
+    occurred. The feof and ferror functions can be used to determine the reason
+    for any shortage.
+! Be careful not to confuse fread's second and third arguments. Consider the
+    following call of fread:
+
+fread(a, 1, 100, fp)
+
+We're asking fread to read 100 one-byte elements, so it will return a value be-
+    tween 0 and 100. The following call asks fread to read one block of 100
+    bytes:
+
+fread(a, 100, 1, fp)
+
+fread's return value in this case will be either 0 or 1. !
+fwrite is convenient for a program that needs to store data in a file before
+    terminating. Later, the program (or another program, for that matter) can
+    use fread to read the data back into memory. Despite appearances, the data
+    doesn't need to be in array form; fread and fwrite work just as well with
+    variables of all kinds. Structures, in particular, can be read by fread or
+    written by fwrite. To write a structure variable s to a file, for instance,
+    we could use the following call of fwrite:
+
+fwrite(&s, sizeof(s), 1, fp);
+
+! Be careful when using fwrite to write out structures that contain pointer
+    values; these values aren't guaranteed to be valid when read back in. !
+
+
+//              22.7 FILE POSITIONING
+
+
+int fgetpos(FILE * restrict stream, fpos_t * restrict pos);
+int fseek(FILE *stream, long int offset, int whence);
+int fsetpos(FILE *stream, const fpos_t *pos);
+long int ftell(FILE *stream);
+void rewind(FILE *stream);
+
+Every stream has an associated "file position." When a file is opened, the file
+    position is set at the beginning of the file. (If the file is opened in
+    'append' mode, however, the initial file position may be at the beginning or
+    end of the file, depending on implementation.) Then, when a read or write
+    operation is performed, the file position advances automatically, allowing
+    us to move through the file in a sequential manner.
+Although sequential access is fine for many applications, some programs need the
+    ability to jump around within a file, accessing some data here and other
+    data there. If a file contains a series of records, for example, we might
+    want to jump directly to a particular record and read it or update it.
+    <stdio.h> supports this form of access by providing five functions that al-
+    low a program to determine the current file position or to change it.
+The fseek function changes the file position associated with the first argument
+    (a file pointer). The third argument specifies whether the new position is
+    to be calculated with respect to the beginning of the file, the current pos-
+    ition, or the end of the file. <stdio.h> defines three macros from this pur-
+    pose:
+
+SEEK_SET    Beginning of file
+SEEK_CUR    Current file position
+SEEK_END    End of file
+
+The second argument is a (possibly negative) byte count. To move to the beginn-
+    ing of a file, for example, the seek direction would be SEEK_SET and the
+    byute count would be zero:
+
+fseek(fp, 0L, SEEK_SET);    // moves to the beginning of a file
+
+    To move to the end of a file, the seek direction would be SEEK_END:
+
+fseek(fp, 0L, SEEK_END);    // moves to end of file
+
+    To move back 10 bytes, the seek direction would be SEEK_CUR and the byte
+    count would be -10:
+
+fseek(fp, -10L, SEEK_CUR);  // moves back 10 bytes
+
+    Note that the byte count has type long int, so I've used 0L and -10L as arg-
+    uments. (0 and -10 would also work, of course, since arguments are converted
+    to the proper type automatically.)
+Normally, fseek returns zero. If an error occurs (the requested position doesn't
+    exist, for example), fseek returns a nonzero value.
+The file-positioning functions are best used with binary streams, by the way. C
+    doesn't prohibit programs from using them with text streams, but care is re-
+    quired because of operating system differences. fseek in particular is sen-
+    sitive to whether a stream is text or binary. For text streams, either (1)
+    offset (fseek's second argument) must be zero or (2) whence (its third argu-
+    ment) must be SEEK_SET and offset a value obtained by a previous call of
+    ftell. (In other words, we can only use fseek to move to the beginning or
+    end of a text stream or to return to a place that was visited previously.)
+    For binary streams, fseek isn't required to support calls in which whence is
+    SEEK_END.
+
