@@ -1144,4 +1144,94 @@ Calling rewind is critical, by the way. After the fread call, the file position
 //              22.8 STRING I/O
 
 
+The functions in this section have nothing to do with streams or files. Instead,
+    they allow us to read and write data using a string as though it were a
+    stream. the sprintf and snprintf functions write characters into a string in
+    the same way they would be written to a stream; the sscanf function reads
+    characters from a string as though it were reading from a stream. These
+    functions, which closely resemble printf and scanf, are quite useful.
+    sprintf and snprintf give us access to printf's formatting capabilities
+    without actually having to write data to a stream. Similarly, sscanf gives
+    us access to scanf's powerful pattern-matching capabilities.
+Three similar functions (vsprintf, vsnprintf, and vsscanf) also belong to
+    <stdio.h>. However, these functions rely on the va_list type, which is de-
+    clared in <stdarg.h>. <stdarg.h> is covered in 26.1.
+
+
+// Output Functions
+
+
+int sprintf(char * restrict s, const char * restrict format, ...);
+int snprintf(char * restrict s, size_t n, const char * restrict format, ...);
+
+sprintf is similar to printf and fprintf, except that it writes output into a
+    character array (pointed to by its first argument) instead of a stream.
+    sprintf's second argument is a format string identical to that used by
+    printf fprintf. For example, the call
+
+sprintf(date, "%d/%d/%d", 9, 20, 2010);
+
+    will write "9/20/2010" into date. When it's finished writing into a string,
+    sprintf adds a null character and returns the number of chracters stored
+    (not counting the null character). If an encoding error occurs (a wide char-
+    acter could not be translated into a valid multibyte character), sprintf re-
+    turns a negative value.
+sprintf has a variety of uses. For example, we might occasionally want to format
+    data for output without actually writing it. We can use sprintf to do the
+    formatting, then save the result in a string until it's time to produce out-
+    put. sprintf is also convenient for converting numbers to character form.
+The snprintf function is the same as sprintf, except for the additional parame-
+    ter n. No more than n - 1 characters will be written to the string, not
+    counting the terminating null chracter, which is always written unless n is
+    zero. (Equivalently, we could say that snprintf writes at most n characters
+    to the string, the last of which is a null character.) For example, the call
+
+snprintf(name, 13, "%s, %s", "Einstein", "Albert");
+
+    will write "Einstein, Al" into name.
+snprintf returns the number of characters that would have been written (not in-
+    cluding the null character) had there been no length restriction. If an en-
+    coding error occurs, snprintf returns a negative number. To see if snprintf
+    had room to write all the requested characters, we can test whether its re-
+    turn value was nonnegative and less than n.
+
+
+// Input Functions
+
+
+int sscanf(const char * restrict s, const char * restrict format, ...);
+
+The sscanf function is similar to scanf and fscanf, except that it reads from a
+    string (pointed to by its first argument) instead of reading from a stream.
+    sscanf's second argument is a format string identical to that used by scanf
+    and fscanf.
+sscanf is handy for extracting data froma string that was read by another input
+    function. For example, we might use fgets to obtain a line of input, then
+    pass the line to sscanf for further processing:
+
+fgets(str, sizeof(str), stdin);     // reads a line of input
+sscanf(str, "%d%d", &i, &j);        // extracts two integers
+
+One advantage of using sscanf instead of scanf or fscanf is that we can examine
+    an input line as many times as needed, not just once, making it easier to
+    recognize alternate input forms and to recover from errors. Consider the
+    problem of reading a date that's written either in the form month/day/year
+    or month-day-year. Assuming that str contains a line of input, we can ex-
+    tract the month, day, and year as follows:
+
+if (sscanf(str, "%d /%d /%d", &month, &day, &year) == 3)
+    printf("Month: %d, day: %d, year: %d\n", month, day, year);
+else if (sscanf(str, "%d -%d -%d", &month, &day, &year) == 3)
+    printf("Month: %d, day: %d, year: %d\n", month, day, year);
+else
+    printf("Date not in the proper form\n");
+
+Like the scanf and fscanf functions, sscanf returns the number of data items
+    successfully read and stored. sscanf returns EOF if it reaches the end of
+    the string (marked by a null character) before finding the first item.
+
+
+//              Q&A
+
+
 
