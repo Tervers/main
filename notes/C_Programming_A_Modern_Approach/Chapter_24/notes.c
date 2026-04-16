@@ -301,3 +301,29 @@ C99 changes the signal-handling process in a few minor ways. When a signal is
 
 
 int raise(int sig);
+
+Although signals usually arise from run-time errors or external events, it's oc-
+    casionally handy for a program to cause a signal to occur. The raise func-
+    tion does just that. The argument to raise specifies the code for the desi-
+    red signal:
+
+raise(SIGABRT);
+
+    The return value of raise can be used to test whether the call was success-
+    ful: zero indicates success, while a nonzero value indicates failure.
+
+
+// PROGRAM: Testing Signals
+
+
+The following program illustrates the use of signals. FIrst, it installs a cus-
+    tom handler for the SIGINT signal (carefully saving the original handler),
+    then calls raise_sig to raise that signal. Next, it installs SIG_IGN as the
+    handler for the SIGINT signal and calls raise_sig again. Finally, it rein-
+    stalls the original handler for SIGINT, then calls raise_sig one last time.
+
+
+//              tsignal.c
+
+
+
