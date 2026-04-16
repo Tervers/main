@@ -323,7 +323,233 @@ The following program illustrates the use of signals. FIrst, it installs a cus-
     stalls the original handler for SIGINT, then calls raise_sig one last time.
 
 
+--------------------------------------------------------------------------------
 //              tsignal.c
 
 
+#include <signal.h>
+#include <stdio.h>
 
+void handler(int sig);
+void raise_sig(void);
+
+int main(void)
+{
+    void (*orig_handler)(int);
+    printf("Installing handler for signal $d\n" SIGINT);
+    orig_handler = signal(SIGINT, handler);
+    raise_sig();
+
+    printf("Changing handler to SIG_IGN\n");
+    signal(SIGINT, SIG_IGN);
+    raise_sig();
+
+    printf("Restoring original handler\n");
+    signal(SIGINT, orig_handler);
+    raise_sig();
+
+    printf("Program terminates normally\n");
+    return 0;
+}
+
+void handler(int sig)
+{
+    printf("Handler called for signal %d\n", sig);
+}
+
+void raise_sig(void)
+{
+    raise(SIGINT);
+}
+
+--------------------------------------------------------------------------------
+
+Incidentally, the call of raise doesn't need to be in a separate function. I de-
+    fined raise_sig simply to make a point: regardless of where a signal is
+    raised--whether it's in main or in some other function--it will be caught by
+    the most recently installed handler for that signal.
+The outpput of this program can vary somewhat. Here's one possibility:
+
+Installing handler for signal 2
+Handler called for signal 2
+Changing handler to SIG_IGN
+Restoring original handler
+
+    From this output, we see that our implementation defines SIGINT to be 2 and
+    that the original handler for SIGINT must have been SIG_DFL. (If it had been
+    SIG_IGN, we'd also see the message 'Program terminates normally.') Finally,
+    we observe that SIG_DFL caused the program to terminate without displaying
+    an error message.
+
+
+//              24.4 THE <setjmp.h> HEADER: NONLOCAL JUMPS
+
+
+int setjmp(jmp_buf env);
+void longjmp(jmp_buf env, int val);
+
+Normally, a function returns to the point at which it was called. We can't use a
+    goto statement to make it go elsewhere, because a goto can jump only to a
+    label within the same function. The <setjmp.h> header, however, makes it
+    possible for one function to jump directly to another function without re-
+    turning.
+The most important items in <setjmp.h> are the setjmp macro and the longjmp
+    function. setjmp 'marks' a place in a program; longjmp can then be used to
+    return to that place later. Although this powerful mechanism has a variety
+    of potential applications, it's used primarily for error handling.
+To mark the target of a future jump, we call setjmp, passing it a variable of
+    type jmp_buf (declared in <setjmp.h>. setjmp stores the current 'environ-
+    ment' (including a pointer to the location of the setjmp itself) in the var-    iable for later use in a call of longjmp; it then returns zero.
+Returning to the point of the setjmp is done by calling longjmp, passing it the
+    same jmp_buf variable that we passed to setjmp. After restoring the environ-
+    ment represented by the jmp_buf variable, longjmp will--here's where it gets
+    tricky--return from the setjmp call. setjmp's return value this time is val,
+    the second argument to longjmp. (If val is 0, setjmp returns 1.)
+! Be sure that the argument to longjmp was previously initialized by a call of
+    setjmp. It's also important that the function containing the original call
+    of setjmp must not have returned prior to the call of longjmp. If either re-
+    striction is violated, calling longjmp results in undefined behavior. (The
+    program will probably crash.) !
+To summerize, setjmp returns zero the first time it's called; later, longjmp
+    transfers control back to the original call of setjmp, which this time re-
+    turns a nonzero value.
+
+
+// PROGRAM: Testing setjmp/longjmp
+
+
+The following program uses setjmp to mark a place in main; the function f2 later
+    returns to that place by calling longjmp.
+
+
+--------------------------------------------------------------------------------
+//              tsetjmp.c
+
+
+#include <setjmp.h>
+#include <stdio.h>
+
+jmp_buf env;
+
+void f1(void);
+void f2(void);
+
+int main(void)
+{
+    if (setjmp(env) == 0)
+        printf("setjmp returned 0\n");
+    else {
+        printf("Program terminates: longjmp called\n");
+        return 0;
+    }
+
+    f1();
+    printf("Program terminates normally\n");
+    return 0;
+}
+
+void f1(void)
+{
+    printf("f1 begins\n");
+    f2();
+    printf("f1 returns\n");
+}
+
+void f2(void)
+{
+    printf("f2 begins\n");
+    longjmp(env, 1);
+    printf("f2 returns\n");
+}
+
+--------------------------------------------------------------------------------
+
+The output of this program will be
+
+setjmp returned 0
+f1 begins
+f2 begins
+Program terminates: longjmp called
+
+    The original call of setjmp returns 0, main calls f1. Next, f1 calls f2,
+    which uses longjmp to transfer control back to main instead of returning to
+    f1. When longjmp is executed, control goes back to the setjmp call. This
+    time, setjmp returns 1 (the value specified in the longjmp call).
+
+
+//              Q&A
+
+
+Q: A signal handler shouldn't call a standard library function, but you said
+    there were exceptions to this rule. What are they?
+
+A: A signal handler is allowed to call the signal function, provided that the
+    first argument is the signal that it's handling at the moment. This proviso
+    is important, becauses it allows a signal handler to reinstall itself. In
+    C99, a signal handler may also call the abort function or the _Exit func-
+    tion.
+
+Q: A signal handler normally isn't supposed to access variagbles with static
+    storage duration. What's the exception to this rule?
+
+A: The answer involvves a type named sig_atomic_t that's declared in the
+    <signal.h> header. sig_atomic_t is an integer type that can be accessed 'as
+    an atomic entity,' according to the C standard. In other words, the CPU can
+    fetch a sig_atomic_t value from memory or store one in memory with a single
+    machine instruction, rather than using two or more machine instructions.
+    sig_atomic_t is often defined to be int, since most CPUs can load or store
+    an int value in one instruction.
+That brings us to the exception to the rule that a signal-handling function
+    isn't supposed to access static variables. The C standard allows a signal
+    handler to store a value in a sig_atomic_t variable--even one with static
+    storage duration--provided that it's declared volatile. To see the reason
+    for this arcane rule, consider what might happen if a signal handler were to
+    modify a static variable that's of a type that's wider than sig_atomic_t. If
+    the program had fetched part of the variable from memory just before the
+    signal occurred, then completed the fetch after the signal is handled, it
+    could end up with a garbage value. sig_atomic_t variables can be fetched in
+    a single step, so this problem doesn't occur. Declaring the variable to be
+    volatile warns the compiler that the variable's value may change at any
+    time. (A signal could suddenly be raised, invoking a signal handler that
+    modifies the variable.)
+
+Q: tsignal.c calls printf from inside a signal handler. Isn't that illegal?
+
+A: A signal-handling function invoked as a result of raise or abort may call
+    library functions. tsignal.c uses raise to invoke the signal handler.
+
+Q: How can setjmp modify the argument that's passed to it? I thought that C al-
+    ways passed arguments by value.
+
+A: The C standard says that jmp_buf must be an array type, so setjmp is actually
+    being passed a pointer.
+
+Q: What are the restrictions on how to use setjmp?
+
+A: According to the C standard, there are only two legal ways to use setjmp:
+> As the expression in an expression statement (possibly cast to void).
+> As part of the controlling expression in an if, switch, while, do or for
+    statement. The entire controlling expression must have one of the following
+    forms, where constexpr is an integer constant expression and op is a rela-
+    tional or equality operator:
+
+setjmp(...)
+!setjmp(...)
+constexpr op setjmp(...)
+setjmp(...) op constexpr
+
+    Using setjmp in any other way causes undefined behavior.
+
+Q: After a program has executed a call of longjmp, what are the values of the
+    variables in the program?
+
+A: Most variables retain the values they had at the time of the longjmp. How-
+    ever, an automatic variable inside the function that contains the setjmp has
+    an indeterminate value unless it was declared volatile or it hasn't been
+    modified since the setjmp was performed.
+
+Q: Is it legal to call longjmp inside a signal handler?
+
+A: Yes, provided that the signal handler wasn't invoked because of a signal
+    raised during the execution of a signal handler. (C99 removes this restric-
+    tion.)
