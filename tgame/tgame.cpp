@@ -1,5 +1,6 @@
 /*****
-Possibly don't use single word variables; makes it difficult to parse through multiword var's that share same word
+Possibly don't use single word variables; makes it difficult to parse through
+multiword variables that share same word
 *****/
 
 
@@ -17,7 +18,7 @@ const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
 //Key press surface constants
-enum KeyPressMedia   //enum is the alternative to defines: '#define KEY_PRESS_SURFACE_DEFAULT 0', '#define KEY_PRESS_SURFACE_UP 1'
+enum KeyPressMedia
 {
 	KEY_PRESS_MEDIA_DEFAULT,
 	KEY_PRESS_MEDIA_UP,

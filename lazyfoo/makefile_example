@@ -1,6 +1,6 @@
 #Copyright Notice:
-#The files within this zip file are copyrighted by Lazy Foo' Productions (2004-2014)
-#and may not be redistributed without written permission.
+#The files within this zip file are copyrighted by Lazy Foo' Productions
+#(2004-2014) and may not be redistributed without written permission.
 
 #OBJS specifies which files to compile as part of the project
 OBJS = 01_hello_SDL.cpp
@@ -10,7 +10,7 @@ CC = g++
 
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
-# -I usr/include/SDL2/ directory of SDL.h
+# -I usr/include/SDL2/ directory of SDL.h (or change #include to <SDL2/SDL.h>
 SDL.h = /usr/include/SDL2/
 COMPILER_FLAGS = -w -I $(SDL.h)
 
