@@ -1,4 +1,4 @@
-//loadMedia functions share gTexture, needs fixing
+//loadViewportMedia functions share gTexture, needs fixing
 
 /** Includes **/
 
@@ -17,6 +17,43 @@
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
+
+
+
+/** Classes **/
+
+
+//Texture wrapper class
+class LTexture
+{
+	public:
+		//Initializes variables
+		LTexture();
+
+		//Deallocates memory
+		~LTexture();
+
+		//Loads image at specified path
+		bool loadFromFile( std::string path );
+
+		//Deallocates texture
+		void free();
+
+		//Renders texture at given point
+		void render( int x, int y );
+
+		//Gets image dimensions
+		int getWidth();
+		int getHeight();
+
+	private:
+		//The actual hardware texture
+		SDL_Texture* mTexture;
+
+		//Image dimensions
+		int mWidth;
+		int mHeight;
+};
 
 
 
@@ -58,8 +95,109 @@ SDL_Surface* gScreenSurface = NULL;
 //The image we will load and show on the screen
 SDL_Surface* gStrechedSurface = NULL;
 
-//Current displayed texture
-SDL_Texture* gTexture = NULL;
+//07 texture
+SDL_Texture* gTextureTexture = NULL;
+
+//09 texture
+SDL_Texture* gViewportTexture = NULL;
+
+
+
+/** Class Variables **/
+
+
+LTexture gFooTexture;
+LTexture gBackgroundTexture;
+
+
+
+/** Class Functions **/
+
+
+LTexture::LTexture()
+{
+	//Initialize
+	mTexture = NULL;
+	mWidth = 0;
+	mHeight = 0;
+}
+
+LTexture::~LTexture()
+{
+	//Deallocate
+	free();
+}
+
+bool LTexture::loadFromFile( std::string path )
+{
+	//Get rid of preexisting texture
+	free();
+
+	//The final texture
+	SDL_Texture* newTexture = NULL;
+
+	//Load image at specified path
+	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
+	if( loadedSurface == NULL )
+	{
+		printf( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
+	}
+	else
+	{
+		//Color key image
+		SDL_SetColorKey( loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 0, 0xFF, 0xFF ) );
+
+		//Create texture from surface pixels
+		newTexture = SDL_CreateTextureFromSurface( gRenderer, loadedSurface );
+		if( newTexture == NULL )
+		{
+			printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
+		}
+		else
+		{
+			//Get image dimensions
+			mWidth = loadedSurface->w;
+			mHeight = loadedSurface->h;
+		}
+
+		//Get rid of old loaded surface
+		SDL_FreeSurface( loadedSurface );
+	}
+
+	//Return success
+	mTexture = newTexture;
+	return mTexture != NULL;
+}
+
+void LTexture::free()
+{
+	//Free texture if it exists
+	if( mTexture != NULL )
+	{
+		SDL_DestroyTexture( mTexture );
+		mTexture = NULL;
+		mWidth = 0;
+		mHeight = 0;
+	}
+}
+
+void LTexture::render( int x, int y )
+{
+	//Set rendering space and render to screen
+	SDL_Rect renderQuad = { x, y, mWidth / 2, mHeight / 2 };
+	SDL_RenderCopy( gRenderer, mTexture, NULL, &renderQuad );
+}
+
+int LTexture::getWidth()
+{
+	return mWidth;
+}
+
+int LTexture::getHeight()
+{
+	return mHeight;
+}
+
 
 
 /** Function Declarations **/
@@ -136,27 +274,6 @@ bool loadSurfaceMedia()
 	return success;
 }
 
-void close()
-{
-	//Free loaded image
-	SDL_DestroyTexture( gTexture );
-	gTexture = NULL;
-	
-	//Deallocate surface
-	SDL_FreeSurface( gStrechedSurface );
-	gStrechedSurface = NULL;
-
-	//Destroy window
-	SDL_DestroyRenderer( gRenderer );
-	SDL_DestroyWindow( gWindow );
-	gWindow = NULL;
-	gRenderer = NULL;
-
-	//Quit SDL subsystems
-	IMG_Quit();
-	SDL_Quit();
-}
-
 SDL_Texture* loadTexture( std::string path )
 {
 	//The final texture
@@ -190,8 +307,8 @@ bool loadTextureMedia()
 	bool success = true;
 
 	//Load PNG texture
-	gTexture = loadTexture( "media/07/texture.png" );
-	if( gTexture == NULL )
+	gTextureTexture = loadTexture( "media/07/texture.png" );
+	if( gTextureTexture == NULL )
 	{
 		printf( "Failed to load texture image!\n" );
 		success = false;
@@ -206,8 +323,8 @@ bool loadViewportMedia()
     bool success = true;
 
     //Load texture
-    gTexture = loadTexture( "media/09/viewport.png" );
-    if( gTexture == NULL )
+    gViewportTexture = loadTexture( "media/09/viewport.png" );
+    if( gViewportTexture == NULL )
     {
         printf( "Failed to load texture image!\n" );
         success = false;
@@ -216,6 +333,7 @@ bool loadViewportMedia()
     //Nothing to load
     return success;
 }
+
 SDL_Surface* loadSurface( std::string path )
 {
 	//The Final optimized image
@@ -243,7 +361,52 @@ SDL_Surface* loadSurface( std::string path )
 	return optimizedSurface;
 }
 
+bool loadColorKeyMedia()
+{
+	//Loading success flag
+	bool success = true;
 
+	//Load Foo' texture
+	if( !gFooTexture.loadFromFile( "media/10/foo.png" ) )
+	{
+		printf( "Failed to load Foo' texture image!\n" );
+		success = false;
+	}
+
+	//Load background texture
+	if( !gBackgroundTexture.loadFromFile( "media/10/background.png" ) )
+	{
+		printf( "Failed to load background texture image!\n" );
+		success = false;
+	}
+
+	return success;
+}
+
+void close()
+{
+	//Free loaded image
+	SDL_DestroyTexture( gTextureTexture );
+	SDL_DestroyTexture( gViewportTexture );
+	gTextureTexture = NULL;
+	gViewportTexture = NULL;
+	gFooTexture.free();
+	gBackgroundTexture.free();
+	
+	//Deallocate surface
+	SDL_FreeSurface( gStrechedSurface );
+	gStrechedSurface = NULL;
+
+	//Destroy window
+	SDL_DestroyRenderer( gRenderer );
+	SDL_DestroyWindow( gWindow );
+	gWindow = NULL;
+	gRenderer = NULL;
+
+	//Quit SDL subsystems
+	IMG_Quit();
+	SDL_Quit();
+}
 
 /* Main */
 
@@ -270,6 +433,10 @@ int main( int argc, char* args[] )
         {
             printf( "Failed to load viewport media!\n" );
         }
+		else if( !loadColorKeyMedia() )
+		{
+			printf( "Failed to load viewport media!\n" );
+		}
 		else
 		{			
 			//Main loop flag
@@ -302,9 +469,17 @@ int main( int argc, char* args[] )
                 topLeftViewport.w = SCREEN_WIDTH / 2;
                 topLeftViewport.h = SCREEN_HEIGHT / 2;
                 SDL_RenderSetViewport( gRenderer, &topLeftViewport );
-
+/*
 				//Render texture to screen
 				SDL_RenderCopy( gRenderer, gTexture, NULL, NULL );
+*/
+				/* Color Keyed Viewport */
+				
+				//Render background texture to screen
+				gBackgroundTexture.render( 0, 0 );
+
+				//Render Foo' to the screen
+				gFooTexture.render( 120, 95 );
 
                 //Top right viewport
                 SDL_Rect topRightViewport;
@@ -315,7 +490,7 @@ int main( int argc, char* args[] )
                 SDL_RenderSetViewport( gRenderer, &topRightViewport );
 
                 //Render texture to screen
-                SDL_RenderCopy( gRenderer, gTexture, NULL, NULL );
+                SDL_RenderCopy( gRenderer, gTextureTexture, NULL, NULL );
 
                 //Bottom viewport
                 SDL_Rect bottomViewport;
@@ -326,21 +501,21 @@ int main( int argc, char* args[] )
                 SDL_RenderSetViewport( gRenderer, &bottomViewport );
 
                 //Render texture to screen
-                SDL_RenderCopy( gRenderer, gTexture, NULL, NULL );
+                SDL_RenderCopy( gRenderer, gViewportTexture, NULL, NULL );
 
                 //Render red filled quad
-                SDL_Rect fillRect = { SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 2) };
+                SDL_Rect fillRect = { SCREEN_WIDTH / 4, SCREEN_HEIGHT / 8, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 4 };
                 SDL_SetRenderDrawColor( gRenderer, 0xff, 0x00, 0x00, 0x7F );
                 SDL_RenderFillRect( gRenderer, &fillRect );
 
                 //Render green outlined quad
-                SDL_Rect outlineRect = { SCREEN_WIDTH / 6, SCREEN_HEIGHT / 6, SCREEN_WIDTH * 2 / 3, (SCREEN_HEIGHT * 2 / 3) };
+                SDL_Rect outlineRect = { SCREEN_WIDTH / 6, SCREEN_HEIGHT / 12, SCREEN_WIDTH * 2 / 3, SCREEN_HEIGHT * 2 / 6 };
                 SDL_SetRenderDrawColor( gRenderer, 0x00, 0xFF, 0x00, 0x7F );
                 SDL_RenderDrawRect( gRenderer, &outlineRect );
 
                 //Draw blue horizontal line
                 SDL_SetRenderDrawColor( gRenderer, 0x00, 0x00, 0xFF, 0x7F );
-                SDL_RenderDrawLine( gRenderer, 0, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT / 2 );
+                SDL_RenderDrawLine( gRenderer, 0, SCREEN_HEIGHT / 4, SCREEN_WIDTH, SCREEN_HEIGHT / 4 );
 
                 //Draw vertical line of yellow dots
                 SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0x00, 0x7F );
