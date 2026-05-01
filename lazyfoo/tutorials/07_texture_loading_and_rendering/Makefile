@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = tgame.cpp
+OBJS = 07_texture_loading_and_rendering.cpp
 
 #CC specifies which compiler we're using
 CC = g++
@@ -12,7 +12,7 @@ COMPILER_FLAGS = -w
 LINKER_FLAGS = -lSDL2 -lSDL2_image
 
 #EXE_NAME specifies the name of our executable
-EXE_NAME = Tgame
+EXE_NAME = 07
 
 #This is the target that compiles our executable
 all : $(OBJS)
