@@ -1,5 +1,3 @@
-//loadViewportMedia functions share gTexture, needs fixing
-
 /** Includes **/
 
 
@@ -42,6 +40,9 @@ class LTexture
 		//Renders texture at given point
 		void render( int x, int y );
 
+        //Renders clip texture at given point
+        void renderClip( int x, int y, SDL_Rect* clip = NULL );
+
 		//Gets image dimensions
 		int getWidth();
 		int getHeight();
@@ -54,52 +55,6 @@ class LTexture
 		int mWidth;
 		int mHeight;
 };
-
-
-
-/** Function Prototypes **/
-
-
-//Starts up SDL and creates window
-bool init();
-
-//Loads surface media
-bool loadSurfaceMedia();
-
-//Loads surface media
-bool loadTextureMedia();
-
-//Frees media and shuts down SDL
-void close();
-
-
-
-/** Pointer Variables **/
-
-
-//Loads individual image as texture
-SDL_Texture* loadTexture( std::string path );
-
-//Loads individual image
-SDL_Surface* loadSurface( std::string path );
-
-//The window we'll be rendering to
-SDL_Window* gWindow = NULL;
-	
-//The window renderer
-SDL_Renderer* gRenderer = NULL;
-
-//The surface contained by the window
-SDL_Surface* gScreenSurface = NULL;
-
-//The image we will load and show on the screen
-SDL_Surface* gStrechedSurface = NULL;
-
-//07 texture
-SDL_Texture* gTextureTexture = NULL;
-
-//09 texture
-SDL_Texture* gViewportTexture = NULL;
 
 
 
@@ -188,6 +143,10 @@ void LTexture::render( int x, int y )
 	SDL_RenderCopy( gRenderer, mTexture, NULL, &renderQuad );
 }
 
+void LTexture::renderClip( int x, int y, SDL_Rect* clip )
+{
+
+
 int LTexture::getWidth()
 {
 	return mWidth;
@@ -197,6 +156,56 @@ int LTexture::getHeight()
 {
 	return mHeight;
 }
+
+
+
+/** Function Prototypes **/
+
+
+//Starts up SDL and creates window
+bool init();
+
+//Loads surface media
+bool loadSurfaceMedia();
+
+//Loads surface media
+bool loadTextureMedia();
+
+//Frees media and shuts down SDL
+void close();
+
+
+
+/** Pointer Variables **/
+
+
+//Loads individual image as texture
+SDL_Texture* loadTexture( std::string path );
+
+//Loads individual image
+SDL_Surface* loadSurface( std::string path );
+
+//The window we'll be rendering to
+SDL_Window* gWindow = NULL;
+	
+//The window renderer
+SDL_Renderer* gRenderer = NULL;
+
+//The surface contained by the window
+SDL_Surface* gScreenSurface = NULL;
+
+//The image we will load and show on the screen
+SDL_Surface* gStrechedSurface = NULL;
+
+//07 texture
+SDL_Texture* gTextureTexture = NULL;
+
+//09 texture
+SDL_Texture* gViewportTexture = NULL;
+
+//Scene sprites (11-Clip rendering)
+SDL_Rect gSpriteClips[ 4 ];
+LTexture gSpriteSheetTexture;
 
 
 
@@ -407,6 +416,8 @@ void close()
 	IMG_Quit();
 	SDL_Quit();
 }
+
+
 
 /* Main */
 
