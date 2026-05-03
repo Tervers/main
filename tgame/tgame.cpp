@@ -9,12 +9,59 @@
 #include <cmath>
 
 
+
 /** Variables **/
 
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
+
+
+
+/** Function Prototypes **/
+
+
+//Starts up SDL and creates window
+bool init();
+
+//Loads surface media
+bool loadSurfaceMedia();
+
+//Loads surface media
+bool loadTextureMedia();
+
+//Frees media and shuts down SDL
+void close();
+
+
+
+/** Pointer Variables **/
+
+
+//Loads individual image as texture
+SDL_Texture* loadTexture( std::string path );
+
+//Loads individual image
+SDL_Surface* loadSurface( std::string path );
+
+//The window we'll be rendering to
+SDL_Window* gWindow = NULL;
+	
+//The window renderer
+SDL_Renderer* gRenderer = NULL;
+
+//The surface contained by the window
+SDL_Surface* gScreenSurface = NULL;
+
+//The image we will load and show on the screen
+SDL_Surface* gStrechedSurface = NULL;
+
+//07 texture
+SDL_Texture* gTextureTexture = NULL;
+
+//09 texture
+SDL_Texture* gViewportTexture = NULL;
 
 
 
@@ -63,6 +110,10 @@ class LTexture
 
 LTexture gFooTexture;
 LTexture gBackgroundTexture;
+
+//Scene sprites (11-Clip rendering)
+SDL_Rect gSpriteClips[ 4 ];
+LTexture gSpriteSheetTexture;
 
 
 
@@ -168,56 +219,6 @@ int LTexture::getHeight()
 {
 	return mHeight;
 }
-
-
-
-/** Function Prototypes **/
-
-
-//Starts up SDL and creates window
-bool init();
-
-//Loads surface media
-bool loadSurfaceMedia();
-
-//Loads surface media
-bool loadTextureMedia();
-
-//Frees media and shuts down SDL
-void close();
-
-
-
-/** Pointer Variables **/
-
-
-//Loads individual image as texture
-SDL_Texture* loadTexture( std::string path );
-
-//Loads individual image
-SDL_Surface* loadSurface( std::string path );
-
-//The window we'll be rendering to
-SDL_Window* gWindow = NULL;
-	
-//The window renderer
-SDL_Renderer* gRenderer = NULL;
-
-//The surface contained by the window
-SDL_Surface* gScreenSurface = NULL;
-
-//The image we will load and show on the screen
-SDL_Surface* gStrechedSurface = NULL;
-
-//07 texture
-SDL_Texture* gTextureTexture = NULL;
-
-//09 texture
-SDL_Texture* gViewportTexture = NULL;
-
-//Scene sprites (11-Clip rendering)
-SDL_Rect gSpriteClips[ 4 ];
-LTexture gSpriteSheetTexture;
 
 
 
@@ -404,6 +405,47 @@ bool loadColorKeyMedia()
 	return success;
 }
 
+bool loadSpriteMedia()
+{
+    //Loading success flag
+    bool success = true;
+
+    //Load sprite sheet texture
+    if( !gSpriteSheetTexture.loadFromFile( "media/11/dots.png" ) )
+    {
+        printf( "Failed to load sprite sheet texture!\n" );
+        success = false;
+    }
+    else
+    {
+        //Set top left sprite
+        gSpriteClips[ 0 ].x =   0;
+        gSpriteClips[ 0 ].y =   0;
+        gSpriteClips[ 0 ].w = 100;
+        gSpriteClips[ 0 ].h = 100;
+
+        //Set top right sprite
+        gSpriteClips[ 1 ].x = 100;
+        gSpriteClips[ 1 ].y =   0;
+        gSpriteClips[ 1 ].w = 100;
+        gSpriteClips[ 1 ].h = 100;
+
+        //Set bottom left sprite
+        gSpriteClips[ 2 ].x =   0;
+        gSpriteClips[ 2 ].y = 100;
+        gSpriteClips[ 2 ].w = 100;
+        gSpriteClips[ 2 ].h = 100;
+
+        //Set bottom right sprite
+        gSpriteClips[ 3 ].x = 100;
+        gSpriteClips[ 3 ].y = 100;
+        gSpriteClips[ 3 ].w = 100;
+        gSpriteClips[ 3 ].h = 100;
+    }
+
+    return success;
+}
+
 void close()
 {
 	//Free loaded image
@@ -413,6 +455,7 @@ void close()
 	gViewportTexture = NULL;
 	gFooTexture.free();
 	gBackgroundTexture.free();
+    gSpriteSheetTexture.free();
 	
 	//Deallocate surface
 	SDL_FreeSurface( gStrechedSurface );
@@ -460,6 +503,10 @@ int main( int argc, char* args[] )
 		{
 			printf( "Failed to load viewport media!\n" );
 		}
+        else if( !loadSpriteMedia() )
+        {
+            printf("Failed to load sprite media!\n" );
+        }
 		else
 		{			
 			//Main loop flag
@@ -514,6 +561,18 @@ int main( int argc, char* args[] )
 
                 //Render texture to screen
                 SDL_RenderCopy( gRenderer, gTextureTexture, NULL, NULL );
+
+                //Render top left sprite
+                gSpriteSheetTexture.renderClip( 0, 0, &gSpriteClips[ 0 ] );
+
+                //Render top right sprite
+                gSpriteSheetTexture.renderClip( ( SCREEN_WIDTH / 2 ) - gSpriteClips[ 1 ].w, 0, &gSpriteClips[ 1 ] );
+
+                //Render bottom left sprite
+                gSpriteSheetTexture.renderClip( 0, ( SCREEN_HEIGHT / 2 ) - gSpriteClips[ 2 ].h, &gSpriteClips[ 2 ] );
+
+                //Render bottom right sprite
+                gSpriteSheetTexture.renderClip( ( SCREEN_WIDTH / 2 ) - gSpriteClips[ 3 ].w, ( SCREEN_HEIGHT / 2 ) - gSpriteClips[ 3 ].h, &gSpriteClips[ 3 ] );
 
                 //Bottom viewport
                 SDL_Rect bottomViewport;
