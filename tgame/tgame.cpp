@@ -84,6 +84,9 @@ class LTexture
 		//Deallocates texture
 		void free();
 
+        //Set color modulation
+        void setColor( Uint8 red, Uint8 green, Uint8 blue );
+
 		//Renders texture at given point
 		void render( int x, int y );
 
@@ -114,6 +117,9 @@ LTexture gBackgroundTexture;
 //Scene sprites (11-Clip rendering)
 SDL_Rect gSpriteClips[ 4 ];
 LTexture gSpriteSheetTexture;
+
+//Scene texture
+LTexture gModulatedTexture;
 
 
 
@@ -187,10 +193,16 @@ void LTexture::free()
 	}
 }
 
+void LTexture::setColor( Uint8 red, Uint8 green, Uint8 blue )
+{
+    //Modulate texture
+    SDL_SetTextureColorMod( mTexture, red, green, blue );
+}
+
 void LTexture::render( int x, int y )
 {
 	//Set rendering space and render to screen
-	SDL_Rect renderQuad = { x, y, mWidth / 2, mHeight / 2 };
+	SDL_Rect renderQuad = { x, y, mWidth / 2, mHeight / 2 }; //mWidth,mHeight divided for viewport: rewrite
 	SDL_RenderCopy( gRenderer, mTexture, NULL, &renderQuad );
 }
 
@@ -446,6 +458,21 @@ bool loadSpriteMedia()
     return success;
 }
 
+bool loadModulationMedia()
+{
+    //Loading success flag
+    bool success = true;
+
+    //Load texture
+    if( !gModulatedTexture.loadFromFile( "media/12/colors.png" ) )
+    {
+        printf( "Failed to load modulation texture!\n" );
+        success = false;
+    }
+
+    return success;
+}
+
 void close()
 {
 	//Free loaded image
@@ -456,6 +483,7 @@ void close()
 	gFooTexture.free();
 	gBackgroundTexture.free();
     gSpriteSheetTexture.free();
+    gModulatedTexture.free();
 	
 	//Deallocate surface
 	SDL_FreeSurface( gStrechedSurface );
@@ -507,6 +535,10 @@ int main( int argc, char* args[] )
         {
             printf("Failed to load sprite media!\n" );
         }
+        else if( !loadModulationMedia() )
+        {
+            printf( "Failed to load sprite media!\n" );
+        }
 		else
 		{			
 			//Main loop flag
@@ -514,6 +546,11 @@ int main( int argc, char* args[] )
 
 			//Event handler
 			SDL_Event e;
+
+            //Modulation components
+            Uint8 r = 255;
+            Uint8 g = 255;
+            Uint8 b = 255;
 
 			//While application is running
 			while( !quit )
@@ -526,6 +563,42 @@ int main( int argc, char* args[] )
 					{
 						quit = true;
 					}
+                    //On keypress change rgb values
+                    else if( e.type == SDL_KEYDOWN )
+                    {
+                        switch( e.key.keysym.sym )
+                        {
+                            //Increase red
+                            case SDLK_q:
+                            r += 32;
+                            break;
+
+                            //Increase green
+                            case SDLK_w:
+                            g += 32;
+                            break;
+
+                            //Increase blue
+                            case SDLK_e:
+                            b += 32;
+                            break;
+
+                            //Decrease red
+                            case SDLK_a:
+                            r -= 32;
+                            break;
+
+                            //Decrease green
+                            case SDLK_s:
+                            g -= 32;
+                            break;
+
+                            //Decrease blue
+                            case SDLK_d:
+                            b -= 32;
+                            break;
+                        }
+                    }
 				}
 
 				//Clear screen
@@ -551,6 +624,10 @@ int main( int argc, char* args[] )
 				//Render Foo' to the screen
 				gFooTexture.render( 120, 95 );
 
+                //Modulate and render texture
+                gBackgroundTexture.setColor( r, g, b );
+                gFooTexture.setColor( r, g, b );
+
                 //Top right viewport
                 SDL_Rect topRightViewport;
                 topRightViewport.x = SCREEN_WIDTH / 2;
@@ -573,6 +650,9 @@ int main( int argc, char* args[] )
 
                 //Render bottom right sprite
                 gSpriteSheetTexture.renderClip( ( SCREEN_WIDTH / 2 ) - gSpriteClips[ 3 ].w, ( SCREEN_HEIGHT / 2 ) - gSpriteClips[ 3 ].h, &gSpriteClips[ 3 ] );
+
+                //Modulate texture
+                gSpriteSheetTexture.setColor( r, g, b );
 
                 //Bottom viewport
                 SDL_Rect bottomViewport;
@@ -605,6 +685,10 @@ int main( int argc, char* args[] )
                 {
                     SDL_RenderDrawPoint( gRenderer, SCREEN_WIDTH / 2, i );
                 }
+
+                //Modulate and render texture
+                gModulatedTexture.setColor( r, g, b );
+                gModulatedTexture.render( SCREEN_WIDTH / 2, 0 );
 
 				//Update screen
 				SDL_RenderPresent( gRenderer );
