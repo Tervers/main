@@ -12,7 +12,7 @@ COMPILER_FLAGS = -w
 LINKER_FLAGS = -lSDL2 -lSDL2_image
 
 #EXE_NAME specifies the name of our executable
-EXE_NAME = Tgame
+EXE_NAME = Tgame 
 
 #This is the target that compiles our executable
 all : $(OBJS)

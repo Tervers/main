@@ -10,12 +10,23 @@
 
 
 
-/** Variables **/
+/** Constants **/
 
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
+
+//Key press surfaces constants
+enum KeyPressSurfaces
+{
+	KEY_PRESS_SURFACE_DEFAULT,
+	KEY_PRESS_SURFACE_UP,
+	KEY_PRESS_SURFACE_DOWN,
+	KEY_PRESS_SURFACE_LEFT,
+	KEY_PRESS_SURFACE_RIGHT,
+	KEY_PRESS_SURFACE_TOTAL,
+};
 
 
 
@@ -53,6 +64,12 @@ SDL_Renderer* gRenderer = NULL;
 
 //The surface contained by the window
 SDL_Surface* gScreenSurface = NULL;
+
+//The images that correspond to a keypress
+SDL_Surface* gKeyPressSurfaces[ KEY_PRESS_SURFACE_TOTAL ];
+
+//Current displayed keypress image
+SDL_Surface* gCurrentSurface = NULL;
 
 //The image we will load and show on the screen
 SDL_Surface* gStrechedSurface = NULL;
@@ -266,6 +283,9 @@ bool init()
 		}
 		else
 		{
+			//Get window surface
+			gScreenSurface = SDL_GetWindowSurface( gWindow );
+
 			//Create renderer for window
 			gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED );
 			if( gRenderer == NULL )
@@ -473,6 +493,54 @@ bool loadModulationMedia()
     return success;
 }
 
+bool loadKeyPressMedia()
+{
+	//Loading success flag
+	bool success = true;
+
+	//Load default surface
+	gKeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ] = loadSurface( "media/04/press.bmp" );
+	if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ] == NULL )
+	{
+		printf( "Failed to load default key press image!\n" );
+		success = false;
+	}
+
+	//Load up surface
+	gKeyPressSurfaces[ KEY_PRESS_SURFACE_UP ] = loadSurface( "media/04/up.bmp" );
+	if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_UP ] == NULL )
+	{
+		printf( "Failed to load up key press image!\n" );
+		success = false;
+	}
+
+	//Load down surface
+	gKeyPressSurfaces[ KEY_PRESS_SURFACE_DOWN ] = loadSurface( "media/04/down.bmp" );
+	if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_DOWN] == NULL )
+	{
+		printf( "Failed to load down key press image!\n" );
+		success = false;
+	}
+
+	//Load left surface
+	gKeyPressSurfaces[ KEY_PRESS_SURFACE_LEFT ] = loadSurface( "media/04/left.bmp" );
+	if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_LEFT ] == NULL )
+	{
+		printf( "Failed to load left key press image!\n" );
+		success = false;
+	}
+
+	//Load right surface
+	gKeyPressSurfaces[ KEY_PRESS_SURFACE_RIGHT ] = loadSurface( "media/04/right.bmp" );
+	if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_RIGHT ] == NULL )
+	{
+		printf( "Failed to load right key press image!\n" );
+		success = false;
+	}
+
+	return success;
+}
+
 void close()
 {
 	//Free loaded image
@@ -485,6 +553,13 @@ void close()
     gSpriteSheetTexture.free();
     gModulatedTexture.free();
 	
+	//Deallocate key press surfaces
+	for( int i = 0; i < KEY_PRESS_SURFACE_TOTAL; ++i )
+	{
+		SDL_FreeSurface( gKeyPressSurfaces[ i ] );
+		gKeyPressSurfaces[ i ] = NULL;
+	}
+
 	//Deallocate surface
 	SDL_FreeSurface( gStrechedSurface );
 	gStrechedSurface = NULL;
@@ -529,7 +604,7 @@ int main( int argc, char* args[] )
         }
 		else if( !loadColorKeyMedia() )
 		{
-			printf( "Failed to load viewport media!\n" );
+			printf( "Failed to load color key media!\n" );
 		}
         else if( !loadSpriteMedia() )
         {
@@ -537,7 +612,11 @@ int main( int argc, char* args[] )
         }
         else if( !loadModulationMedia() )
         {
-            printf( "Failed to load sprite media!\n" );
+            printf( "Failed to load modulation media!\n" );
+        }
+        else if( !loadKeyPressMedia() )
+        {
+            printf( "Failed to load key press media!\n" );
         }
 		else
 		{			
@@ -551,6 +630,9 @@ int main( int argc, char* args[] )
             Uint8 r = 255;
             Uint8 g = 255;
             Uint8 b = 255;
+
+			//Set default current surface
+			gCurrentSurface = gKeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ];
 
 			//While application is running
 			while( !quit )
@@ -568,6 +650,8 @@ int main( int argc, char* args[] )
                     {
                         switch( e.key.keysym.sym )
                         {
+							/*Color modulation keys*/
+							
                             //Increase red
                             case SDLK_q:
                             r += 32;
@@ -597,6 +681,28 @@ int main( int argc, char* args[] )
                             case SDLK_d:
                             b -= 32;
                             break;
+
+							/*Key press surface keys*/
+
+							case SDLK_UP:
+							gCurrentSurface = gKeyPressSurfaces[ KEY_PRESS_SURFACE_UP ];
+							break;
+
+							case SDLK_DOWN:
+							gCurrentSurface = gKeyPressSurfaces[ KEY_PRESS_SURFACE_DOWN ];
+							break;
+
+							case SDLK_LEFT:
+							gCurrentSurface = gKeyPressSurfaces[ KEY_PRESS_SURFACE_LEFT ];
+							break;
+
+							case SDLK_RIGHT:
+							gCurrentSurface = gKeyPressSurfaces[ KEY_PRESS_SURFACE_RIGHT ];
+							break;
+
+							default:
+							gCurrentSurface = gKeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ];
+							break;
                         }
                     }
 				}
@@ -661,6 +767,12 @@ int main( int argc, char* args[] )
                 bottomViewport.w = SCREEN_WIDTH;
                 bottomViewport.h = SCREEN_HEIGHT / 2;
                 SDL_RenderSetViewport( gRenderer, &bottomViewport );
+
+				//Apply the current key press image
+				SDL_BlitSurface( gCurrentSurface, NULL, gScreenSurface, NULL );
+
+				//Update the surface
+				SDL_UpdateWindowSurface( gWindow );
 
                 //Render texture to screen
                 SDL_RenderCopy( gRenderer, gViewportTexture, NULL, NULL );
