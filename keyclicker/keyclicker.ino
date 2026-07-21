@@ -30,7 +30,7 @@ byte num[] = {0xc0, 0xf9, 0xa4, 0xb0, 0x99, 0x92, 0x82, 0xf8,    // characters 0
 
 // VARIABILITY VARIABLES
 int v;            // variability level
-//bool counter[v];    // VLAs not accepted?
+bool counter[3];    // VLAs not accepted?
 
 // INITIALIZATION
 void setup() {
@@ -45,7 +45,7 @@ void setup() {
 
 // MAIN
 void loop() {
-/*****
+
   // 4-DIGIT 7-SEGMENT DISPLAY
   for (int i = 0; i < 4; i++) {
       // Select a single 7-segment display
@@ -56,7 +56,26 @@ void loop() {
       // Clear the display content
       writeData(0xff);
     }
+
+
+
+
+
+  topAngle = map((analogRead(PIN_ANALOG_IN)), 0, 1023, MINIMUM_ANGLE, MAXIMUM_ANGLE);
+
+/* SERVO */
+  for (pos = topAngle; pos < topAngle + 7 && pos < MAXIMUM_ANGLE; pos += 1) { // goes from 10* degrees to 170 degrees
+    mainServo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(20);                       // waits 500 ms for the servo to reach the position
   }
+  for (pos = topAngle; pos > topAngle - 7 && pos > MINIMUM_ANGLE; pos -= 1) { // goes from 170 degrees to 10* degrees
+    mainServo.write(pos);              // tell servo to go to position in variable 'pos'
+    delay(20);                       // waits 11 ms for the servo to reach the position
+  }
+  delay(2050);
+  srand((unsigned) time(NULL));
+  delay((rand() % 1500));
+}
 
   void electDigitalDisplay(byte com) {
     // Close all single 7-segment display
@@ -75,26 +94,3 @@ void loop() {
   // Make latchPin output high level, then 74HC595 will update data to parallel output
     digitalWrite(latchPin, HIGH);
   }
-*****/
-
-
-//  mainServo.write(MINIMUM_ANGLE);
-//  delay(1000);   
-//  mainServo.write(MAXIMUM_ANGLE);
-//  delay(1000);   
-  topAngle = map((analogRead(PIN_ANALOG_IN)), 0, 1023, MINIMUM_ANGLE, MAXIMUM_ANGLE);
-
-/* SERVO */
-  for (pos = topAngle; pos < topAngle + 7 && pos < MAXIMUM_ANGLE; pos += 1) { // goes from 10* degrees to 170 degrees
-    mainServo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(20);                       // waits 500 ms for the servo to reach the position
-  }
-  for (pos = topAngle; pos > topAngle - 7 && pos > MINIMUM_ANGLE; pos -= 1) { // goes from 170 degrees to 10* degrees
-    mainServo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(20);                       // waits 11 ms for the servo to reach the position
-  }
-  delay(2050);
-  srand((unsigned) time(NULL));
-  delay((rand() % 1500));
-
-}
