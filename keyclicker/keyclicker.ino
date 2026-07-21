@@ -26,7 +26,7 @@ byte num[] = {0xc0, 0xf9, 0xa4, 0xb0, 0x99, 0x92, 0x82, 0xf8,    // characters 0
 
 /* VARIABILITY VARIABLES */
 int v;            // variability level
-bool counter[v];  
+//bool counter[v];    // VLAs not accepted?
 
 /* INITIALIZATION */
 void setup() {
@@ -41,8 +41,8 @@ void setup() {
 
 /* MAIN */
 void loop() {
-
-  /* 4-DIGIT 7-SEGMENT DISPLAY */
+/*****
+  // 4-DIGIT 7-SEGMENT DISPLAY
   for (int i = 0; i < 4; i++) {
       // Select a single 7-segment display
       electDigitalDisplay (i);
@@ -70,22 +70,25 @@ void loop() {
     shiftOut(dataPin, clockPin, LSBFIRST, value);  // Make latchPin output high level
   // Make latchPin output high level, then 74HC595 will update data to parallel output
     digitalWrite(latchPin, HIGH);
-
+  }
+*****/
 
 
 
 
 
 /* SERVO */
-  for (pos = downAngle; pos < 170; pos += 160) { // goes from 10* degrees to 170 degrees
+  // Travels counter-clockwise
+  for (pos = downAngle; pos < downAngle + 5; pos += 1) { // goes from 10* degrees to 170 degrees
     mainServo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(1750);                       // waits 500 ms for the servo to reach the position
+    delay(20);                       // waits 500 ms for the servo to reach the position
   }
-  for (pos = 170; pos > downAngle; pos -= 160) { // goes from 170 degrees to 10* degrees
+  for (pos = downAngle; pos > downAngle - 5; pos -= 1) { // goes from 170 degrees to 10* degrees
     mainServo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(250);                       // waits 11 ms for the servo to reach the position
+    delay(20);                       // waits 11 ms for the servo to reach the position
   }
+  delay(2050);
   srand((unsigned) time(NULL));
-  delay((rand() % 1000));
+  delay((rand() % 1500));
 
 }
