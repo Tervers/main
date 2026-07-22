@@ -44,7 +44,11 @@ void setup() {
 }
 
 void loop() {
+  if (digitalRead(ANGLE_SELECT_PIN == LOW))
+    angleToggle = false;
   while(!angleToggle) {
+    if (digitalRead(ANGLE_SELECT_PIN == HIGH))
+      break;
     topAngle = map((analogRead(ANALOG_PIN)), 0, 1023, MINIMUM_ANGLE, MAXIMUM_ANGLE);
     digits[1] = ((topAngle % 1000) / 100);
     digits[2] = ((topAngle % 100) / 10);
