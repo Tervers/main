@@ -1,0 +1,3 @@
+// open directory (possibly program) in new terminal window
+xfce4-terminal --default-working-directory=
+
