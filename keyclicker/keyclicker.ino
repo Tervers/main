@@ -1,10 +1,12 @@
+// make function that reads ANGLE_SELECT_PIN value into a variable to be checked by while()
 #include <Servo.h>
 #include <time.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 #define SERVO_PIN     22
 #define ANALOG_PIN 26
-#define ANGLE_BUTTON_PIN 13
+#define ANGLE_SELECT_PIN 13
 
 #define MINIMUM_ANGLE  75
 #define MAXIMUM_ANGLE 165
@@ -13,9 +15,10 @@ Servo mainServo;  // create servo object to control a servo
 
 int pos = 0;         // variable to store the servo position
 int topAngle = MINIMUM_ANGLE;   // angle servo will lower to
-int lastAngle = 0;
-
-int digit[4];
+int setAngle = 0;
+int digit;
+int digits[4];
+bool angleToggle = false;
 
 int offset = 0;      // added time to randomize keyclicks
 
@@ -31,43 +34,50 @@ bool counter[3];    // VLAs not accepted?
 
 void setup() {
   mainServo.attach(SERVO_PIN, 500, 2500);
-  pinMode(ANGLE_BUTTON_PIN, INPUT);
+  pinMode(ANGLE_SELECT_PIN, INPUT);
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
   for (int i = 0; i < 4; i++) {
     pinMode(comPin[i], OUTPUT);
   }
-  mainServo.write(topAngle);
-  delay(500);
 }
 
 void loop() {
-  digit[1] = (topAngle % 1000);
-  digit[2] = (topAngle % 100);
-  digit[3] = (topAngle % 10);
-  for (int i = 1; i < 4; i++) {
-    electDigitalDisplay(i);
-    switch(digit[i]) {
-      default: writeData(num[i]); delay(5); writeData(0xff); break;
+  while(!angleToggle) {
+    topAngle = map((analogRead(ANALOG_PIN)), 0, 1023, MINIMUM_ANGLE, MAXIMUM_ANGLE);
+    digits[1] = ((topAngle % 1000) / 100);
+    digits[2] = ((topAngle % 100) / 10);
+    digits[3] = (topAngle % 10);
+    for (int i = 1; i < 4; i++) {
+      electDigitalDisplay(i);
+      digit = digits[i];
+      writeData(num[digit]);
+      delay(5);
+      writeData(0xff);
+      //if(digitalRead(ANGLE_SELECT_PIN) == HIGH)
+        //i = 1;
     }
   }
 
-  topAngle = map((analogRead(ANALOG_PIN)), 0, 1023, MINIMUM_ANGLE, MAXIMUM_ANGLE);
+  setAngle = topAngle;
 
-  for (pos = topAngle; pos < topAngle + 7 && pos < MAXIMUM_ANGLE; pos += 1) { // goes from 10* degrees to 170 degrees
-    mainServo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(20);                       // waits 500 ms for the servo to reach the position
+  while(1) {
+    if(setAngle != map((analogRead(ANALOG_PIN)), 0, 1023, MINIMUM_ANGLE, MAXIMUM_ANGLE))
+      break;
+    for (pos = topAngle; pos < topAngle + 7 && pos < MAXIMUM_ANGLE; pos += 1) { // goes from 10* degrees to 170 degrees
+      mainServo.write(pos);              // tell servo to go to position in variable 'pos'
+      delay(20);                       // waits 500 ms for the servo to reach the position
     }
-  for (pos = topAngle; pos > topAngle - 7 && pos > MINIMUM_ANGLE; pos -= 1) { // goes from 170 degrees to 10* degrees
-    mainServo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(20);                       // waits 11 ms for the servo to reach the position
+    for (pos = topAngle; pos > topAngle - 7 && pos > MINIMUM_ANGLE; pos -= 1) { // goes from 170 degrees to 10* degrees
+      mainServo.write(pos);              // tell servo to go to position in variable 'pos'
+      delay(20);                       // waits 11 ms for the servo to reach the position
     }
 //  delay(2050);
 //  srand((unsigned) time(NULL));
 //  delay((rand() % 1500));
-
   }
+}
 
 void electDigitalDisplay(byte com) {
   // Close all single 7-segment display
