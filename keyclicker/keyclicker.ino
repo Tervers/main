@@ -11,6 +11,11 @@
 #define USER_MINIMUM_ANGLE  75
 #define USER_MAXIMUM_ANGLE 167
 
+#define dataPin 18
+#define latchPin 20
+#define clockPin 21
+int comPin[] = {17, 16, 15, 14};// Common pin (CATHODE*) of 4 digit 7-segment display
+
 Servo mainServo;  // create servo object to control a servo
 
 int pos = 0;         // variable to store the servo position
@@ -22,20 +27,16 @@ int digits[4];
 bool angleToggle = true;
 
 int offset = 0;      // added time to randomize keyclicks
-
-int dataPin = 18;   
-int latchPin = 20;
-int clockPin = 21;          
-int comPin[] = {17, 16, 15, 14};// Common pin (CATHODE*) of 4 digit 7-segment display
+         
 
 byte num[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07,    // characters 0-7
               0x7f, 0x6f, 0x77, 0x7c, 0x39, 0x5e, 0x79, 0x71};    // characters 8-9, A-F
 
-bool counter[3];    // VLAs not accepted?
+//bool counter[3];    // VLAs not accepted?
 
 void setup() {
   mainServo.attach(SERVO_PIN, 500, 2500);
-  pinMode(ANGLE_SELECT_PIN, INPUT);
+  pinMode(ANGLE_SELECT_PIN, INPUT_PULLUP);
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
@@ -48,8 +49,16 @@ void setup() {
 }
 
 void loop() {
-  do {
+  //while(!angleToggle) {
+  //  if(digitalRead(ANGLE_SELECT_PIN) == LOW)
+  //    angleToggle = true;
+  //}
+
+  while (angleToggle) {
     setAngle = map((analogRead(ANALOG_PIN)), 0, 1023, USER_MINIMUM_ANGLE, USER_MAXIMUM_ANGLE);
+    Serial.println("digitalRead");
+    Serial.println(digitalRead(ANGLE_SELECT_PIN));
+    Serial.println("setAngle");
     Serial.println(setAngle);
     digits[1] = ((setAngle % 1000) / 100);
     digits[2] = ((setAngle % 100) / 10);
@@ -61,28 +70,44 @@ void loop() {
       delay(5);
       writeData(0xff);      
     }
-    Serial.println(digitalRead(ANGLE_SELECT_PIN));
-    if (digitalRead(ANGLE_SELECT_PIN) == HIGH) {
+    if (digitalRead(ANGLE_SELECT_PIN) == LOW)
       angleToggle = false;
-      checkAngle = setAngle;
-      while(!angleToggle) {
-        for (pos = setAngle; pos < setAngle + 7 && pos < USER_MAXIMUM_ANGLE; pos += 1) {
-        mainServo.write(pos);              // tell servo to go to position in variable 'pos'
-        delay(20);                       // waits for the servo to reach the position
-        }
-        for (pos = setAngle; pos > setAngle - 7 && pos > USER_MINIMUM_ANGLE; pos -= 1) {
-        mainServo.write(pos);              // tell servo to go to position in variable 'pos'
-        delay(20);                       // waits for the servo to reach the position
-        }
+  }
+
+  do {
+    for (pos = setAngle; pos < setAngle + 7 && pos < USER_MAXIMUM_ANGLE; pos += 1) {
+      mainServo.write(pos);              // tell servo to go to position in variable 'pos'
+      delay(20);                       // waits for the servo to reach the position      
+    }
+    for (pos = setAngle; pos > setAngle - 7 && pos > USER_MINIMUM_ANGLE; pos -= 1) {
+      mainServo.write(pos);              // tell servo to go to position in variable 'pos'
+      delay(20);                       // waits for the servo to reach the position
+    }
+  } while (!angleToggle);
+}
+
+    //if (Serial.println(digitalRead(ANGLE_SELECT_PIN)) == HIGH) {
+//      angleToggle = false;
+      //if (angleToggle)
+//        Serial.println("true");
+      //else
+//        Serial.println("false");
+      //checkAngle = setAngle;
+      //while(!angleToggle) {
+//        for (pos = setAngle; pos < setAngle + 7 && pos < USER_MAXIMUM_ANGLE; pos += 1) {
+        //mainServo.write(pos);              // tell servo to go to position in variable 'pos'
+        //delay(20);                       // waits for the servo to reach the position
+        //}
+        //for (pos = setAngle; pos > setAngle - 7 && pos > USER_MINIMUM_ANGLE; pos -= 1) {
+        //mainServo.write(pos);              // tell servo to go to position in variable 'pos'
+//        delay(20);                       // waits for the servo to reach the position
+        //}
         //  delay(2050);
         //  srand((unsigned) time(NULL));
         //  delay((rand() % 1500));
-        if((currentAngle = map((analogRead(ANALOG_PIN)), 0, 1023, USER_MINIMUM_ANGLE, USER_MAXIMUM_ANGLE)) != checkAngle)
-          angleToggle = true;
-      }
-    }
-  } while(digitalRead(ANGLE_SELECT_PIN) == LOW);
-}
+        //if((currentAngle = map((analogRead(ANALOG_PIN)), 0, 1023, USER_MINIMUM_ANGLE, USER_MAXIMUM_ANGLE)) != checkAngle)
+        //  angleToggle = true;
+     // }
 
 void electDigitalDisplay(byte com) {
   // Close all single 7-segment display
