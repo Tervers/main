@@ -9,7 +9,7 @@
 #define ANGLE_SELECT_PIN 13
 
 #define USER_MINIMUM_ANGLE  75
-#define USER_MAXIMUM_ANGLE 167
+#define USER_MAXIMUM_ANGLE 163
 
 #define dataPin 18
 #define latchPin 20
@@ -36,7 +36,7 @@ byte num[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07,    // characters 0
 
 void setup() {
   mainServo.attach(SERVO_PIN, 500, 2500);
-  pinMode(ANGLE_SELECT_PIN, INPUT_PULLUP);
+  pinMode(ANGLE_SELECT_PIN, INPUT);
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
