@@ -100,8 +100,10 @@ void loop() {
     }
     if (digitalRead(TIME_SELECT_PIN) == LOW)
       timeToggle = !timeToggle;
-    if (digitalRead(ANGLE_SELECT_PIN) == LOW)
+    if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
       angleToggle = !angleToggle;
+      timeToggle = false;
+    }
   }
 
   while (angleToggle) {
@@ -122,8 +124,10 @@ void loop() {
     }
     if (digitalRead(ANGLE_SELECT_PIN) == LOW)
       angleToggle = !angleToggle;
-    if (digitalRead(TIME_SELECT_PIN) == LOW)
+    if (digitalRead(TIME_SELECT_PIN) == LOW) {
       timeToggle = !timeToggle;
+      angleToggle = false;
+    }
   }
 }
 
