@@ -50,7 +50,7 @@ void setup() {
     pinMode(COM_PIN[i], OUTPUT);
   }
 
-  setAngle = map(((analogRead(SERVO_ANALOG) / 10) * 10), 0, 1023, USER_MINIMUM_ANGLE, USER_MAXIMUM_ANGLE);
+  setAngle = map(((analogRead(SERVO_ANALOG) / 10) * 10), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
 //  mainServo.write(setAngle);
   digits[1] = ((setAngle % 1000) / 100);
   digits[2] = ((setAngle % 100) / 10);
@@ -147,7 +147,7 @@ void loop() {
     timeButtonValue = digitalRead(TIME_SELECT_PIN);
     Serial.println("Time Button Value:");
     Serial.println(timeButtonValue);
-    seconds = map(analogRead(TIME_ANALOG), 0, 1023, 0, 60);
+    seconds = map(analogRead(TIME_ANALOG), 0, 1023, 60, 0);
     Serial.println("Seconds:");
     Serial.println(seconds);
     digits[1] = ((seconds % 1000) / 100);
@@ -178,7 +178,7 @@ void loop() {
     timeToggle = false;
     Serial.println("Angle Button Value:");
     Serial.println(angleButtonValue);
-    setAngle = map(((analogRead(SERVO_ANALOG) / 10) * 10), 0, 1023, USER_MINIMUM_ANGLE, USER_MAXIMUM_ANGLE);
+    setAngle = map(((analogRead(SERVO_ANALOG) / 10) * 10), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
     mainServo.write(setAngle);
     digits[1] = ((setAngle % 1000) / 100);
     digits[2] = ((setAngle % 100) / 10);
