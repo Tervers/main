@@ -1,0 +1,947 @@
+﻿This conversation was generated with Duck.ai (https://duck.ai) using Anthropic's Claude Haiku 4.5 Model. AI chats may display inaccurate or offensive information (see https://duckduckgo.com/duckai/privacy-terms for more info).
+
+====================
+
+User prompt 1 of 5 - 7/27/2026, 6:27:02 PM:
+I'm wondering if it is possible to connect a Raspberry Pico W (ver. 1, not Pico 2) to a Waveshare 7inch LCD ( https://www.waveshare.com/wiki/7inch_HDMI_LCD_(C)#How_to_use ). I know a Pico doesn't normally connect through HDMI. I'm hoping to either wire it together, or to possibly reuse one of the display's ribbon cables. I intend to write a GUI app that will run off the Pico to the Waveshare display.
+
+Claude Haiku 4.5:
+I'll look into the technical details of both the Raspberry Pi Pico W and that specific Waveshare display to give you an honest assessment.
+Based on the documentation, I have some important news about your plan: **Unfortunately, it's not feasible to connect a Raspberry Pi Pico W directly to this Waveshare 7inch HDMI LCD (C).**
+
+## Why It Won't Work
+
+| Aspect | Pico W | Waveshare 7" HDMI LCD (C) |
+|--------|--------|---------------------------|
+| **Video Output** | No HDMI; no video output pins | Requires standard HDMI input |
+| **Touch Interface** | 2 I²C pins available | Micro USB (HID protocol) |
+| **Intended Host** | Microcontroller (low compute) | Full OS computer (Raspberry Pi, PC, etc.) |
+| **Complexity** | Very limited resources | Expects full video signal + HID protocol |
+
+### The Core Issues
+
+**1. No Video Output Hardware**  
+The Pico W has **no built-in HDMI output or video generation capability**. It lacks the hardware to produce the **49 MHz pixel clock** and complex video timing that HDMI requires. Even with GPIO pins, the Pico cannot generate video at the speeds needed (1024×600 @ 60Hz).
+
+**2. Touch Panel Protocol**  
+The display's touch interface uses **micro USB and HID (Human Interface Device) protocol**, which is managed by an onboard controller. You can't "reuse a ribbon cable" to connect it differently—it's a USB interface, not a parallel or SPI interface you could bit-bang from the Pico.
+
+**3. Processing Power Mismatch**  
+This display is designed for **full operating systems** (Raspberry Pi OS, Ubuntu, Windows) that can handle HDMI enumeration, EDID negotiation, and continuous video streaming. The Pico doesn't have the architecture, memory, or real-time capabilities for this.
+
+## What You Could Do Instead
+
+**Option 1: Use a Pico-Compatible Display**  
+Choose a **smaller LCD or OLED display** designed for the Pico:
+- **Small SPI/I²C displays**: 1.3"–3.5" monochrome or color LCDs that connect via GPIO
+- **Waveshare Pico-specific displays**: They offer 1.3" and 1.44" options specifically for Pico
+- Examples: ST7735, ILI9341 drivers over SPI
+
+**Option 2: Pair Pico W with a Raspberry Pi**  
+Run the Pico as a **controller/sensor** communicating via **UART or USB** to a full Raspberry Pi, which then drives the Waveshare display. This works well for GUI apps.
+
+**Option 3: Use the Display with Its Intended Host**  
+If you want the 7" screen, pair it with a **Raspberry Pi 4/5** instead of the Pico W. You get full GUI capabilities and the display works out-of-the-box with just HDMI + USB connections.
+
+Are you set on using the Pico for a specific reason (size, cost, power consumption), or would you be open to switching to a Raspberry Pi or a smaller Pico-compatible display?
+
+--------------------
+
+User prompt 2 of 5 - 7/27/2026, 6:31:07 PM:
+I intended to also make/port an Android app version of my program, which I intend to use SDL2 to write with. The pico version was just an idea I hoped to do if it was possible, but it wasn't my only goal.
+
+Claude Haiku 4.5:
+That makes much more sense! **Using SDL2 to write a cross-platform GUI app is a solid choice**, and it opens up way more possibilities than trying to force the Pico to work with that display.
+
+## Your Actual Options
+
+**SDL2 is perfect for this because it supports:**
+- **Linux** (Raspberry Pi OS, full desktop Linux)
+- **Android** (via SDL2's Android backend)
+- **Windows, macOS** (if you want to develop/test on desktop)
+
+So you can write once in SDL2 and compile/deploy to multiple platforms with minimal changes.
+
+### For the Waveshare 7" Display Setup
+
+If you want to use that display with your SDL2 app, your best path is:
+
+1. **Run it on a Raspberry Pi 4/5** connected to the Waveshare 7" HDMI LCD (C)
+   - SDL2 runs great on Raspberry Pi OS
+   - Your app gets the full 7" screen you already have
+   - Straightforward setup: HDMI + USB for touch
+
+2. **Or use a smaller display with the Pico W** if you wanted a low-power version
+   - But then you'd be writing Pico-native code (MicroPython or C), not SDL2
+   - Different codebase from your main app
+
+### For the Android Version
+
+**SDL2 has excellent Android support:**
+- You can build APKs using Android Studio + NDK
+- Write your core logic in C/C++ with SDL2 for graphics/input
+- Deploy directly to Android phones/tablets
+- The touch input works natively through SDL2's event system
+
+---
+
+**My question: Are you planning to develop the SDL2 app on a desktop first, then deploy to Android and Raspberry Pi later?** That's the typical workflow, and it makes sense because you can iterate fast on Linux/Windows before dealing with Android build toolchains and Pi hardware.
+
+--------------------
+
+User prompt 3 of 5 - 7/27/2026, 6:36:15 PM:
+I wasn't intending to have a desktop version of the app, although I might port one to a Pi 4. It was mainly going to be a phone app that would allow people in my home to access a shared movie/tv folder that they could then cast to their TVs.
+
+Claude Haiku 4.5:
+Ah, that's a much clearer picture! **You're building a media browser/casting app for your home network.** That's a practical use case, and SDL2 is workable for this, though I'd gently suggest some alternatives worth considering.
+
+## The SDL2 Approach
+
+**Pros:**
+- Single codebase for Android (and potentially a Pi version later)
+- Full control over the UI and experience
+- Good for custom, non-standard interfaces
+
+**Cons:**
+- SDL2 on Android requires more boilerplate and Android NDK knowledge
+- You're essentially building low-level graphics yourself—no native Android UI patterns
+- The Android app won't feel like a "normal" Android app (no standard navigation, lifecycle handling, etc.)
+- Building/distributing APKs is more complex than native apps
+- Touch input and screen density scaling require careful handling
+
+## Better Alternatives for This Use Case
+
+**Option 1: Native Android App (Kotlin/Java + Jetpack)**
+- **Much easier** to build a polished media browser UI
+- Native Material Design components work out-of-the-box
+- Better touch handling, lifecycle management, and OS integration
+- Casting libraries (like Google Cast) integrate seamlessly
+- Easier to distribute via Google Play or sideload
+- **Downside:** If you really wanted a Pi version later, you'd need to rewrite it
+
+**Option 2: Web App (React/Vue + Tauri or similar)**
+- Build a responsive web UI for media browsing
+- **Wrap it as an Android app** using something like **Capacitor** (from Ionic) or **Tauri**
+- Same codebase works on web browsers, Android, and could work on Pi via a web server
+- Much faster development than SDL2
+- Better for casting integrations (Chromecast libraries exist for web)
+- **Downside:** Slightly heavier than native, but modern phones handle it fine
+
+**Option 3: Hybrid (Native Android + Web Backend)**
+- Native Android app for the frontend (better UX)
+- Flask/FastAPI backend running on a home server/Pi for file serving and casting orchestration
+- Clean separation, scalable, and the native app feels polished
+
+---
+
+**My honest take:** For a **home media browser with casting**, I'd lean toward **Option 2 (web-based, wrapped as Android)** or **Option 3 (native Android frontend)**. Both will give you a better result faster than SDL2, which is really designed for games and low-level graphics, not media UIs.
+
+**What are you most concerned about?** Keeping one codebase, ease of development, or something else? That might help me point you in the best direction.
+
+--------------------
+
+User prompt 4 of 5 - 7/27/2026, 6:40:44 PM:
+I'm partly building this as a way to improve my coding abilities, which primarily lie in C, but I have some C++ knowledge (but not full knowledge). I guess I could learn some Java. Regardless of language, I'd like to be able to code as much of it as I can on my own, without the use of other programs to handle the setup for me.
+
+Claude Haiku 4.5:
+That's a really honest answer, and it actually **makes SDL2 a much more defensible choice** in your case. If the goal is to deepen your C/C++ skills and build something meaningful from the ground up, SDL2 fits that philosophy perfectly.
+
+## Why SDL2 Makes Sense for Your Goals
+
+**You get to:**
+- Write custom UI code in C/C++ rather than relying on IDE wizards or framework magic
+- Handle input, rendering, and layout yourself—learning fundamentals
+- Control the entire pipeline from media scanning to display
+- Understand how graphics actually work at a lower level
+- Port the same codebase across platforms (Android, Pi, desktop)
+
+**The tradeoff:** It's more work and slower development than using native Android tools, but that's partly the point—you're learning, not just shipping quickly.
+
+## Realistic Path Forward
+
+1. **Start with a desktop version first** (Linux or Windows)
+   - Get the core media browser working with SDL2
+   - Build out the UI layout, file scanning, playback controls
+   - Test locally without Android complexity
+   - This is where you'll learn SDL2 properly
+
+2. **Add casting logic** (Chromecast/UPnP)
+   - Libraries like `libupnp` or `gupnp` exist for C/C++
+   - You'll integrate these into your SDL2 app
+   - Research how Chromecast discovery and casting work at the protocol level
+
+3. **Port to Android**
+   - SDL2 has Android support, but it requires NDK and some JNI (Java Native Interface) knowledge
+   - You'll need to write some Java/Kotlin to handle Android lifecycle, permissions, and system integration
+   - SDL2 handles the graphics/input; Java handles the OS glue
+   - This is doable, but expect a learning curve on the Android side
+
+4. **Optional: Raspberry Pi version**
+   - Same SDL2 codebase, just recompile for Pi
+   - Run it headless or with a small display
+
+## The Honest Challenge
+
+**The hardest part won't be SDL2—it'll be Android integration.** You'll eventually need to learn some Java/Kotlin because:
+- Android permissions, lifecycle, and system integration require it
+- You can't write a pure C app for Android; you need a Java entry point
+- SDL2 handles the graphics layer, but Android's OS layer needs Java
+
+So your learning path would be: **C/C++ (SDL2) → some Java/Kotlin (Android integration) → back to C/C++ (core logic)**.
+
+## My Recommendation
+
+**Start with a Linux/desktop SDL2 version.** Get comfortable with:
+- SDL2 basics (window, rendering, input)
+- Building a custom UI system (buttons, lists, file browsing)
+- File I/O and media scanning
+- Network code for casting discovery
+
+Once that's working well, **tackle Android as a second phase.** You'll understand your own codebase better, and the Android port will be clearer.
+
+**Does this feel like the right balance for what you're trying to achieve?** And do you have experience with any of the casting protocols (Chromecast, UPnP, etc.), or is that also new territory?
+
+--------------------
+
+User prompt 5 of 5 - 7/27/2026, 6:44:57 PM:
+It feels like the right balance. No experience with casting protocols. Will I be learning a lot of Java/Kotlin? I've heard Java was similar to C (or maybe it was JavaScript). Either way, I'm just trying to get an idea of how much studying I'll be doing when I reach that point.
+
+Claude Haiku 4.5:
+Good question—let me be realistic about what you'll actually need to learn.
+
+## How Much Java/Kotlin Will You Need?
+
+**Short answer: Not that much.** You'll need **just enough to bridge SDL2 to Android's OS layer**, not to become fluent in Java/Kotlin.
+
+### What You'll Actually Write in Java/Kotlin
+
+For a media browser app, your Java code will be fairly minimal:
+
+- **Activity lifecycle** (~50 lines): A thin wrapper that launches your SDL2 app
+- **Permissions handling** (~20-30 lines): Asking for storage/network access
+- **System integration** (~30-50 lines): Handling pause/resume, back button, maybe notifications
+- **Optional native interface** (~20-50 lines): If you need to call Android APIs from C (rare for your use case)
+
+**Total: Maybe 150-250 lines of Java/Kotlin, tops.** Not a huge amount.
+
+### Java vs. C Similarity
+
+You may have heard **Java is similar to C++**, not C. Here's the reality:
+
+| Aspect | C | Java |
+|--------|---|------|
+| **Syntax** | Semicolons, curly braces, familiar | Very similar—semicolons, curly braces |
+| **Memory** | Manual (`malloc`, `free`) | Automatic garbage collection |
+| **Pointers** | Central to C | Hidden/abstracted in Java |
+| **OOP** | Procedural, optional OOP | Pure OOP language |
+| **Functions vs Methods** | Functions are standalone | Everything is a method in a class |
+
+**Verdict:** Java's syntax feels **instantly familiar** to a C programmer. The concepts are different (garbage collection, no pointers, OOP-first), but the actual writing is straightforward.
+
+### What You'll Learn Quickly
+
+Since you're only writing a small Java wrapper:
+
+1. **Basic class structure** (a few minutes of reading)
+2. **Android Activity class** (boilerplate you mostly copy from examples)
+3. **Manifest file** (XML configuration, not code)
+4. **How to call C from Java via JNI** (if needed—you may not)
+
+You won't need to learn:
+- Advanced OOP patterns
+- Java's standard library (Collections, Streams, etc.)
+- Kotlin (unless you prefer it; Android's Java support is still solid)
+- Android frameworks like Room, Retrofit, etc.
+
+### Learning Timeline
+
+**Realistically:** 2-4 weeks of casual learning while you're building the SDL2 desktop version. You could literally pick up an Android NDK tutorial, follow it, and be ready to port when the time comes.
+
+**The casting protocols will actually take more study** than the Java/Android wrapper. UPnP and Chromecast have their own concepts you'll need to understand (SSDP discovery, SOAP, protocol messaging, etc.). That's the heavier lift, not the Java part.
+
+---
+
+**Bottom line: Don't stress about Java.** Focus on building the SDL2 app first, get comfortable with casting protocols, and when you're ready for Android, the Java part will feel almost trivial by comparison.
+
+
+
+## Core Technical Challenges
+
+### SDL2 Limitations for This Use Case
+
+**SDL2 is a graphics/input library, not a complete application framework.** For your project, you'll need to handle:
+
+- **File system operations** (torrent downloads, library scanning, video file management)
+- **Network operations** (HTTP requests to torrent sites, casting protocols like DLNA or AirPlay)
+- **Media playback** (SDL2 handles rendering, but you'll need FFmpeg or libVLC for video codec support)
+- **Database management** (tracking your library, user preferences, download status)
+- **Background tasks** (downloading torrents while the UI remains responsive)
+- **System integration** (permissions, storage access, hardware acceleration)
+
+SDL2 can be the **rendering layer**, but you'll be building a much larger system around it.
+
+### Pi 3A+ Viability
+
+**The Pi 3A+ will struggle significantly:**
+
+- **Only 512MB RAM** (vs. 1GB on Pi3B+, 2GB+ on Pi4): Running a torrent client, web scraper, media server, AND an SDL2 GUI simultaneously will likely cause memory pressure and swapping
+- **Single-core performance bottleneck**: Downloading, transcoding previews, and rendering UI concurrently will be sluggish
+- **Storage**: Without sufficient local storage or network access to your Pi4 NAS, you're limited
+
+**Recommendation**: Skip the Pi3A+ and move directly to testing on the Pi4 you're planning to use. The Pi3A+ will teach you lessons about optimization, but not much about your actual target deployment.
+
+---
+
+## Architectural Recommendations
+
+### Separate Concerns
+
+Rather than one monolithic SDL2 app, consider:
+
+| Component | Technology | Purpose |
+|-----------|-----------|---------|
+| **Backend Service** | C (libc + libraries) or Python | Torrent searching/downloading, library management, file serving, DLNA/casting protocol handling. Runs as a daemon on the Pi4 NAS |
+| **Frontend (Pi)** | SDL2 + C | Lightweight UI for searching, playback controls, library browsing. Communicates with backend via REST API or local IPC |
+| **Frontend (Android)** | Android SDK + Java/Kotlin | Mirrors Pi UI, calls same backend APIs |
+| **Media Server** | Existing tools (Jellyfin, Plex, Kodi) OR custom FFmpeg-based server | Streams video to both UI and casting devices |
+
+This approach has major advantages:
+- Your backend runs on the Pi4 NAS (which is already set up)
+- The Pi4 touchscreen app is lightweight (just a frontend)
+- Android app reuses the same backend
+- You're not re-implementing complex media server logic in SDL2
+
+### If You Insist on SDL2-Based Backend
+
+**You'd need to add** (in C or via C bindings):
+- **libcurl** or **libtorrent**: Torrent operations
+- **libxml2** or **libhtml5**: Web scraping
+- **sqlite3**: Local database
+- **FFmpeg (libavcodec/libavformat)**: Video decoding, metadata extraction, streaming
+- **libmicrohttpd**: Simple HTTP server for API endpoints
+- **Thread management** (POSIX pthreads or similar): Concurrent operations
+
+This is doable but significantly more complex than Lazyfoo covers. You're essentially building a media server from scratch.
+
+---
+
+## Concrete Next Steps
+
+1. **Clarify your architecture**: Will the backend (torrent client, library manager) run on the Pi4 NAS or on the Pi4 with the touchscreen?
+   - If the former: Build a lightweight SDL2 frontend + a separate backend
+   - If the latter: You're mixing two workloads on one machine (similar to your concern about your current Pi4, but with better hardware)
+
+2. **Start with a smaller scope**: Build a proof-of-concept that:
+   - Connects to your Pi4 NAS via network
+   - Fetches a list of available files
+   - Streams and plays one video file via SDL2 + FFmpeg
+   - This teaches you the integration challenges without tackling torrenting yet
+
+3. **Learn beyond Lazyfoo**: You'll need tutorials/documentation on:
+   - FFmpeg integration
+   - Network programming (sockets, HTTP)
+   - Multi-threading in C
+   - File I/O and library scanning
+
+4. **Consider alternatives if timeline matters**:
+   - **Kodi** on the Pi4 with a custom add-on (uses a remote API)
+   - **Web-based UI** (HTML/CSS/JavaScript frontend + C backend) instead of SDL2
+   - **Existing media server + custom Android app** (Jellyfin, Emby, etc.)
+
+## Network Programming: Yes, Even on Home Networks
+
+**You absolutely need network programming**, even on a local home network. Here's why:
+
+### What You're Building Requires Client-Server Communication
+
+Your Pi4 touchscreen app (the SDL2 frontend) will be a **separate machine from RP-NAS** (the backend). They communicate over Ethernet/WiFi. Even though it's "just" your home network, the mechanics are identical to internet communication:
+
+- **Socket programming** (TCP/IP): Create connections between the Pi4 touchscreen and RP-NAS
+- **HTTP or a custom protocol**: Define how they exchange messages (search queries, file lists, playback commands, streaming video)
+- **Handling network delays/failures**: What happens if RP-NAS is slow or unreachable?
+
+### Concrete Example Flow
+
+```
+User touches "Search for Movie" on Pi4 SDL2 app
+  ↓
+SDL2 app opens TCP socket to RP-NAS:8888
+  ↓
+Sends HTTP GET: /api/search?query=dune
+  ↓
+RP-NAS backend receives, searches torrent sites, returns JSON list
+  ↓
+SDL2 app renders results on touchscreen
+```
+
+This requires socket programming on both ends. You can't skip it.
+
+### Why Not Just Shared Files?
+
+You *could* use a shared filesystem (NFS, SMB) where the Pi4 app reads/writes files on RP-NAS, but this is **worse** for your learning project because:
+- You don't learn network protocols
+- Concurrent file access becomes messy (locking, consistency)
+- Streaming video requires efficient buffering (harder with shared filesystems)
+- You lose clean separation of concerns
+
+Building a proper client-server system is more educational and more maintainable.
+
+---
+
+## Your Learning Path
+
+### Phase 1: Network Fundamentals (2-4 weeks, depending on depth)
+
+**Learn socket programming in C** (POSIX sockets, not Windows-specific):
+
+| Topic | Learn From | Key Concepts |
+|-------|-----------|--------------|
+| **TCP/IP basics** | Beej's Guide to Network Programming (free online) | Sockets, addresses, ports, client/server model |
+| **Socket API** | Same guide + man pages (socket, bind, listen, connect, send, recv) | Creating listeners, accepting connections, data transmission |
+| **HTTP protocol** | RFC 7230 (or simplified tutorials) | Request/response format, headers, status codes |
+| **Blocking vs. non-blocking I/O** | Beej's guide Chapter 7 | How to handle multiple connections without freezing |
+
+**Deliverable**: A simple C program that:
+- Listens on a TCP port
+- Accepts a connection from another C program
+- Exchanges text messages
+- Closes cleanly
+
+This teaches you everything you need for client-server communication.
+
+### Phase 2: Build RP-NAS Backend (4-8 weeks)
+
+**Architecture**: A C daemon that:
+- Listens on TCP (e.g., port 8888)
+- Parses HTTP requests (you'll hand-parse simple GET requests; no need for a framework)
+- Implements handlers:
+  - `/api/search?query=X` → scrape torrent sites, return JSON list
+  - `/api/download?torrent_id=Y` → start torrent download (managed by a library or custom code)
+  - `/api/library` → list downloaded files
+  - `/api/stream?file=Z` → serve video file in chunks (for streaming)
+
+**Key libraries you'll need to learn**:
+
+| Library | Purpose | Learning Curve | Alternatives |
+|---------|---------|-----------------|---|
+| **libcurl** | HTTP requests (for scraping torrent sites) | Low (straightforward API) | Write raw sockets yourself (educational but tedious) |
+| **libtorrent-rasterbar** | Torrent protocol implementation | Medium (large, feature-rich) | Implement torrent protocol yourself (very hard) OR use a torrent search API instead of downloads |
+| **sqlite3** | Store library metadata, download history | Low (simple embedded DB) | JSON files (simpler but less scalable) |
+| **libxml2 or htmlparser** | Parse HTML from torrent sites | Medium (XML/HTML is complex) | Regular expressions (fragile but faster to learn) |
+| **JSON library (jsmn or cJSON)** | Generate JSON responses | Low (these are minimal libraries) | Manual string building (error-prone) |
+
+**My recommendation for Phase 2**: Start with **libcurl + jsmn + sqlite3 + a torrent API** (don't implement torrent downloads yourself yet). This lets you:
+- Build the HTTP server infrastructure
+- Implement search → JSON response pipeline
+- Store library data
+- Skip the complexity of torrent protocol (save for later learning)
+
+Once this works, you can replace the torrent API with libtorrent if you want.
+
+### Phase 3: SDL2 Frontend (2-3 weeks)
+
+**You already know SDL2 basics (guides 1-20).** Now add:
+- Network client code (connect to RP-NAS, send requests, parse JSON responses)
+- Text input handling (search box)
+- Rendering search results, library lists
+- Video playback (integrate FFmpeg for decoding + SDL2 rendering)
+
+**Additional libraries**:
+
+| Library | Purpose |
+|---------|---------|
+| **FFmpeg (libavformat/libavcodec)** | Decode video, extract metadata |
+| **cJSON or jsmn** | Parse JSON responses from RP-NAS |
+
+### Phase 4: Streaming & Casting (3-4 weeks)
+
+Once Phase 3 works:
+- Implement efficient video streaming from RP-NAS (don't send entire file; use ranges/chunks)
+- Learn DLNA or a simpler casting protocol (or start with just local playback)
+- Handle buffering, pause/resume, seeking
+
+### Phase 5: Android App (4-6 weeks)
+
+**Same architecture**: Android app is a client that talks to the same RP-NAS backend. You're just replicating the SDL2 UI in Android/Kotlin.
+
+---
+
+## Realistic Time Estimate
+
+| Phase | Time | Notes |
+|-------|------|-------|
+| 1. Network fundamentals | 2-4 weeks | Foundation; don't rush this |
+| 2. RP-NAS backend | 6-10 weeks | Largest, most complex phase |
+| 3. SDL2 frontend | 2-3 weeks | You know SDL2 already |
+| 4. Streaming/casting | 3-4 weeks | Depends on casting complexity |
+| 5. Android app | 4-6 weeks | New framework (Android SDK) |
+| **Total** | **~5-7 months** | Part-time learning pace |
+
+---
+
+## Immediate Action Items
+
+1. **Download Beej's Guide to Network Programming** (https://beej.us/guide/bgnet/) — read Chapters 1-7 (sockets, client/server basics, data types). This is the best free resource for learning socket programming in C on Unix-like systems (Pi runs Linux).
+
+2. **Write a toy socket program**:
+   ```c
+   // Server: listens on port 9999, accepts a connection, receives a message, sends "OK"
+   // Client: connects to server, sends "hello", receives "OK"
+   ```
+   This teaches you the core mechanics before you integrate HTTP.
+
+3. **Decide on torrent strategy**:
+   - **Option A (simpler)**: Use a torrent search API (e.g., The Pirate Bay, 1337x have search APIs). RP-NAS queries the API, returns results. User confirms download → use **libtorrent-rasterbar** to download.
+   - **Option B (more learning)**: Implement torrent download yourself (much harder; skip for now).
+
+4. **Choose a JSON library**: Either **cJSON** (simpler) or **jsmn** (smaller footprint). Write a small test program that generates/parses JSON. This is trivial but important for Phase 2.
+
+5. **Sketch the HTTP API** your frontend will call:
+   ```
+   GET /api/search?query=dune → JSON array of torrents
+   POST /api/download → {torrent_id, file_hash}
+   GET /api/library → JSON array of downloaded files
+   GET /api/stream?file_id=123&start=0&end=1000000 → binary video chunks
+   ```
+
+---
+
+## One More Thing: Torrent Legal/Ethical Note
+
+I assume you're aware: searching for and downloading copyrighted movies/TV shows without permission is illegal in most jurisdictions. This project teaches you the *technical skills*, but using it to pirate content carries legal risk. You might consider:
+- Testing with legal torrents (Linux distributions, public domain films, Creative Commons content)
+- Building the same architecture for a **legal streaming service** (your own recorded content, public library, etc.)
+
+That said, the technical learning is identical—just the content source changes.
+
+---
+
+## My Honest Assessment
+
+**You're well-positioned for this.** You have:
+- ✅ Solid C foundation (full C99 book)
+- ✅ SDL2 basics (20 guides in)
+- ✅ Patience for learning (you said timelines don't matter)
+- ✅ Clear architecture in mind (backend/frontend separation)
+
+**What you lack** (and will learn):
+- Network programming (Beej's guide fixes this)
+- Media libraries (FFmpeg, libtorrent)
+- HTTP protocol details
+- Concurrent programming (handling multiple clients on RP-NAS)
+
+None of these are insurmountable. They're all teachable through documentation, man pages, and trial-and-error.
+
+## Phase 1: Network Fundamentals (2-4 weeks)
+
+### 1.1 TCP/IP Basics & Socket Theory
+
+**What you need to understand:**
+
+- **OSI Model layers** (focus on Layers 3-4): How TCP/IP sits in the networking stack
+- **IP addresses and ports**: IPv4 notation (192.168.x.x), localhost (127.0.0.1), port ranges (0-65535, ephemeral vs. well-known)
+- **TCP vs. UDP**: Why you want TCP (reliable, ordered, connection-based) for this project
+- **Sockets abstraction**: A socket is a "file descriptor" representing one end of a network connection
+- **Client vs. server roles**:
+  - **Server**: Creates a listening socket (bind to port), waits for incoming connections (listen/accept)
+  - **Client**: Creates a socket, initiates connection to server (connect), sends/receives data
+- **Blocking I/O model**: When you call `recv()`, it blocks until data arrives (sufficient for Phase 1)
+
+**Learning resources:**
+- Beej's Guide to Network Programming, Chapters 1-3 (Intro, What is a socket, IP addresses)
+- Man pages: `man socket`, `man bind`, `man listen`, `man connect`, `man send`, `man recv`
+
+**Hands-on deliverable**: Draw a diagram showing:
+```
+Client                          Server
+------                          ------
+socket()                        socket()
+  ↓                               ↓
+connect(server_addr)            bind(port)
+  ↓                               ↓
+                                listen()
+                                  ↓
+send(data) ──────────→         accept()
+                                  ↓
+                              recv(data)
+recv(response) ←──────        send(response)
+close()                       close()
+```
+
+---
+
+### 1.2 Socket API in C (POSIX)
+
+**Key functions you must understand and practice:**
+
+| Function | Header | Purpose | Notes |
+|----------|--------|---------|-------|
+| `socket()` | `<sys/socket.h>` | Create a socket file descriptor | Returns int (fd), or -1 on error; specify AF_INET, SOCK_STREAM, IPPROTO_TCP |
+| `bind()` | `<sys/socket.h>` | Attach socket to a port on your machine | Server only; bind to INADDR_ANY (all interfaces) or specific IP |
+| `listen()` | `<sys/socket.h>` | Mark socket as accepting connections | Server only; backlog parameter (queue size) |
+| `accept()` | `<sys/socket.h>` | Accept incoming connection | Server only; blocks until client connects; returns new fd |
+| `connect()` | `<sys/socket.h>` | Initiate connection to server | Client only; provide server address/port; blocks until connected |
+| `send()` | `<sys/socket.h>` | Send data over socket | Returns bytes sent (may be < requested); -1 on error |
+| `recv()` | `<sys/socket.h>` | Receive data from socket | Returns bytes received (0 = connection closed); blocks until data arrives |
+| `close()` | `<unistd.h>` | Close socket file descriptor | Clean shutdown |
+| `inet_aton()` | `<arpa/inet.h>` | Convert "192.168.1.1" string to binary | Deprecated but simple; prefer `inet_pton()` |
+| `inet_pton()` | `<arpa/inet.h>` | Convert IP address string to binary (IPv4/IPv6) | Modern version of inet_aton |
+| `htons()`, `ntohs()` | `<arpa/inet.h>` | Host-to-network byte order (endianness conversion) | Ports must be in network byte order (big-endian) |
+| `getaddrinfo()` | `<netdb.h>` | Modern way to resolve hostnames and get socket addresses | More complex but handles IPv4/IPv6; returns struct addrinfo |
+| `perror()` or `strerror()` | `<stdio.h>` / `<string.h>` | Print error messages | Use after checking return value == -1 |
+
+**Data structures you'll use:**
+
+```c
+// IPv4 socket address (you'll fill this in)
+struct sockaddr_in {
+    sa_family_t sin_family;      // AF_INET
+    in_port_t sin_port;          // Port number (network byte order!)
+    struct in_addr sin_addr;     // IP address (network byte order)
+    char sin_zero[8];            // Padding; memset to 0
+};
+
+struct in_addr {
+    uint32_t s_addr;             // IP address as 32-bit number
+};
+
+// Generic socket address (used by bind, connect, etc.)
+struct sockaddr {
+    sa_family_t sa_family;       // AF_INET, AF_INET6, etc.
+    char sa_data[14];            // Address data
+};
+// You cast (struct sockaddr_in *) to (struct sockaddr *) when calling functions
+```
+
+**Learning resources:**
+- Beej's Guide, Chapters 4-5 (`struct sockaddr`, socket functions)
+- Man pages: `man 7 ip`, `man inet_aton`, `man htons`
+
+**Hands-on deliverable #1: Simple TCP Echo Server**
+
+Write a C program `echo_server.c`:
+- Creates a TCP socket
+- Binds to port 9999 on localhost
+- Listens for connections
+- Accepts ONE connection
+- Receives up to 1024 bytes
+- Sends the data back (echo)
+- Closes connection
+
+**Hands-on deliverable #2: Simple TCP Echo Client**
+
+Write a C program `echo_client.c`:
+- Creates a TCP socket
+- Connects to localhost:9999
+- Sends a message (e.g., "hello from client")
+- Receives echo response
+- Prints it
+- Closes socket
+
+**Testing**: Run server in one terminal, client in another. Verify messages go back and forth.
+
+---
+
+### 1.3 HTTP Protocol Basics
+
+**You need to understand HTTP because your frontend/backend will communicate via HTTP.**
+
+**HTTP Request Structure** (what client sends):
+
+```
+GET /api/search?query=dune HTTP/1.1
+Host: 192.168.1.100:8888
+Connection: close
+User-Agent: MyMediaApp/1.0
+Content-Length: 0
+
+```
+
+**Breaking this down:**
+- Line 1: `METHOD PATH PROTOCOL_VERSION` (GET, POST, PUT, DELETE, etc.)
+- Headers: Key-Value pairs (Host, Content-Length, User-Agent, etc.)
+- Blank line
+- Body: (optional, usually for POST/PUT; GET has no body)
+
+**HTTP Response Structure** (what server sends):
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 42
+Connection: close
+
+[{"title":"Dune","id":123}]
+```
+
+**Breaking this down:**
+- Line 1: `PROTOCOL_VERSION STATUS_CODE STATUS_MESSAGE` (e.g., "HTTP/1.1 200 OK")
+- Headers: Key-Value pairs (Content-Type, Content-Length, etc.)
+- Blank line
+- Body: Data (JSON, HTML, binary, etc.)
+
+**Common status codes:**
+- 200 OK: Success
+- 400 Bad Request: Client error (malformed request)
+- 404 Not Found: Resource doesn't exist
+- 500 Internal Server Error: Server error
+
+**Content-Type header matters:**
+- `application/json`: Body is JSON
+- `text/plain`: Body is plain text
+- `text/html`: Body is HTML
+- `video/mp4`: Body is video data
+- `application/octet-stream`: Raw binary data
+
+**Learning resources:**
+- RFC 7230 (HTTP/1.1 specification) — dense but authoritative
+- MDN Web Docs: "HTTP" overview (easier read)
+- Beej's Guide, Chapter 6 (has a brief HTTP section)
+
+**Hands-on deliverable: Manually construct HTTP requests**
+
+Without any libraries, manually build HTTP request strings and response strings in C:
+
+```c
+// Request example
+const char *request = 
+    "GET /api/search?query=dune HTTP/1.1\r\n"
+    "Host: 192.168.1.100:8888\r\n"
+    "Connection: close\r\n"
+    "\r\n";
+
+// Send this over your TCP socket from Phase 1.2
+```
+
+Parse a response manually by:
+- Reading until you find `\r\n\r\n` (end of headers)
+- Extracting headers
+- Reading body (Content-Length tells you how many bytes)
+
+This teaches you HTTP mechanics without parsing libraries.
+
+---
+
+### 1.4 Handling Multiple Connections (Concurrent I/O)
+
+**Problem**: Your current echo server handles one client, then waits for another. Real servers handle multiple simultaneous clients. There are several approaches:
+
+| Approach | Pros | Cons | Use Case |
+|----------|------|------|----------|
+| **Threads** (pthreads) | Simple; each client = one thread | Can be expensive (many threads = overhead); synchronization complexity | Good for low-client count (10-100 clients) |
+| **Processes** (fork) | Isolation between clients | Very expensive; many processes use lots of RAM | OK for very low concurrency |
+| **select()/poll()** | Single-threaded; handle many clients | More complex event loop logic; manual state tracking | Good for high concurrency (1000+ clients) |
+| **epoll()** (Linux) | Single-threaded; very efficient | Linux-only; higher complexity | Best for Linux servers with many clients |
+
+**For your RP-NAS backend**: Start with **threads** (easiest to learn). Your home network won't have 1000s of concurrent clients.
+
+**Learning pthreads:**
+
+| Function | Purpose |
+|----------|---------|
+| `pthread_create()` | Create a new thread |
+| `pthread_join()` | Wait for thread to finish |
+| `pthread_mutex_init()` | Create a mutex (lock) |
+| `pthread_mutex_lock()` | Acquire lock (blocks if held) |
+| `pthread_mutex_unlock()` | Release lock |
+| `pthread_cond_wait()` | Wait for condition variable |
+| `pthread_cond_signal()` | Signal waiting thread |
+
+**Learning resources:**
+- Beej's Guide, Chapter 9 (pthreads intro)
+- Man pages: `man pthread_create`, `man pthread_mutex_init`, etc.
+- "POSIX Threads Programming" (free LLNL tutorial)
+
+**Hands-on deliverable: Multi-threaded Echo Server**
+
+Modify your echo server from 1.2:
+- Accept multiple clients in a loop
+- For each client, spawn a thread to handle it
+- Thread receives/echoes data, then exits
+- Main loop continues accepting
+
+Test: Run server, connect multiple clients (multiple terminals), all should work concurrently.
+
+**Synchronization note**: For RP-NAS, you'll need mutexes to protect:
+- Download queue (multiple clients adding downloads)
+- Library file list (one thread scanning filesystem, others reading it)
+- Torrent client state (multiple requests hitting torrent engine)
+
+---
+
+### 1.5 Error Handling & Robustness
+
+**In C, you must check return values religiously:**
+
+```c
+int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+if (sock == -1) {
+    perror("socket failed");
+    exit(EXIT_FAILURE);
+}
+
+int res = bind(sock, (struct sockaddr *)&addr, sizeof(addr));
+if (res == -1) {
+    perror("bind failed");
+    close(sock);
+    exit(EXIT_FAILURE);
+}
+```
+
+**Common error scenarios to handle:**
+- Connection refused (server not running)
+- Connection reset (server crashed mid-transfer)
+- Broken pipe (send() when peer closed)
+- Timeout (stuck recv() — use SO_RCVTIMEO socket option)
+- Partial sends (send() returns < requested bytes; loop to send rest)
+- Partial receives (recv() returns < buffer size; loop to get all)
+
+**Socket options to learn:**
+- `SO_REUSEADDR`: Avoid "Address already in use" error when restarting server
+- `SO_RCVTIMEO` / `SO_SNDTIMEO`: Timeouts on recv/send
+- `SO_KEEPALIVE`: Detect dead connections
+
+```c
+int reuse = 1;
+setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+```
+
+**Hands-on deliverable**: Wrap socket operations in helper functions
+
+```c
+// helpers.c
+int create_server_socket(int port);
+int accept_client(int server_sock);
+int send_all(int sock, const char *data, int len);
+int recv_all(int sock, char *buffer, int max_len);
+```
+
+These encapsulate error checking and retry logic.
+
+---
+
+## Phase 2: RP-NAS Backend (6-10 weeks)
+
+This is the most complex phase. Breaking it into sub-phases:
+
+### 2.0 Overall RP-NAS Architecture
+
+**RP-NAS is a long-running daemon that:**
+1. Listens on port 8888 for HTTP requests
+2. Parses incoming HTTP requests
+3. Routes requests to handlers based on path (/api/search, /api/library, etc.)
+4. Manages torrent downloads (lifecycle: queued → downloading → completed)
+5. Maintains a library of downloaded files
+6. Serves video files to clients (streaming)
+
+**Directory structure (on RP-NAS):**
+
+```
+rp-nas/
+├── src/
+│   ├── main.c              # Entry point, main server loop
+│   ├── http_server.c       # HTTP listening, parsing, response
+│   ├── handlers.c          # API handlers (/api/search, /api/library, etc.)
+│   ├── torrent.c           # Torrent search & download management
+│   ├── library.c           # Scan disk, maintain metadata in DB
+│   ├── database.c          # SQLite wrapper functions
+│   ├── utils.c             # JSON generation, string utilities
+│   └── *.h                 # Headers
+├── deps/                    # External libraries (libcurl, sqlite3, libtorrent, etc.)
+├── config/
+│   └── config.h            # Compile-time configuration (ports, paths, etc.)
+├── build/
+│   └── rp-nas              # Compiled binary
+└── data/
+    ├── downloads/          # Downloaded torrent files
+    ├── library.db          # SQLite database
+    └── cache/              # Temporary files
+```
+
+**On startup, RP-NAS should:**
+1. Initialize SQLite database (create tables if needed)
+2. Scan filesystem for existing downloads
+3. Start HTTP server (bind to port 8888)
+4. Create thread pool for handling client requests
+5. Create background thread for torrent download management (check downloads, move completed files, etc.)
+
+---
+
+### 2.1 HTTP Server in C (No External Framework)
+
+**Goal**: Hand-write an HTTP server that can parse requests and send responses. This is educational and gives you control.
+
+**Core workflow for each client connection:**
+
+```
+1. accept() connection
+2. recv() raw HTTP request bytes into buffer
+3. Parse HTTP request:
+   - Extract method (GET, POST, etc.)
+   - Extract path (/api/search, /api/library, etc.)
+   - Extract query parameters (?query=dune&page=1)
+   - Extract headers (Host, Content-Length, etc.)
+   - Read body if present (Content-Length bytes)
+4. Route to appropriate handler based on path
+5. Handler processes request, generates response
+6. Send HTTP response
+7. close() socket
+```
+
+**HTTP Request Parser Pseudo-code:**
+
+```c
+typedef struct {
+    char method[10];           // "GET", "POST", etc.
+    char path[256];            // "/api/search"
+    char query_string[512];    // "query=dune&page=1"
+    char body[4096];           // Request body (if any)
+    int body_len;
+    // ... headers ...
+} HTTPRequest;
+
+void parse_http_request(const char *raw_request, HTTPRequest *req) {
+    // 1. Split by \r\n
+    // 2. First line: "GET /api/search?query=dune HTTP/1.1"
+    //    → Extract method, path, query_string
+    // 3. Following lines until blank line: headers
+    // 4. After blank line: body
+}
+```
+
+**Hands-on deliverable #1: HTTP Request Parser**
+
+Write `http_parser.c`:
+- `parse_http_request(raw_buffer, HTTPRequest *)`: Parse raw bytes into structured request
+- `generate_http_response(status_code, headers, body, response_buffer)`: Generate response string
+- Test with hardcoded HTTP requests (from 1.3)
+
+**Hands-on deliverable #2: Basic HTTP Server**
+
+Write `http_server.c`:
+- Listen on port 8888
+- Accept client
+- recv() raw HTTP request
+- Call parse function from deliverable #1
+- For GET /test: return "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello World"
+- For GET /notfound: return "HTTP/1.1 404 Not Found\r\n\r\n"
+- Send response
+- close() socket
+
+Test: Use `curl http://localhost:8888/test` from command line (or
+
+--------------------
+
+There's significantly more. This is roughly **Phase 1 (complete) and Phase 2.0-2.1 (partial)**. Still needed:
+
+- **2.2-2.9**: Database schema, torrent integration (libtorrent-rasterbar or manual protocol), JSON generation (cJSON vs. jsmn decision), library scanning, download queue management, streaming/chunking
+- **Phase 3**: SDL2 frontend (network client, UI, text input, FFmpeg integration)
+- **Phase 4**: Video streaming & casting protocols
+- **Phase 5**: Android app (Kotlin/SDK)
+
+This is a **structured roadmap with learning objectives and deliverables**, but not step-by-step instructions. Each section tells you *what* to learn and *what to build*, but you'll need to:
+
+- Research/read the referenced materials yourself
+- Write the actual code
+- Debug and test independently
+- Make architectural decisions (e.g., cJSON vs. jsmn, threading vs. epoll)
