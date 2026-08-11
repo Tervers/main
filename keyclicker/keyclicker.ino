@@ -20,7 +20,9 @@ const int DIGIT_PIN[] = {17, 16, 15, 14};
 
 void selectDigit(uint8_t digit);
 void writeData(int value);
+void setDigits(int value);
 void writeDisplay(int value, int a[]);
+
 
 Servo mainServo;
 
@@ -50,7 +52,7 @@ void setup() {
     pinMode(DIGIT_PIN[i], OUTPUT);
   }
 
-  setAngle = map(((analogRead(SERVO_ANALOG) / 10) * 10), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
+  setAngle = map(analogRead(SERVO_ANALOG), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
   seconds = map(analogRead(TIME_ANALOG), 0, 1023, 60, 0);
   digits[1] = ((setAngle % 1000) / 100);
   digits[2] = ((setAngle % 100) / 10);
@@ -60,7 +62,7 @@ void setup() {
     digitValue = digits[i];
     writeData(num[digitValue]);
     delay(5);
-    writeData(0xff);      
+    writeData(0xff);
   }
 }
 
@@ -83,7 +85,7 @@ void loop() {
     startToggle = true;  
 
   while (startToggle) {
-    setAngle = map(((analogRead(SERVO_ANALOG) / 10) * 10), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
+    setAngle = map((analogRead(SERVO_ANALOG), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
     seconds = map(analogRead(TIME_ANALOG), 0, 1023, 60, 0);
     for (pos = setAngle; pos < setAngle + 6; pos += 1) {
       mainServo.write(pos);
@@ -100,11 +102,11 @@ void loop() {
         timeToggle = true;
         startToggle = false;
       }
-      if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
+      else if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
         angleToggle = true;
         startToggle = false;
       }
-}
+  }
 
   while (timeToggle) {
     seconds = map(analogRead(TIME_ANALOG), 0, 1023, 60, 0);
@@ -124,7 +126,7 @@ void loop() {
   }
 
   while (angleToggle) {
-    timeToggle = false;
+//    timeToggle = false;
     setAngle = map(analogRead(SERVO_ANALOG), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
     mainServo.write(setAngle);
     digits[1] = ((setAngle % 1000) / 100);
