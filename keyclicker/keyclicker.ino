@@ -1,3 +1,5 @@
+// finish writeDisplay(). Create interrupts for buttons.
+
 #include <Servo.h>
 #include <time.h>
 #include <stdlib.h>
@@ -9,34 +11,32 @@
 #define TIME_SELECT_PIN 19
 
 #define USER_MINIMUM_ANGLE  75
-#define USER_MAXIMUM_ANGLE 126
+#define USER_MAXIMUM_ANGLE 125
 
 #define DATA_PIN 18
 #define LATCH_PIN 20
 #define CLOCK_PIN 21
-const int COM_PIN[] = {17, 16, 15, 14};
+const int DIGIT_PIN[] = {17, 16, 15, 14};
+
+void selectDigit(uint8_t digit);
+void writeData(int value);
+void writeDisplay(int value, int a[]);
 
 Servo mainServo;
 
 int pos = 0;
 int setAngle = USER_MINIMUM_ANGLE;
-int checkAngle = 0;
-
-int angleButtonValue = 0;
-int timeButtonValue = 0;
 
 int seconds = 0;
 
-int digit;
+int digitValue;
 int digits[4];
 
 bool startToggle = false;
 bool timeToggle = false;
 bool angleToggle = false;
-
-int offset = 0;
          
-byte num[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07,    // characters 0-7
+uint8_t num[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07,    // characters 0-7
               0x7f, 0x6f, 0x77, 0x7c, 0x39, 0x5e, 0x79, 0x71};    // characters 8-9, A-F
 
 void setup() {
@@ -47,29 +47,24 @@ void setup() {
   pinMode(CLOCK_PIN, OUTPUT);
   pinMode(DATA_PIN, OUTPUT);
   for (int i = 0; i < 4; i++) {
-    pinMode(COM_PIN[i], OUTPUT);
+    pinMode(DIGIT_PIN[i], OUTPUT);
   }
 
   setAngle = map(((analogRead(SERVO_ANALOG) / 10) * 10), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
-//  mainServo.write(setAngle);
+  seconds = map(analogRead(TIME_ANALOG), 0, 1023, 60, 0);
   digits[1] = ((setAngle % 1000) / 100);
   digits[2] = ((setAngle % 100) / 10);
   digits[3] = (setAngle % 10);
   for (int i = 1; i < 4; i++) {
-    electDigitalDisplay(i);
-    digit = digits[i];
-    writeData(num[digit]);
+    selectDigit(i);
+    digitValue = digits[i];
+    writeData(num[digitValue]);
     delay(5);
     writeData(0xff);      
   }
-
-  Serial.begin(9600);
-  delay(2000);
-  Serial.println("Raspberry Pi Pico initialization completed!");
 }
 
 void loop() {
-//  checkAngle = setAngle;
 
   if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
     delay(20);
@@ -88,135 +83,75 @@ void loop() {
     startToggle = true;  
 
   while (startToggle) {
-    Serial.println("1");
-    for (pos = setAngle; pos < setAngle + 7; pos += 1) {
+    setAngle = map(((analogRead(SERVO_ANALOG) / 10) * 10), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
+    seconds = map(analogRead(TIME_ANALOG), 0, 1023, 60, 0);
+    for (pos = setAngle; pos < setAngle + 6; pos += 1) {
       mainServo.write(pos);
       delay(20);
     }
-    Serial.println("2");
-    for (pos = setAngle; pos > setAngle - 7; pos -= 1) {
+    for (pos = setAngle; pos > setAngle - 6; pos -= 1) {
       mainServo.write(pos);
       delay(20);
     }
-    Serial.println("3");
     delay(seconds * 1000);
-    Serial.println("4");
     srand((unsigned) time(NULL));
-    delay(offset = (rand() % 2000));
-    Serial.println("5");
-//    setAngle = map(((analogRead(SERVO_ANALOG) / 10) * 10), 0, 1023, USER_MINIMUM_ANGLE, USER_MAXIMUM_ANGLE);
-//    if (setAngle != checkAngle)
-//      angleToggle = true;
-//    if (digitalRead(TIME_SELECT_PIN) == LOW) {
-//      delay(20);
+    delay((rand() % 2000));
       if (digitalRead(TIME_SELECT_PIN) == LOW) {
         timeToggle = true;
         startToggle = false;
-//      angleToggle = false;
       }
-//    }
-    if (timeToggle)
-      Serial.println("True");
-    else
-      Serial.println("False");
-    if (startToggle)
-      Serial.println("True");
-    else
-      Serial.println("False");
-    Serial.println("6");
-//    if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
-//      delay(20);
       if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
         angleToggle = true;
         startToggle = false;
-//      timeToggle = false;
       }
-//    }
-    if (timeToggle)
-      Serial.println("True");
-    else
-      Serial.println("False");
-    if (startToggle)
-      Serial.println("True");
-    else
-      Serial.println("False");
-  }
+}
 
   while (timeToggle) {
-//    angleToggle = false;
-    timeButtonValue = digitalRead(TIME_SELECT_PIN);
-    Serial.println("Time Button Value:");
-    Serial.println(timeButtonValue);
     seconds = map(analogRead(TIME_ANALOG), 0, 1023, 60, 0);
-    Serial.println("Seconds:");
-    Serial.println(seconds);
     digits[1] = ((seconds % 1000) / 100);
     digits[2] = ((seconds % 100) / 10);
     digits[3] = (seconds % 10);
     for (int i = 1; i < 4; i++) {
-      electDigitalDisplay(i);
-      digit = digits[i];
-      writeData(num[digit]);
+      selectDigit(i);
+      digitValue = digits[i];
+      writeData(num[digitValue]);
       delay(5);
       writeData(0xff);      
     }
     if (digitalRead(TIME_SELECT_PIN) == LOW) {
-//      delay(20);
-//      if (digitalRead(TIME_SELECT_PIN) == LOW) {
         timeToggle = false;
       }
-//    }
-//    if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
-//      delay(20);
-//      if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
-//        angleToggle = false;
-//      }
-//    }
   }
 
   while (angleToggle) {
     timeToggle = false;
-    Serial.println("Angle Button Value:");
-    Serial.println(angleButtonValue);
-    setAngle = map(((analogRead(SERVO_ANALOG) / 10) * 10), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
+    setAngle = map(analogRead(SERVO_ANALOG), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
     mainServo.write(setAngle);
     digits[1] = ((setAngle % 1000) / 100);
     digits[2] = ((setAngle % 100) / 10);
     digits[3] = (setAngle % 10);
     for (int i = 1; i < 4; i++) {
-      electDigitalDisplay(i);
-      digit = digits[i];
-      writeData(num[digit]);
+      selectDigit(i);
+      digitValue = digits[i];
+      writeData(num[digitValue]);
       delay(5);
       writeData(0xff);      
     }
     if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
-//    delay(20);
-//      if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
         angleToggle = false;
     }
-//    if (digitalRead(TIME_SELECT_PIN) == LOW) {
-//      delay(20);
-//      if (digitalRead(TIME_SELECT_PIN) == LOW) {
-//        timeToggle = false;
-//      }
   }
 }
 
-void electDigitalDisplay(byte com) {
-  // Close all single 7-segment display
+void selectDigit(uint8_t digit) {
   for (int i = 0; i < 4; i++) {
-    digitalWrite(COM_PIN[i], HIGH);
+    digitalWrite(DIGIT_PIN[i], HIGH);  // Clear all 7-segment sections
   }
-  // Open the selected single 7-segment display
-  digitalWrite(COM_PIN[com], LOW);
+  digitalWrite(DIGIT_PIN[digit], LOW);  // Open the selected individual 7-segment display
 }
 
 void writeData(int value) {
-  // Make LATCH_PIN output low level
   digitalWrite(LATCH_PIN, LOW);
-  // Send serial data to 74HC595
-  shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, value);  // Make LATCH_PIN output high level
-// Make LATCH_PIN output high level, then 74HC595 will update data to parallel output
-  digitalWrite(LATCH_PIN, HIGH);
+  shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, value);  // Send serial data to 74HC595
+  digitalWrite(LATCH_PIN, HIGH);// High level will update data to parallel output (74HC595)
 }
