@@ -1,12 +1,12 @@
-// finish writeDisplay(). Create interrupts for buttons.
-
 #include <Servo.h>
 #include <time.h>
 #include <stdlib.h>
+#include <pico/time.h>
 
 #define SERVO_PIN 22
 #define SERVO_ANALOG 26
 #define TIME_ANALOG 28
+#define OFFSET_SELECT_PIN 
 #define ANGLE_SELECT_PIN 13
 #define TIME_SELECT_PIN 19
 
@@ -23,13 +23,17 @@ void writeData(int value);
 void setDigits(int value);
 void writeDisplay(int value, int a[]);
 
-
 Servo mainServo;
 
 int pos = 0;
 int setAngle = USER_MINIMUM_ANGLE;
 
+int timer = 0;
+int countdown = 0;
 int seconds = 0;
+int offset = 0;
+uint32_t now = to_ms_since_boot(get_absolute_time());
+uint32_t stop = now + (seconds * 1000);
 
 int digitValue;
 int digits[4];
@@ -37,6 +41,7 @@ int digits[4];
 bool startToggle = false;
 bool timeToggle = false;
 bool angleToggle = false;
+bool offsetToggle = true;
          
 uint8_t num[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07,    // characters 0-7
               0x7f, 0x6f, 0x77, 0x7c, 0x39, 0x5e, 0x79, 0x71};    // characters 8-9, A-F
@@ -51,23 +56,12 @@ void setup() {
   for (int i = 0; i < 4; i++) {
     pinMode(DIGIT_PIN[i], OUTPUT);
   }
-
   setAngle = map(analogRead(SERVO_ANALOG), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
   seconds = map(analogRead(TIME_ANALOG), 0, 1023, 60, 0);
-  digits[1] = ((setAngle % 1000) / 100);
-  digits[2] = ((setAngle % 100) / 10);
-  digits[3] = (setAngle % 10);
-  for (int i = 1; i < 4; i++) {
-    selectDigit(i);
-    digitValue = digits[i];
-    writeData(num[digitValue]);
-    delay(5);
-    writeData(0xff);
-  }
 }
 
 void loop() {
-
+/*  
   if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
     delay(20);
     if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
@@ -80,12 +74,12 @@ void loop() {
       timeToggle = true;
     }
   }
-
+*/
   if (!timeToggle && !angleToggle)
     startToggle = true;  
 
   while (startToggle) {
-    setAngle = map((analogRead(SERVO_ANALOG), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
+    setAngle = map(analogRead(SERVO_ANALOG), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
     seconds = map(analogRead(TIME_ANALOG), 0, 1023, 60, 0);
     for (pos = setAngle; pos < setAngle + 6; pos += 1) {
       mainServo.write(pos);
@@ -95,18 +89,51 @@ void loop() {
       mainServo.write(pos);
       delay(20);
     }
-    delay(seconds * 1000);
-    srand((unsigned) time(NULL));
-    delay((rand() % 2000));
+    if (offsetToggle == true) {
+        srand((unsigned) time(NULL));
+        offset = (rand() % 2000);
+    }
+    else
+      offset = 0;
+    now = to_ms_since_boot(get_absolute_time());
+    timer = (now + (seconds * 1000) + offset);
+    while (to_ms_since_boot(get_absolute_time()) < (now + (seconds * 1000) + offset)) {
+      countdown = timer - to_ms_since_boot(get_absolute_time());
+      digits[0] = ((countdown % 1000000) / 100000);
+      digits[1] = ((countdown % 100000) / 10000);
+      digits[2] = ((countdown % 10000) / 1000);
+      digits[3] = ((countdown % 1000) / 100);
+      for (int i = 0; i < 4; i++) {
+        selectDigit(i);
+        digitValue = digits[i];
+        if (i == 2) {
+          writeData(num[digitValue] | 0x80);
+        }
+        else {
+          writeData(num[digitValue]);
+        }
+        delay(5);
+        writeData(0xff);      
+      }
       if (digitalRead(TIME_SELECT_PIN) == LOW) {
-        timeToggle = true;
-        startToggle = false;
+        delay(20);
+        if (digitalRead(TIME_SELECT_PIN) == LOW) {
+          timeToggle = true;
+          startToggle = false;
+          break;
+        }
       }
-      else if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
-        angleToggle = true;
-        startToggle = false;
+      if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
+        delay(20);
+        if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
+          angleToggle = true;
+          startToggle = false;
+          break;
+        }
       }
-  }
+    }
+
+  delay(200);
 
   while (timeToggle) {
     seconds = map(analogRead(TIME_ANALOG), 0, 1023, 60, 0);
@@ -121,12 +148,13 @@ void loop() {
       writeData(0xff);      
     }
     if (digitalRead(TIME_SELECT_PIN) == LOW) {
+      delay(20);
+      if (digitalRead(TIME_SELECT_PIN) == LOW)
         timeToggle = false;
       }
   }
 
   while (angleToggle) {
-//    timeToggle = false;
     setAngle = map(analogRead(SERVO_ANALOG), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
     mainServo.write(setAngle);
     digits[1] = ((setAngle % 1000) / 100);
@@ -140,10 +168,14 @@ void loop() {
       writeData(0xff);      
     }
     if (digitalRead(ANGLE_SELECT_PIN) == LOW) {
+      delay(20);
+      if (digitalRead(ANGLE_SELECT_PIN) == LOW)
         angleToggle = false;
-    }
+      }
   }
 }
+}
+
 
 void selectDigit(uint8_t digit) {
   for (int i = 0; i < 4; i++) {
