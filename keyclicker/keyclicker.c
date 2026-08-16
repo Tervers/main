@@ -1,4 +1,5 @@
 #include <hardware/gpio.h>
+#include "hardware/adc.h"
 #include <pico/stdlib.h>
 #include <pico/time.h>
 #include <time.h>
@@ -15,22 +16,25 @@
 #define SERVO_ANALOG 26
 #define TIME_ANALOG 28
 #define OFFSET_SELECT_PIN 
-const int DIGIT_PIN[] = {17, 16, 15, 14};
+const int DISPLAY_PINS[] = {17, 16, 15, 14};
 
-/* Servo arm angle restrictions */
-#define USER_MINIMUM_ANGLE  75
-#define USER_MAXIMUM_ANGLE 125
-
-/* Prototypes */
-void selectDigit(uint8_t value);
-void writeData(int value);
-void setDigits(int value);
-void writeDisplay(int value, int a[]);
+/* Servo arm angle restrictions (as a percentage) */
+#define USER_MINIMUM_ANGLE 10
+#define USER_MAXIMUM_ANGLE 90
 
 /* Servo control values */
-//Servo mainServo;
+typedef struct {
+  uint gpio;
+  uint slice;
+  uint chan;
+  uint speed;
+  uint resolution;
+  bool on;
+  bool invert;
+} Servo;
+Servo mainServo;
 int pos = 0;
-int setAngle = USER_MINIMUM_ANGLE;
+int setAngle = (USER_MINIMUM_ANGLE + USER_MAXIMUM_ANGLE) / 2;
 
 /* Time control values */
 int timer = 0;
@@ -55,7 +59,6 @@ struct circle {
   int digit;
   uint8_t shape;
 } sections[12] = {
-  {3, 0x02},
   {3, 0x04},
   {3, 0x08},
   {2, 0x08},
@@ -66,18 +69,33 @@ struct circle {
   {0, 0x01},
   {1, 0x01},
   {2, 0x01},
-  {3, 0x01}
+  {3, 0x01},
+  {3, 0x02}
 };
 
 /* Hex values representing characters 0 through 9, then A through F */
 uint8_t num[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f,
 			0x77, 0x7c, 0x39, 0x5e, 0x79, 0x71};
 
-/* Pin initialization */
-//  mainServo.attach(SERVO_PIN, 500, 2500);
+/* Prototypes */
+void selectDigit(uint8_t value);
+void writeData(int value);
+void setDigits(int value);
+void writeDisplay(int value, int a[]);
+void pwmSetDutyH(uint slice_num, uint chan, int d);
+void servoInit(Servo *s, uint gpio, bool invert);
+void servoOn(Servo *s);
+void servoOff(Servo *s);
+void servoPosition(Servo *s, uint p);
+uint16_t analogRead(uint p);
+long map(long x, long in_min, long in_max, long out_min, long out_max);
 
+/* Start */
 int main(void) {
+
+  /* Initialize Pins */
   stdio_init_all();
+	adc_init(void);
   gpio_init(ANGLE_SELECT_PIN);
   gpio_set_dir(ANGLE_SELECT_PIN, GPIO_IN);
   gpio_pull_up(ANGLE_SELECT_PIN);
@@ -92,19 +110,25 @@ int main(void) {
   gpio_set_dir(DATA_PIN, GPIO_OUT);
   gpio_init(SERVO_PIN);
   gpio_set_dir(SERVO_PIN, GPIO_OUT);
-  gpio_init(SERVO_ANALOG);
-  gpio_set_dir(SERVO_ANALOG, GPIO_OUT);
-  gpio_init(TIME_ANALOG);
-  gpio_set_dir(TIME_ANALOG, GPIO_OUT);
+  adc_gpio_init(SERVO_ANALOG);
+  adc_gpio_init(TIME_ANALOG);
   for (int i = 0; i < 4; i==) {
-    gpio_init(DIGIT_PIN[i]);
-    gpio_set_dir(DIGIT_PIN[i], GPIO_OUT);
+    gpio_init(DISPLAY_PINS[i]);
+    gpio_set_dir(DISPLAY_PINS[i], GPIO_OUT);
   }
-  setAngle = map(analogRead(SERVO_ANALOG), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
-  seconds = map(analogRead(TIME_ANALOG), 0, 1023, 60, 0);
+
+	/* Initialize servo */
+	servoInit(&mainServo, 22, false);
+	servoOn(&mainservo);
+
+  /* Initialize potentiometer positions */
+  setAngle = map(analogRead(SERVO_ANALOG), 0, 4095, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
+  seconds = map(analogRead(TIME_ANALOG), 0, 4095, 60, 0);
+
+  /* Main keyclicker loop */
   while (!timeToggle && !angleToggle) {
     for (int i = 0, pos = setAngle; pos < setAngle + 6; pos += 1, i++) {
-      mainServo.write(pos);
+			servoPosition(&mainServo, pos);
       for (int j = 0; j < 4; j++) {
         selectDigit(sections[i].digit);
         writeData(sections[i].shape);
@@ -112,7 +136,7 @@ int main(void) {
       }
     }
     for (int i = 6, pos = setAngle; pos > setAngle - 6; pos -= 1, i++) {
-      mainServo.write(pos);
+			servoPosition(&mainServo, pos);
       for (int j = 0; j < 4; j++) {
         selectDigit(sections[i].digit);
         writeData(sections[i].shape);
@@ -170,8 +194,9 @@ int main(void) {
   }
   delay(200);
   
+  /* Time delay select loop */
   while (timeToggle) {
-    seconds = map(analogRead(TIME_ANALOG), 0, 1023, 60, 0);
+    seconds = map(analogRead(TIME_ANALOG), 0, 4095, 60, 0);
     digits[1] = ((seconds % 1000) / 100);
     digits[2] = ((seconds % 100) / 10);
     digits[3] = (seconds % 10);
@@ -189,9 +214,10 @@ int main(void) {
     }
   }
   
+  /* Servo arm angle select loop */
   while (angleToggle) {
-    setAngle = map(analogRead(SERVO_ANALOG), 0, 1023, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
-    mainServo.write(setAngle);
+    setAngle = map(analogRead(SERVO_ANALOG), 0, 4095, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
+		servoPosition(&mainServo, setAngle);
     digits[1] = ((setAngle % 1000) / 100);
     digits[2] = ((setAngle % 100) / 10);
     digits[3] = (setAngle % 10);
@@ -210,11 +236,69 @@ int main(void) {
   }
 }
 
+/* Function Definitions */
+void pwmSetDutyH(uint slice_num, uint chan, int d) {
+  pwm_set_chan_level(slice_num, chan, pwm_get_wrap(slice_num) * d / 10000);
+}
+
+void servoInit(Servo *s, uint gpio, bool invert) {
+  gpio_set_function(gpio, GPIO_FUNC_PWM);
+  s->gpio = gpio;
+  s->slice = pwm_gpio_to_slice_num(gpio);
+  s->chan = pwm_gpio_to_channel(gpio);
+
+  pwm_set_enabled(s->slice, false);
+  s->on = false;
+  s->speed = 0;
+  s->resolution = pwm_set_freq_duty(s->slice, s->chan, 50, 0);
+  pwmSetDutyH(s->slice, s->chan, 250);
+
+  if (s->chan) {
+    pwm_set_output_polarity(s->slice, false, invert);
+  }
+  else {
+    pwm_set_output_polarity(s->slice, invert, false);
+  }
+  s->invert = invert;
+}
+
+void servoOn(Servo *s) {
+  pwm_set_enabled(s->slice, true);
+  s->on = true;
+}
+
+void servoOff(Servo *s) {
+  pwm_set_enabled(s->slice, false);
+  s->on = false;
+}
+
+void servoPosition(Servo *s, uint p) {
+  pwmSetDutyH(s->slice, s->chan, p*10+250);
+}
+
+uint16_t analogRead(uint p) {
+	if (p == SERVO_ANALOG) {
+		adc_select_input(0);
+		uint16_t result = adc_read();
+	}
+	else if (p == TIME_ANALOG) {
+		adc_select_input(2);
+		uint16_t result = adc_read();
+	}
+	else
+		printf("Invalid input pin!");
+	return result;
+}
+
+long map(long x, long in_min, long in_max, long out_min, long out_max) {
+	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+}
+
 void selectDigit(uint8_t value) {
   for (int i = 0; i < 4; i++) {
-    digitalWrite(DIGIT_PIN[i], HIGH);  // Clear all 7-segment sections
+    digitalWrite(DISPLAY_PINS[i], HIGH);  // Clear all 7-segment sections
   }
-  digitalWrite(DIGIT_PIN[value], LOW);  // Open the selected individual 7-segment display
+  digitalWrite(DISPLAY_PINS[value], LOW);  // Open the selected individual 7-segment display
 }
 
 void writeData(int value) {
