@@ -117,8 +117,7 @@ int main(void) {
   gpio_set_dir(CLOCK_PIN, GPIO_OUT);
   gpio_init(DATA_PIN);
   gpio_set_dir(DATA_PIN, GPIO_OUT);
-  gpio_init(SERVO_PIN);
-  gpio_set_dir(SERVO_PIN, GPIO_OUT);
+  gpio_set_function(SERVO_PIN, GPIO_FUNC_PWM);
   adc_gpio_init(SERVO_ANALOG);
   adc_gpio_init(TIME_ANALOG);
   for (int i = 0; i < 4; i++) {
