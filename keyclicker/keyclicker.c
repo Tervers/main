@@ -252,9 +252,16 @@ int main(void) {
 }
 
 /* Function Definitions */
+/*
 void pwmSetDutyH(uint slice_num, uint chan, int d) {
   pwm_set_chan_level(slice_num, chan, pwm_get_wrap(slice_num) * d / 10000);
 }
+*/
+
+void pwmSetDutyH(uint slice_num, uint chan, int d) {  // d is 0-10000
+  pwm_set_chan_level(slice_num, chan, pwm_get_wrap(slice_num) * d / 10000);
+}
+
 
 void servoInit(Servo *s, uint gpio, bool invert) {
   gpio_set_function(gpio, GPIO_FUNC_PWM);
@@ -288,8 +295,22 @@ void servoOff(Servo *s) {
 }
 
 void servoPosition(Servo *s, uint p) {
+  // Convert angle (0-180) to microseconds (500-2500)
+  uint16_t microseconds = 500 + (p * 2000) / 180;  // p is 0-180° 
+  // For 50 Hz PWM: period = 20ms = 20000µs
+  // Duty cycle = (pulse_width / period) * wrap value
+  // If wrap = 20000 (1 count = 1 microsecond at 50 Hz):
+	int duty = (microseconds * 10000) / 20000;  // 0-10000
+	printf("Angle: %d, Duty: %d, Wrap: %d\n", p, duty, s->resolution);
+	pwmSetDutyH(s->slice, s->chan, duty);
+}
+
+/*
+void servoPosition(Servo *s, uint p) {
+	printf("Angle: %d, Duty: %d, Wrap: %d\n", p, duty, s->resolution);
   pwmSetDutyH(s->slice, s->chan, p*10+250);
 }
+*/
 
 uint16_t analogRead(uint p) {
   uint16_t result = 0;
