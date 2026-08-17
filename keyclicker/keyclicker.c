@@ -1,3 +1,4 @@
+/* Library includes */
 #include <hardware/gpio.h>
 #include "hardware/adc.h"
 #include <pico/stdlib.h>
@@ -37,7 +38,6 @@ typedef struct {
   bool on;
   bool invert;
 } Servo;
-
 Servo mainServo;
 int pos = 0;
 int setAngle = (USER_MINIMUM_ANGLE + USER_MAXIMUM_ANGLE) / 2;
@@ -136,6 +136,7 @@ int main(void) {
 
   /* Entire program loop */
   while(1) {
+
     /* Main keyclicker loop */
     while (!timeToggle && !angleToggle) {
       for (int i = 0, pos = setAngle; pos < setAngle + 6; pos += 1, i++) {
@@ -204,6 +205,7 @@ int main(void) {
       }
     }
     sleep_ms(200);
+
     /* Time delay select loop */
     while (timeToggle) {
       seconds = map(analogRead(TIME_ANALOG), 0, 4095, 60, 0);
@@ -224,6 +226,7 @@ int main(void) {
 				}
       }
     }
+		
     /* Servo arm angle select loop */
     while (angleToggle) {
       setAngle = map(analogRead(SERVO_ANALOG), 0, 4095, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
@@ -289,8 +292,6 @@ uint16_t analogRead(uint p) {
 		adc_select_input(2);
 		result = adc_read();
 	}
-	else
-		printf("Invalid input pin!");
 	return result;
 }
 
@@ -300,7 +301,7 @@ long map(long x, long in_min, long in_max, long out_min, long out_max) {
 
 void selectDigit(uint8_t value) {
   for (int i = 0; i < 4; i++) {
-	gpio_put(DISPLAY_PINS[i], 1);    // Clear all 7-segment digits
+		gpio_put(DISPLAY_PINS[i], 1);    // Clear all 7-segment digits
   }
 	gpio_put(DISPLAY_PINS[value], 0);  // Open the selected individual 7-segment display
 }
