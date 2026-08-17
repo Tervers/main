@@ -117,6 +117,7 @@ int main(void) {
   gpio_set_dir(CLOCK_PIN, GPIO_OUT);
   gpio_init(DATA_PIN);
   gpio_set_dir(DATA_PIN, GPIO_OUT);
+	gpio_init(SERVO_PIN);
   gpio_set_function(SERVO_PIN, GPIO_FUNC_PWM);
   adc_gpio_init(SERVO_ANALOG);
   adc_gpio_init(TIME_ANALOG);
@@ -126,7 +127,7 @@ int main(void) {
   }
 
   /* Initialize servo */
-  servoInit(&mainServo, 22, true);
+  servoInit(&mainServo, SERVO_PIN, true);
   servoOn(&mainServo);
 
   /* Initialize potentiometer positions */
@@ -138,69 +139,69 @@ int main(void) {
     /* Main keyclicker loop */
     while (!timeToggle && !angleToggle) {
       for (int i = 0, pos = setAngle; pos < setAngle + 6; pos += 1, i++) {
-	servoPosition(&mainServo, pos);
-	for (int j = 0; j < 4; j++) {
-	  selectDigit(sections[i].digit);
-	  writeData(sections[i].shape);
-	  now = to_ms_since_boot(get_absolute_time());
-	  sleep_ms(5);
-	}
+				servoPosition(&mainServo, pos);
+				for (int j = 0; j < 4; j++) {
+				  selectDigit(sections[i].digit);
+				  writeData(sections[i].shape);
+				  now = to_ms_since_boot(get_absolute_time());
+	  			sleep_ms(5);
+				}
       }
       for (int i = 6, pos = setAngle; pos > setAngle - 6; pos -= 1, i++) {
-	servoPosition(&mainServo, pos);
-	for (int j = 0; j < 4; j++) {
-	  selectDigit(sections[i].digit);
-	  writeData(sections[i].shape);
-	  sleep_ms(5);
-	}
+				servoPosition(&mainServo, pos);
+				for (int j = 0; j < 4; j++) {
+				  selectDigit(sections[i].digit);
+				  writeData(sections[i].shape);
+				  sleep_ms(5);
+				}
       }
       if (offsetToggle == true) {
-	srand((unsigned) time(NULL));
-	offset = (rand() % 2000);
+				srand((unsigned) time(NULL));
+				offset = (rand() % 2000);
       }
       else
-	offset = 0;
-      now = to_ms_since_boot(get_absolute_time());
+				offset = 0;
+    	now = to_ms_since_boot(get_absolute_time());
       timer = (now + (seconds * 1000) + offset);
 
       while (to_ms_since_boot(get_absolute_time()) < (now + (seconds * 1000) + offset)) {
-	countdown = timer - to_ms_since_boot(get_absolute_time());
-	digits[0] = ((countdown % 1000000) / 100000);
-	digits[1] = ((countdown % 100000) / 10000);
-	digits[2] = ((countdown % 10000) / 1000);
-	digits[3] = ((countdown % 1000) / 100);
-	for (int i = 0; i < 4; i++) {
-	  selectDigit(i);
-	  digitValue = digits[i];
-	  if (i == 2) {
-	    writeData(num[digitValue] | 0x80);
-	  }
-	  else {
-	    writeData(num[digitValue]);
-	  }
-	  sleep_ms(5);
-	  writeData(0x00);      
-	}
-	for (int i = 0; i < 4; i++) {
-	  selectDigit(i);
-	  writeData(0x00);
-	}
-	if (!gpio_get(TIME_SELECT_PIN)) {
-	  sleep_ms(20);
-	  if (!gpio_get(TIME_SELECT_PIN)) {
-	    timeToggle = true;
-	    startToggle = false;
-	    break;
-	  }
-	}
-	if (!gpio_get(ANGLE_SELECT_PIN)) {
-	  sleep_ms(20);
-	  if (!gpio_get(ANGLE_SELECT_PIN)) {
-	    angleToggle = true;
-	    startToggle = false;
-	    break;
-	  }
-	}
+				countdown = timer - to_ms_since_boot(get_absolute_time());
+				digits[0] = ((countdown % 1000000) / 100000);
+				digits[1] = ((countdown % 100000) / 10000);
+				digits[2] = ((countdown % 10000) / 1000);
+				digits[3] = ((countdown % 1000) / 100);
+				for (int i = 0; i < 4; i++) {
+				  selectDigit(i);
+				  digitValue = digits[i];
+				  if (i == 2) {
+				    writeData(num[digitValue] | 0x80);
+				  }
+				  else {
+				    writeData(num[digitValue]);
+				  }
+				  sleep_ms(5);
+				  writeData(0x00);      
+				}
+				for (int i = 0; i < 4; i++) {
+				  selectDigit(i);
+				  writeData(0x00);
+				}
+				if (!gpio_get(TIME_SELECT_PIN)) {
+				  sleep_ms(20);
+				  if (!gpio_get(TIME_SELECT_PIN)) {
+				    timeToggle = true;
+				    startToggle = false;
+				    break;
+				  }
+				}
+				if (!gpio_get(ANGLE_SELECT_PIN)) {
+				  sleep_ms(20);
+				  if (!gpio_get(ANGLE_SELECT_PIN)) {
+				    angleToggle = true;
+				    startToggle = false;
+				    break;
+				  }
+				}
       }
     }
     sleep_ms(200);
@@ -212,17 +213,17 @@ int main(void) {
       digits[2] = ((seconds % 100) / 10);
       digits[3] = (seconds % 10);
       for (int i = 1; i < 4; i++) {
-	selectDigit(i);
-	digitValue = digits[i];
-	writeData(num[digitValue]);
-	sleep_ms(5);
-	writeData(0x00);      
+				selectDigit(i);
+				digitValue = digits[i];
+				writeData(num[digitValue]);
+				sleep_ms(5);
+				writeData(0x00);      
       }
       if (!gpio_get(TIME_SELECT_PIN)) {
-	sleep_ms(20);
-	if (!gpio_get(TIME_SELECT_PIN)) {
-	  timeToggle = false;
-	}
+				sleep_ms(20);
+				if (!gpio_get(TIME_SELECT_PIN)) {
+				  timeToggle = false;
+				}
       }
     }
   
@@ -234,17 +235,17 @@ int main(void) {
       digits[2] = ((setAngle % 100) / 10);
       digits[3] = (setAngle % 10);
       for (int i = 1; i < 4; i++) {
-	selectDigit(i);
-	digitValue = digits[i];
-	writeData(num[digitValue]);
-	sleep_ms(5);
-	writeData(0x00);      
+				selectDigit(i);
+				digitValue = digits[i];
+				writeData(num[digitValue]);
+				sleep_ms(5);
+				writeData(0x00);      
       }
       if (!gpio_get(ANGLE_SELECT_PIN)) {
-	sleep_ms(20);
-	if (!gpio_get(ANGLE_SELECT_PIN)) {
-	  angleToggle = false;
-	}
+				sleep_ms(20);
+				if (!gpio_get(ANGLE_SELECT_PIN)) {
+				  angleToggle = false;
+				}
       }
     }
   }

@@ -21,8 +21,6 @@ target_link_libraries(keyclicker
     pico_time
 )
 
+pico_enable_stdio_usb(keyclicker 1)
+pico_enable_stdio_uart(keyclicker 0)
 pico_add_extra_outputs(keyclicker)
-
-pico_enable_stdio_usb(your_project_name 1)
-pico_enable_stdio_uart(your_project_name 0)
-
