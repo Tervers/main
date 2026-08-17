@@ -89,10 +89,10 @@ void writeData(int value);
 void setDigits(int value);
 void writeDisplay(int value, int a[]);
 void pwmSetDutyH(uint slice_num, uint chan, int d);
-void servoInit(Servo *s, uint gpio, bool invert);
+void servoInit(uint gpio);
 void servoOn(Servo *s);
 void servoOff(Servo *s);
-void servoPosition(Servo *s, uint p);
+void servoPosition(uint gpio, int angle);
 uint16_t analogRead(uint p);
 long map(long x, long in_min, long in_max, long out_min, long out_max);
 uint32_t pwm_get_wrap(uint slice_num);
@@ -262,27 +262,53 @@ void pwmSetDutyH(uint slice_num, uint chan, int d) {  // d is 0-10000
   pwm_set_chan_level(slice_num, chan, pwm_get_wrap(slice_num) * d / 10000);
 }
 
+void servoInit(uint gpio) {
+    // 1. Tell the pin it is driven by the PWM hardware
+    gpio_set_function(gpio, GPIO_FUNC_PWM);
 
-void servoInit(Servo *s, uint gpio, bool invert) {
-  gpio_set_function(gpio, GPIO_FUNC_PWM);
-  s->gpio = gpio;
-  s->slice = pwm_gpio_to_slice_num(gpio);
-  s->chan = pwm_gpio_to_channel(gpio);
+    // 2. Fetch the hardware slice tied to this physical pin
+    uint slice_num = pwm_gpio_to_slice_num(gpio);
 
-  pwm_set_enabled(s->slice, false);
-  s->on = false;
-  s->speed = 0;
-  s->resolution = pwm_set_freq_duty(s->slice, s->chan, 50, 0);
-  pwmSetDutyH(s->slice, s->chan, 250);
+    // 3. Configure for 50Hz frequency output
+    pwm_set_clkdiv(slice_num, 125.0f);
+    pwm_set_wrap(slice_num, 19999);
 
-  if (s->chan) {
-    pwm_set_output_polarity(s->slice, false, invert);
-  }
-  else {
-    pwm_set_output_polarity(s->slice, invert, false);
-  }
-  s->invert = invert;
+    // 4. Start the hardware counter
+    pwm_set_enabled(slice_num, true);
 }
+
+void servoPosition(uint gpio, int angle) {
+    if (angle < 0) angle = 0;
+    if (angle > 180) angle = 180;
+
+    // Linear map: 0 deg -> 500, 180 deg -> 2500
+    uint32_t duty_count = 500 + (angle * 2000 / 180);
+
+    // Commit the new width directly to the pin hardware
+    pwm_set_gpio_level(gpio, duty_count);
+}
+
+
+//void servoInit(Servo *s, uint gpio, bool invert) {
+//  gpio_set_function(gpio, GPIO_FUNC_PWM);
+//  s->gpio = gpio;
+//  s->slice = pwm_gpio_to_slice_num(gpio);
+//  s->chan = pwm_gpio_to_channel(gpio);
+//
+//  pwm_set_enabled(s->slice, false);
+//  s->on = false;
+//  s->speed = 0;
+//  s->resolution = pwm_set_freq_duty(s->slice, s->chan, 50, 0);
+//  pwmSetDutyH(s->slice, s->chan, 250);
+//
+//  if (s->chan) {
+//    pwm_set_output_polarity(s->slice, false, invert);
+//  }
+//  else {
+//    pwm_set_output_polarity(s->slice, invert, false);
+//  }
+//  s->invert = invert;
+//}
 
 void servoOn(Servo *s) {
   pwm_set_enabled(s->slice, true);
@@ -294,16 +320,16 @@ void servoOff(Servo *s) {
   s->on = false;
 }
 
-void servoPosition(Servo *s, uint p) {
+//void servoPosition(Servo *s, uint p) {
   // Convert angle (0-180) to microseconds (500-2500)
-  uint16_t microseconds = 500 + (p * 2000) / 180;  // p is 0-180° 
+//  uint16_t microseconds = 500 + (p * 2000) / 180;  // p is 0-180° 
   // For 50 Hz PWM: period = 20ms = 20000µs
   // Duty cycle = (pulse_width / period) * wrap value
   // If wrap = 20000 (1 count = 1 microsecond at 50 Hz):
-	int duty = (microseconds * 10000) / 20000;  // 0-10000
-	printf("Angle: %d, Duty: %d, Wrap: %d\n", p, duty, s->resolution);
-	pwmSetDutyH(s->slice, s->chan, duty);
-}
+//	int duty = (microseconds * 10000) / 20000;  // 0-10000
+//	printf("Angle: %d, Duty: %d, Wrap: %d\n", p, duty, s->resolution);
+//	pwmSetDutyH(s->slice, s->chan, duty);
+//}
 
 /*
 void servoPosition(Servo *s, uint p) {
@@ -333,7 +359,7 @@ long map(long x, long in_min, long in_max, long out_min, long out_max) {
 
 void selectDigit(uint8_t value) {
   for (int i = 0; i < 4; i++) {
-		gpio_put(DISPLAY_PINS[i], 1);    // Clear all 7-segment digits
+	gpio_put(DISPLAY_PINS[i], 1);    // Clear all 7-segment digits
   }
 	gpio_put(DISPLAY_PINS[value], 0);  // Open the selected individual 7-segment display
 }
