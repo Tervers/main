@@ -21,7 +21,7 @@ const int DISPLAY_PINS[] = {17, 16, 15, 14};
 
 /* Servo arm angle restrictions (as a percentage) */
 #define USER_MINIMUM_ANGLE 10
-#define USER_MAXIMUM_ANGLE 90
+#define USER_MAXIMUM_ANGLE 170
 
 /* 74HC595 shift register control values */
 bool LSBFIRST = 0;
