@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include "pico/stdlib.h"
+#include "hardware/pwm.h"
+
+// Define the GPIO pin connected to the servo signal wire
+#define SERVO_PIN 15
+
+/**
+ * Maps a target angle (0 to 180) to the corresponding PWM duty cycle levels.
+ * Standard servos expect a 50Hz signal: 
+ * 0 degrees   -> ~500 microseconds high pulse
+ * 180 degrees -> ~2500 microseconds high pulse
+ */
+void set_servo_angle(uint gpio, float angle) {
+    // Bound the angle safely between 0 and 180 degrees
+    if (angle < 0.0f) angle = 0.0f;
+    if (angle > 180.0f) angle = 180.0f;
+
+    // Calculate corresponding pulse width in microseconds (500us to 2500us)
+    float pulse_width_us = 550.0f + (angle / 180.0f) * (2400.0f - 550.0f);
+
+    // Get the hardware PWM slice linked to our chosen GPIO pin
+    uint slice_num = pwm_gpio_to_slice_num(gpio);
+    
+    // Set the high-duration level (duty cycle counter match value)
+    // Because our wrap is 20,000, 1 count = 1 microsecond.
+    pwm_set_chan_level(slice_num, pwm_gpio_to_channel(gpio), (uint16_t)pulse_width_us);
+}
+
+int main() {
+    stdio_init_all();
+
+    // Tell the Pico to route the hardware PWM module to our GPIO pin
+    gpio_set_function(SERVO_PIN, GPIO_FUNC_PWM);
+    
+    // Discover which hardware slice manages this specific GPIO pin
+    uint slice_num = pwm_gpio_to_slice_num(SERVO_PIN);
+
+    // --- PWM Clock Math Configuration ---
+    // The default system clock frequency on a Pico is 125 MHz.
+    // We need a 50Hz frequency (a full period lasting 20,000 microseconds).
+    // Formula: Target Freq = SysClock / (Clock Divider * Wrap Value)
+    // We set the clock divider to 125.0, slowing the PWM timer to exactly 1 MHz.
+    // At 1 MHz, the timer counter increments exactly once every 1 microsecond.
+    pwm_set_clkdiv(slice_num, 125.0f);
+
+    // Set the wrap value to 20,000. 
+    // The counter will count from 0 up to 20,000, resetting 50 times per second.
+    pwm_set_wrap(slice_num, 20000);
+
+    // Start running the configured PWM slice
+    pwm_set_enabled(slice_num, true);
+
+    // Sweep loop test
+    while (true) {
+        // Move to 0 degrees
+        set_servo_angle(SERVO_PIN, 0.0f);
+        sleep_ms(1000);
+
+        // Move to 90 degrees (Center position)
+        set_servo_angle(SERVO_PIN, 90.0f);
+        sleep_ms(1000);
+
+        // Move to 180 degrees
+        set_servo_angle(SERVO_PIN, 180.0f);
+        sleep_ms(1000);
+    }
+
+    return 0;
+}
+
