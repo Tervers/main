@@ -127,7 +127,7 @@ int main(void) {
   }
 
   /* Initialize servo */
-  servoInit(&mainServo, SERVO_PIN, true);
+  servoInit(SERVO_PIN);
   servoOn(&mainServo);
 
   /* Initialize potentiometer positions */
@@ -139,7 +139,7 @@ int main(void) {
     /* Main keyclicker loop */
     while (!timeToggle && !angleToggle) {
       for (int i = 0, pos = setAngle; pos < setAngle + 6; pos += 1, i++) {
-				servoPosition(&mainServo, pos);
+				servoPosition(SERVO_PIN, pos);
 				for (int j = 0; j < 4; j++) {
 				  selectDigit(sections[i].digit);
 				  writeData(sections[i].shape);
@@ -148,7 +148,7 @@ int main(void) {
 				}
       }
       for (int i = 6, pos = setAngle; pos > setAngle - 6; pos -= 1, i++) {
-				servoPosition(&mainServo, pos);
+				servoPosition(SERVO_PIN, pos);
 				for (int j = 0; j < 4; j++) {
 				  selectDigit(sections[i].digit);
 				  writeData(sections[i].shape);
@@ -230,7 +230,7 @@ int main(void) {
     /* Servo arm angle select loop */
     while (angleToggle) {
       setAngle = map(analogRead(SERVO_ANALOG), 0, 4095, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
-      servoPosition(&mainServo, setAngle);
+      servoPosition(SERVO_PIN, setAngle);
       digits[1] = ((setAngle % 1000) / 100);
       digits[2] = ((setAngle % 100) / 10);
       digits[3] = (setAngle % 10);
