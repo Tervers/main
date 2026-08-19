@@ -380,12 +380,18 @@ void offset_select(void) {
     switch (offsetLevel) {
       case 0: offsetAmount = 0;
 	      break;
-      case 1: offsetAmount = (seconds * 1000) / (rand() % 11);
+      case 1: if (seconds == 0)
+                seconds = 1;
+	      offsetAmount = (seconds * 1000) / (rand() % 11);
 	      break;
-      case 2: offsetAmount = (seconds * 1000) / (rand() % 51);
+      case 2: if (seconds == 0)
+                seconds = 1;
+	      offsetAmount = (seconds * 1000) / (rand() % 51);
 	      break;
-      case 3: int collectTime = to_ms_since_boot(get_absolute_time());
-	      int attemptValue = 0;
+      /* Variability based on 'Coupon Collector's Problem' */
+      case 3: if (seconds == 0)
+                seconds = 1;
+              int attemptValue = 0;
 	      int failures = 0;
 	      bool collection[5];
               while (!filled) {
