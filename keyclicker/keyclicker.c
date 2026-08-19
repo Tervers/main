@@ -1,11 +1,9 @@
-// FINISH OFFSET_SELECT FUNCTION
-
 /* Library includes */
-#include <hardware/adc.h>
-#include <hardware/gpio.h>
-#include <hardware/pwm.h>
-#include <pico/stdlib.h>
-#include <pico/time.h>
+#include "hardware/adc.h"
+#include "hardware/gpio.h"
+#include "hardware/pwm.h"
+#include "pico/stdlib.h"
+#include "pico/time.h"
 #include <pthreads.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,7 +42,7 @@ typedef struct {
 } Servo;
 Servo mainServo;
 int pos = 0;
-int setAngle = (USER_MINIMUM_ANGLE + USER_MAXIMUM_ANGLE) / 2;
+int setAngle = 0;
 
 /* Time control values */
 int timer = 0;
@@ -53,7 +51,6 @@ int seconds = 0;
 uint32_t now = 0;
 uint32_t stop = 0;
 enum offsetLevel {OFF, LOW, MEDIUM, HIGH};
-int offsetLevel = 0;
 int offsetAmount = 0;
 bool filled = false;
 
@@ -65,7 +62,6 @@ int digits[4];
 bool startToggle = false;
 bool timeToggle = false;
 bool angleToggle = false;
-//bool offsetToggle = true;
 
 /* Values that will draw a circle around the display */
 struct circle {
@@ -86,26 +82,25 @@ struct circle {
   {3, 0x02}
 };
 
-/* Hex values representing characters 0 through 9, then A through F */
-uint8_t num[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f,
-			0x77, 0x7c, 0x39, 0x5e, 0x79, 0x71};
+/* Hex values representing characters 0 through 9 */
+uint8_t num[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f};
 
 /* Prototypes */
-void selectDigit(uint8_t value);
-void writeData(int value);
-void setDigits(int value);
-void writeDisplay(int value, int a[]);
-void pwmSetDutyH(uint slice_num, uint chan, int d);
-void servoInit(uint gpio);
-void servoOn(Servo *s);
-void servoOff(Servo *s);
-void servoPosition(uint gpio, int angle);
-uint16_t analogRead(uint p);
+void select_Digit(uint8_t value);
+void write_Data(int value);
+void set_Digits(int value);
+void write_Display(int value, int a[]);
+void pwm_Set_Duty_H(uint slice_num, uint chan, int d);
+void servo_Init(uint gpio);
+void servo_On(Servo *s);
+void servo_Off(Servo *s);
+void servo_Position(uint gpio, int angle);
+uint16_t analog_Read(uint p);
 long map(long x, long in_min, long in_max, long out_min, long out_max);
-uint32_t pwm_get_wrap(uint slice_num);
-uint32_t pwm_set_freq_duty(uint slice_num,uint chan, uint32_t f, int d);
-void shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t value);
-void *offset_select(void);
+uint32_t pwm_Get_Wrap(uint slice_num);
+uint32_t pwm_Set_Freq_Duty(uint slice_num,uint chan, uint32_t f, int d);
+void shift_Out(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t value);
+void *offset_Select(void);
 
 /* Start */
 int main(void) {
@@ -142,16 +137,16 @@ int main(void) {
   }
 
   /* Initialize servo */
-  servoInit(SERVO_PIN);
-  servoOn(&mainServo);
+  servo_Init(SERVO_PIN);
+  servo_On(&mainServo);
 
   /* Initialize potentiometer positions */
-  setAngle = map(analogRead(SERVO_ANALOG), 0, 4095, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
-  seconds = map(analogRead(TIME_ANALOG), 0, 4095, 60, 0);
+  setAngle = map(analog_Read(SERVO_ANALOG), 0, 4095, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
+  seconds = map(analog_Read(TIME_ANALOG), 0, 4095, 60, 0);
 
   /* Initialize offset thread */
   pthread_t offsetThread;
-  int offsetStart = pthread_create(&offsetThread, NULL, offset_select, NULL);
+  int offsetStart = pthread_create(&offsetThread, NULL, offset_Select, NULL);
 
   /* Entire program loop */
   while(1) {
@@ -159,19 +154,19 @@ int main(void) {
     /* Main keyclicker loop */
     while (!timeToggle && !angleToggle) {
       for (int i = 0, pos = setAngle; pos < setAngle + 6; pos += 1, i++) {
-	servoPosition(SERVO_PIN, pos);
+	servo_Position(SERVO_PIN, pos);
 	for (int j = 0; j < 4; j++) {
-	  selectDigit(sections[i].digit);
-	  writeData(sections[i].shape);
+	  select_Digit(sections[i].digit);
+	  write_Data(sections[i].shape);
 	  now = to_ms_since_boot(get_absolute_time());
 	  sleep_ms(5);
 	}
       }
       for (int i = 6, pos = setAngle; pos > setAngle - 6; pos -= 1, i++) {
-	servoPosition(SERVO_PIN, pos);
+	servo_Position(SERVO_PIN, pos);
 	for (int j = 0; j < 4; j++) {
-	  selectDigit(sections[i].digit);
-	  writeData(sections[i].shape);
+	  select_Digit(sections[i].digit);
+	  write_Data(sections[i].shape);
 	  sleep_ms(5);
 	}
       }
@@ -190,18 +185,18 @@ int main(void) {
 	  digits[3] = ((countdown % 1000) / 100);
 	}
 	for (int i = 0; i < 4; i++) {
-	  selectDigit(i);
+	  select_Digit(i);
 	  digitValue = digits[i];
 	  if (i == 2) 
-	    writeData(num[digitValue] | 0x80);
+	    write_Data(num[digitValue] | 0x80);
 	  else 
-	    writeData(num[digitValue]);
+	    write_Data(num[digitValue]);
 	  sleep_ms(5);
-	  writeData(0x00);      
+	  write_Data(0x00);      
 	}
 	for (int i = 0; i < 4; i++) {
-	  selectDigit(i);
-	  writeData(0x00);
+	  select_Digit(i);
+	  write_Data(0x00);
 	}
 	if (!gpio_get(TIME_SELECT_PIN)) {
 	  sleep_ms(20);
@@ -225,16 +220,16 @@ int main(void) {
 
     /* Time delay select loop */
     while (timeToggle) {
-      seconds = map(analogRead(TIME_ANALOG), 0, 4095, 60, 0);
+      seconds = map(analog_Read(TIME_ANALOG), 0, 4095, 60, 0);
       digits[1] = ((seconds % 1000) / 100);
       digits[2] = ((seconds % 100) / 10);
       digits[3] = (seconds % 10);
       for (int i = 1; i < 4; i++) {
-	selectDigit(i);
+	select_Digit(i);
 	digitValue = digits[i];
-	writeData(num[digitValue]);
+	write_Data(num[digitValue]);
 	sleep_ms(5);
-	writeData(0x00);      
+	write_Data(0x00);      
       }
       if (!gpio_get(TIME_SELECT_PIN)) {
 	sleep_ms(20);
@@ -245,17 +240,17 @@ int main(void) {
 		
     /* Servo arm angle select loop */
     while (angleToggle) {
-      setAngle = map(analogRead(SERVO_ANALOG), 0, 4095, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
-      servoPosition(SERVO_PIN, setAngle);
+      setAngle = map(analog_Read(SERVO_ANALOG), 0, 4095, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
+      servo_Position(SERVO_PIN, setAngle);
       digits[1] = ((setAngle % 1000) / 100);
       digits[2] = ((setAngle % 100) / 10);
       digits[3] = (setAngle % 10);
       for (int i = 1; i < 4; i++) {
-	selectDigit(i);
+	select_Digit(i);
 	digitValue = digits[i];
-	writeData(num[digitValue]);
+	write_Data(num[digitValue]);
 	sleep_ms(5);
-	writeData(0x00);      
+	write_Data(0x00);      
       }
       if (!gpio_get(ANGLE_SELECT_PIN)) {
 	sleep_ms(20);
@@ -268,11 +263,11 @@ int main(void) {
 }
 
 /* Function Definitions */
-void pwmSetDutyH(uint slice_num, uint chan, int d) {  // d is 0-10000
-  pwm_set_chan_level(slice_num, chan, pwm_get_wrap(slice_num) * d / 10000);
+void pwm_Set_Duty_H(uint slice_num, uint chan, int d) {  // d is 0-10000
+  pwm_set_chan_level(slice_num, chan, pwm_Get_Wrap(slice_num) * d / 10000);
 }
 
-void servoInit(uint gpio) {
+void servo_Init(uint gpio) {
   gpio_set_function(gpio, GPIO_FUNC_PWM);
   uint slice_num = pwm_gpio_to_slice_num(gpio);
   pwm_set_clkdiv(slice_num, 125.0f);  // Configure for 50Hz frequency output
@@ -280,25 +275,27 @@ void servoInit(uint gpio) {
   pwm_set_enabled(slice_num, true);
 }
 
-void servoPosition(uint gpio, int angle) {
-  if (angle < MINIMUM_ANGLE) angle = MINIMUM_ANGLE;
-  if (angle > MAXIMUM_ANGLE) angle = MAXIMUM_ANGLE;
+void servo_Position(uint gpio, int angle) {
+  if (angle < MINIMUM_ANGLE)
+    angle = MINIMUM_ANGLE;
+  if (angle > MAXIMUM_ANGLE)
+    angle = MAXIMUM_ANGLE;
   // Linear map: 0 deg -> 500, 180 deg -> 2500
   uint32_t duty_count = 500 + (angle * 2000 / 180);
   pwm_set_gpio_level(gpio, duty_count);
 }
 
-void servoOn(Servo *s) {
+void servo_On(Servo *s) {
   pwm_set_enabled(s->slice, true);
   s->on = true;
 }
 
-void servoOff(Servo *s) {
+void servo_Off(Servo *s) {
   pwm_set_enabled(s->slice, false);
   s->on = false;
 }
 
-uint16_t analogRead(uint p) {
+uint16_t analog_Read(uint p) {
   uint16_t result = 0;
   if (p == SERVO_ANALOG) {
     adc_select_input(0);
@@ -315,19 +312,18 @@ long map(long x, long in_min, long in_max, long out_min, long out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-void selectDigit(uint8_t value) {
+void select_Digit(uint8_t value) {
   for (int i = 0; i < 4; i++) {
     gpio_put(DISPLAY_PINS[i], 1);    // Clear all 7-segment digits
   }
   gpio_put(DISPLAY_PINS[value], 0);  // Open the selected individual 7-segment display
 }
 
-void shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t value) {
+void shift_Out(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t value) {
   uint8_t i;
   for (i = 0; i < 8; i++)  {
-    if (bitOrder == LSBFIRST) {
+    if (bitOrder == LSBFIRST)
       gpio_put(dataPin, !!(value & (1 << i)));
-    }
     else
       gpio_put(dataPin, !!(value & (1 << (7 - i))));
     gpio_put(clockPin, 1);
@@ -335,14 +331,14 @@ void shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t value
   }
 }
 
-uint32_t pwm_get_wrap(uint slice_num) {
+uint32_t pwm_Get_Wrap(uint slice_num) {
   if (slice_num < 0 || slice_num >= NUM_PWM_SLICES) {
     return 0;
   }
   return pwm_hw->slice[slice_num].top;
 }
 
-uint32_t pwm_set_freq_duty(uint slice_num, uint chan, uint32_t f, int d) {
+uint32_t pwm_Set_Freq_Duty(uint slice_num, uint chan, uint32_t f, int d) {
   uint32_t clock = 125000000;
   uint32_t divider16 = clock / f / 4096 + (clock % (f * 4096) != 0);
   if (divider16 / 16 == 0)
@@ -354,13 +350,13 @@ uint32_t pwm_set_freq_duty(uint slice_num, uint chan, uint32_t f, int d) {
   return wrap;
 }
 
-void writeData(int value) {
+void write_Data(int value) {
   gpio_put(LATCH_PIN, 0);
-  shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, value);  // Send serial data to 74HC595
+  shift_Out(DATA_PIN, CLOCK_PIN, LSBFIRST, value);  // Send serial data to 74HC595
   gpio_put(LATCH_PIN, 1); // High level will update data to parallel output (74HC595)
 }
 
-void offset_select(void) {
+void offset_Select(void) {
   while(1) {
     if (!gpio_get(OFFSET_SELECT_PIN)) {
       sleep_ms(20);
