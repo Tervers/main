@@ -401,6 +401,7 @@ void offset_select(void) {
 		}
 	      }
 	      offsetAmount = (seconds * 1000) * failures;
+	      break;
     }
   }
 }
