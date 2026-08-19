@@ -1,15 +1,12 @@
-// FINISH OFFSET_SELECT FUNCTION
-
 /* Library includes */
-#include <hardware/adc.h>
 #include <hardware/gpio.h>
-#include <hardware/pwm.h>
+#include "hardware/adc.h"
 #include <pico/stdlib.h>
 #include <pico/time.h>
-#include <pthreads.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <hardware/pwm.h>
 #include <time.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 /* Pin number defines */
 #define ANGLE_SELECT_PIN 13
@@ -20,9 +17,8 @@
 #define SERVO_PIN 22
 #define SERVO_ANALOG 26
 #define TIME_ANALOG 28
-#define OFFSET_SELECT_PIN 12
+#define OFFSET_SELECT_PIN 
 const int DISPLAY_PINS[] = {17, 16, 15, 14};
-const int OFFSET_LED_PINS[] = {9, 10, 11};
 
 /* Servo arm angle restrictions */
 #define USER_MINIMUM_ANGLE 10
@@ -50,11 +46,9 @@ int setAngle = (USER_MINIMUM_ANGLE + USER_MAXIMUM_ANGLE) / 2;
 int timer = 0;
 int countdown = 0;
 int seconds = 0;
+int offset = 0;
 uint32_t now = 0;
 uint32_t stop = 0;
-enum offsetLevel {OFF, LOW, MEDIUM, HIGH};
-int offsetLevel = 0;
-int offsetAmount = 0;
 
 /* Display control values */
 int digitValue;
@@ -64,7 +58,7 @@ int digits[4];
 bool startToggle = false;
 bool timeToggle = false;
 bool angleToggle = false;
-//bool offsetToggle = true;
+bool offsetToggle = true;
 
 /* Values that will draw a circle around the display */
 struct circle {
@@ -104,13 +98,9 @@ long map(long x, long in_min, long in_max, long out_min, long out_max);
 uint32_t pwm_get_wrap(uint slice_num);
 uint32_t pwm_set_freq_duty(uint slice_num,uint chan, uint32_t f, int d);
 void shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t value);
-void *offset_select(void);
 
 /* Start */
 int main(void) {
-
-  /* Initialize srand to generate random values */
-  srand((unsigned) time(NULL));
 
   /* Initialize Pins */
   stdio_init_all();
@@ -135,10 +125,6 @@ int main(void) {
     gpio_init(DISPLAY_PINS[i]);
     gpio_set_dir(DISPLAY_PINS[i], GPIO_OUT);
   }
-  for (int i = 0; i < 2; i++) {
-    gpio_init(OFFSET_LED_PINS[i]);
-    gpio_set_dir(OFFSET_LED_PINS[i], GPIO_OUT);
-  }
 
   /* Initialize servo */
   servoInit(SERVO_PIN);
@@ -147,10 +133,6 @@ int main(void) {
   /* Initialize potentiometer positions */
   setAngle = map(analogRead(SERVO_ANALOG), 0, 4095, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
   seconds = map(analogRead(TIME_ANALOG), 0, 4095, 60, 0);
-
-  /* Initialize offset thread */
-  pthread_t offsetThread;
-  int offsetStart = pthread_create(&offsetThread, NULL, offset_select, NULL);
 
   /* Entire program loop */
   while(1) {
@@ -174,14 +156,15 @@ int main(void) {
 				  sleep_ms(5);
 				}
       }
-//      if (offsetToggle == true) {
-//				offset = (rand() % 2000);
-//      }
-//      else
-//				offset = 0;
+      if (offsetToggle == true) {
+				srand((unsigned) time(NULL));
+				offset = (rand() % 2000);
+      }
+      else
+				offset = 0;
     	now = to_ms_since_boot(get_absolute_time());
-      timer = (now + (seconds * 1000) + offsetAmount);
-      while (to_ms_since_boot(get_absolute_time()) < (now + (seconds * 1000) + offsetAmount)) {
+      timer = (now + (seconds * 1000) + offset);
+      while (to_ms_since_boot(get_absolute_time()) < (now + (seconds * 1000) + offset)) {
 				countdown = timer - to_ms_since_boot(get_absolute_time());
 				digits[0] = ((countdown % 1000000) / 100000);
 				digits[1] = ((countdown % 100000) / 10000);
@@ -361,21 +344,3 @@ void writeData(int value) {
   shiftOut(DATA_PIN, CLOCK_PIN, LSBFIRST, value);  // Send serial data to 74HC595
   gpio_put(LATCH_PIN, 1); // High level will update data to parallel output (74HC595)
 }
-
-void offset_select(void) {
-  while(1) {
-    enum offsetCalc {0, 
-    if (!gpio_get(OFFSET_SELECT_PIN)) {
-      sleep_ms(20);
-      if (!gpio_get(OFFSET_SELECT_PIN)) {
-        if (offsetLevel < 3) {
-	  gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
-	  gpio_put(OFFSET_LED_PINS[++offsetLevel], 1);
-	}
-        else {
-	  gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
-          offsetLevel = 0;
-	}
-      }
-    }
-  }
