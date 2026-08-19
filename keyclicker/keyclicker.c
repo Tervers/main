@@ -364,17 +364,20 @@ void writeData(int value) {
 
 void offset_select(void) {
   while(1) {
-    enum offsetCalc {0, 
     if (!gpio_get(OFFSET_SELECT_PIN)) {
       sleep_ms(20);
       if (!gpio_get(OFFSET_SELECT_PIN)) {
-        if (offsetLevel < 3) {
-	  gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
-	  gpio_put(OFFSET_LED_PINS[++offsetLevel], 1);
-	}
-        else {
-	  gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
-          offsetLevel = 0;
+	switch (offsetLevel++) {
+	  case 0:
+	  case 1: 
+	    
+          if (offsetLevel < 3) {
+            gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
+	    gpio_put(OFFSET_LED_PINS[++offsetLevel], 1);
+	  }
+          else {
+	    gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
+            offsetLevel = 0;
 	}
       }
     }
