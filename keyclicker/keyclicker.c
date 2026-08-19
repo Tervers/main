@@ -55,6 +55,7 @@ uint32_t stop = 0;
 enum offsetLevel {OFF, LOW, MEDIUM, HIGH};
 int offsetLevel = 0;
 int offsetAmount = 0;
+bool filled = false;
 
 /* Display control values */
 int digitValue;
@@ -174,12 +175,7 @@ int main(void) {
 				  sleep_ms(5);
 				}
       }
-//      if (offsetToggle == true) {
-//				offset = (rand() % 2000);
-//      }
-//      else
-//				offset = 0;
-    	now = to_ms_since_boot(get_absolute_time());
+      now = to_ms_since_boot(get_absolute_time());
       timer = (now + (seconds * 1000) + offsetAmount);
       while (to_ms_since_boot(get_absolute_time()) < (now + (seconds * 1000) + offsetAmount)) {
 				countdown = timer - to_ms_since_boot(get_absolute_time());
@@ -367,18 +363,44 @@ void offset_select(void) {
     if (!gpio_get(OFFSET_SELECT_PIN)) {
       sleep_ms(20);
       if (!gpio_get(OFFSET_SELECT_PIN)) {
-	switch (offsetLevel++) {
-	  case 0:
-	  case 1: 
-	    
-          if (offsetLevel < 3) {
-            gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
-	    gpio_put(OFFSET_LED_PINS[++offsetLevel], 1);
-	  }
-          else {
-	    gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
-            offsetLevel = 0;
-	}
+	switch (offsetLevel) {
+	  case 0: offsetLevel++;
+	          gpio_put(OFFSET_LED_PINS[offsetLevel], 1);
+		  break;
+	  case 1: case 2:
+		  gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
+	          gpio_put(OFFSET_LED_PINS[++offsetLevel], 1);
+		  break;
+	  case 3: gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
+		  offsetLevel = 0;
+		  break;
+        }
       }
     }
+    switch (offsetLevel) {
+      case 0: offsetAmount = 0;
+	      break;
+      case 1: offsetAmount = (seconds * 1000) / (rand() % 11);
+	      break;
+      case 2: offsetAmount = (seconds * 1000) / (rand() % 51);
+	      break;
+      case 3: int collectTime = to_ms_since_boot(get_absolute_time());
+	      int attemptValue = 0;
+	      int failures = 0;
+	      bool collection[5];
+              while (!filled) {
+		attemptValue = rand() % 5;
+		if (collection[attemptValue] == false)
+		  collection[attemptValue] == true;
+		failures++;
+		for (int i = 0; i < 5; i++) {
+                  if (collection[i] == false)
+		    break;
+		  else
+	            filled = true;
+		}
+	      }
+	      offsetAmount = (seconds * 1000) * failures;
+    }
   }
+}
