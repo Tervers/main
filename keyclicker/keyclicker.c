@@ -126,6 +126,9 @@ int main(void) {
   gpio_set_dir(DATA_PIN, GPIO_OUT);
   gpio_init(SERVO_PIN);
   gpio_set_function(SERVO_PIN, GPIO_FUNC_PWM);
+  gpio_init(OFFSET_SELECT_PIN);
+  gpio_set_dir(OFFSET_SELECT_PIN, GPIO_IN);
+	gpio_pull_up(OFFSET_SELECT_PIN);
   adc_gpio_init(SERVO_ANALOG);
   adc_gpio_init(TIME_ANALOG);
   for (int i = 0; i < 4; i++) {
@@ -362,17 +365,17 @@ void offset_Select(void) {
     if (!gpio_get(OFFSET_SELECT_PIN)) {
       sleep_ms(20);
       if (!gpio_get(OFFSET_SELECT_PIN)) {
-	switch (offsetLevel) {
-	  case 0: offsetLevel++;
-	          gpio_put(OFFSET_LED_PINS[offsetLevel], 1);
-		  break;
-	  case 1: case 2:
-		  gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
-	          gpio_put(OFFSET_LED_PINS[++offsetLevel], 1);
-		  break;
-	  case 3: gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
-		  offsetLevel = 0;
-		  break;
+				switch (offsetLevel) {
+	  			case 0: offsetLevel++;
+	          			gpio_put(OFFSET_LED_PINS[offsetLevel], 1);
+		  						break;
+	  			case 1: case 2:
+		  						gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
+	          			gpio_put(OFFSET_LED_PINS[++offsetLevel], 1);
+		  						break;
+	  			case 3: gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
+		  						offsetLevel = 0;
+		  						break;
         }
       }
     }
