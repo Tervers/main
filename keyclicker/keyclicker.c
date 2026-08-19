@@ -4,7 +4,8 @@
 #include "hardware/pwm.h"
 #include "pico/stdlib.h"
 #include "pico/time.h"
-#include <pthreads.h>
+//#include <pthread.h>
+#include "pico/multicore.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -23,8 +24,8 @@ const int DISPLAY_PINS[] = {17, 16, 15, 14};
 const int OFFSET_LED_PINS[] = {9, 10, 11};
 
 /* Servo arm angle restrictions */
-#define USER_MINIMUM_ANGLE 10
-#define USER_MAXIMUM_ANGLE 170
+#define MINIMUM_ANGLE 10
+#define MAXIMUM_ANGLE 170
 
 /* 74HC595 shift register control values */
 bool LSBFIRST = 0;
@@ -50,7 +51,7 @@ int countdown = 0;
 int seconds = 0;
 uint32_t now = 0;
 uint32_t stop = 0;
-enum offsetLevel {OFF, LOW, MEDIUM, HIGH};
+enum {OFF, LOW, MEDIUM, HIGH} offsetLevel;
 int offsetAmount = 0;
 bool filled = false;
 
@@ -100,7 +101,7 @@ long map(long x, long in_min, long in_max, long out_min, long out_max);
 uint32_t pwm_Get_Wrap(uint slice_num);
 uint32_t pwm_Set_Freq_Duty(uint slice_num,uint chan, uint32_t f, int d);
 void shift_Out(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t value);
-void *offset_Select(void);
+void offset_Select(void);
 
 /* Start */
 int main(void) {
@@ -141,12 +142,11 @@ int main(void) {
   servo_On(&mainServo);
 
   /* Initialize potentiometer positions */
-  setAngle = map(analog_Read(SERVO_ANALOG), 0, 4095, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
+  setAngle = map(analog_Read(SERVO_ANALOG), 0, 4095, MAXIMUM_ANGLE, MINIMUM_ANGLE);
   seconds = map(analog_Read(TIME_ANALOG), 0, 4095, 60, 0);
 
   /* Initialize offset thread */
-  pthread_t offsetThread;
-  int offsetStart = pthread_create(&offsetThread, NULL, offset_Select, NULL);
+	multicore_launch_core1(offset_Select);
 
   /* Entire program loop */
   while(1) {
@@ -178,6 +178,7 @@ int main(void) {
 	  for (int i = 0; i < 4; i++) {
 	    digits[i] = 9;
 	  }
+	}
 	else {
 	  digits[0] = ((countdown % 1000000) / 100000);
 	  digits[1] = ((countdown % 100000) / 10000);
@@ -240,7 +241,7 @@ int main(void) {
 		
     /* Servo arm angle select loop */
     while (angleToggle) {
-      setAngle = map(analog_Read(SERVO_ANALOG), 0, 4095, USER_MAXIMUM_ANGLE, USER_MINIMUM_ANGLE);
+      setAngle = map(analog_Read(SERVO_ANALOG), 0, 4095, MAXIMUM_ANGLE, MINIMUM_ANGLE);
       servo_Position(SERVO_PIN, setAngle);
       digits[1] = ((setAngle % 1000) / 100);
       digits[2] = ((setAngle % 100) / 10);
