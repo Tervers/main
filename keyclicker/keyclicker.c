@@ -406,7 +406,7 @@ void offset_select(void) {
 	            filled = true;
 		}
 	      }
-	      offsetAmount = (seconds * 1000) * failures;
+	      offsetAmount = ((seconds * 1000) * failures) * ((rand() % 101) / 100);
 	      break;
     }
   }
