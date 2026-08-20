@@ -365,17 +365,18 @@ void offset_Select(void) {
     if (!gpio_get(OFFSET_SELECT_PIN)) {
       sleep_ms(20);
       if (!gpio_get(OFFSET_SELECT_PIN)) {
-				switch (offsetLevel) {
-	  			case 0: offsetLevel++;
-	          			gpio_put(OFFSET_LED_PINS[offsetLevel], 1);
-		  						break;
-	  			case 1: case 2:
-		  						gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
-	          			gpio_put(OFFSET_LED_PINS[++offsetLevel], 1);
-		  						break;
-	  			case 3: gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
-		  						offsetLevel = 0;
-		  						break;
+	sleep_ms(countdown);
+	switch (offsetLevel) {
+	  case 0: offsetLevel++;
+	          gpio_put(OFFSET_LED_PINS[offsetLevel], 1);
+		  break;
+	  case 1: case 2:
+		  gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
+	          gpio_put(OFFSET_LED_PINS[++offsetLevel], 1);
+		  break;
+	  case 3: gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
+		  offsetLevel = 0;
+		  break;
         }
       }
     }
