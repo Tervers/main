@@ -2,9 +2,10 @@
 #include "hardware/adc.h"
 #include "hardware/gpio.h"
 #include "hardware/pwm.h"
+#include "pico/multicore.h"
+#include "pico/rand.h"
 #include "pico/stdlib.h"
 #include "pico/time.h"
-#include "pico/multicore.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,7 +54,7 @@ uint32_t now = 0;
 uint32_t stop = 0;
 typedef enum {OFF, LOW, MEDIUM, HIGH} OL;
 OL offsetLevel = OFF;
-int offsetAmount = 0;
+float offsetAmount = 0.0f;
 bool filled = false;
 
 /* Display control values */
@@ -150,32 +151,28 @@ int main(void) {
   /* Initialize offset thread */
 	multicore_launch_core1(offset_Select);
 
-  /* Initialize srand to generate random values */
-  srand((unsigned) time(NULL));
-
   /* Entire program loop */
   while(1) {
 
-    /* Main keyclicker loop */
-    while (!timeToggle && !angleToggle) {
-      for (int i = 0, pos = setAngle; pos < setAngle + 6; pos += 1, i++) {
-	servo_Position(SERVO_PIN, pos);
-	for (int j = 0; j < 4; j++) {
-	  select_Digit(sections[i].digit);
-	  write_Data(sections[i].shape);
-	  now = to_ms_since_boot(get_absolute_time());
-	  sleep_ms(5);
-	}
-      }
-      for (int i = 6, pos = setAngle; pos > setAngle - 6; pos -= 1, i++) {
-	servo_Position(SERVO_PIN, pos);
-	for (int j = 0; j < 4; j++) {
-	  select_Digit(sections[i].digit);
-	  write_Data(sections[i].shape);
-	  sleep_ms(5);
-	}
-      }
-      now = to_ms_since_boot(get_absolute_time());
+  	/* Main keyclicker loop */
+  	while (!timeToggle && !angleToggle) {
+    	for (int i = 0, pos = setAngle; pos < setAngle + 6; pos += 1, i++) {
+				servo_Position(SERVO_PIN, pos);
+				for (int j = 0; j < 4; j++) {
+	  			select_Digit(sections[i].digit);
+	  			write_Data(sections[i].shape);
+	  			sleep_ms(5);
+				}
+    	}
+    	for (int i = 6, pos = setAngle; pos > setAngle - 6; pos -= 1, i++) {
+				servo_Position(SERVO_PIN, pos);
+				for (int j = 0; j < 4; j++) {
+	  			select_Digit(sections[i].digit);
+	  			write_Data(sections[i].shape);
+	  			sleep_ms(5);
+				}
+    	}
+    	now = to_ms_since_boot(get_absolute_time());
 			switch (offsetLevel) {
 	  		case 0: if (gpio_get(OFFSET_LED_PINS[2]) == 1)
 									gpio_put(OFFSET_LED_PINS[2], 0);
@@ -183,13 +180,13 @@ int main(void) {
 		  					break;
 	  		case 1: if (gpio_get(OFFSET_LED_PINS[0]) == 0)
 									gpio_put(OFFSET_LED_PINS[0], 1);
-								offsetAmount = (seconds * (rand() % 21) * 10);
+								offsetAmount = (seconds * (get_rand_32() % 21) * 10);
 								break;
 	  		case 2: if (gpio_get(OFFSET_LED_PINS[0]) == 1)
 									gpio_put(OFFSET_LED_PINS[0], 0);
 								if (gpio_get(OFFSET_LED_PINS[1]) == 0)
 									gpio_put(OFFSET_LED_PINS[1], 1);
-								offsetAmount = (seconds * (rand() % 51) * 10);
+								offsetAmount = (seconds * (get_rand_32() % 51) * 10);
 								break;
 	  		case 3: if (gpio_get(OFFSET_LED_PINS[1]) == 1)
 									gpio_put(OFFSET_LED_PINS[1], 0);
@@ -202,7 +199,7 @@ int main(void) {
 	      				int failures = 0;
 								filled = false;
               	while (!filled) {
-									attemptValue = rand() % 5;
+									attemptValue = get_rand_32() % 5;
 									if (collection[attemptValue] == false)
 		  							collection[attemptValue] = true;
 									else
@@ -214,98 +211,107 @@ int main(void) {
 	            				filled = true;
 									}
 	      				}
-	      				offsetAmount = (seconds * failures * ((rand() % 100) + 1) * 10);
+	      				offsetAmount = (seconds * failures * ((get_rand_32() % 100) + 1) * 10);
 								break;
     	}
-      timer = (now + (seconds * 1000) + offsetAmount);
-      while (to_ms_since_boot(get_absolute_time()) < (now + (seconds * 1000) + offsetAmount)) {
-	countdown = timer - to_ms_since_boot(get_absolute_time());
-	if (countdown > 999999) {
-	  for (int i = 0; i < 4; i++) {
-	    digits[i] = 9;
-	  }
-	}
-	else {
-	  digits[0] = ((countdown % 1000000) / 100000);
-	  digits[1] = ((countdown % 100000) / 10000); digits[2] = ((countdown % 10000) / 1000);
-	  digits[3] = ((countdown % 1000) / 100);
-	}
-	for (int i = 0; i < 4; i++) {
-	  select_Digit(i);
-	  digitValue = digits[i];
-	  if (i == 2) 
-	    write_Data(num[digitValue] | 0x80);
-	  else 
-	    write_Data(num[digitValue]);
-	  sleep_ms(5);
-	  write_Data(0x00);      
-	}
-	for (int i = 0; i < 4; i++) {
-	  select_Digit(i);
-	  write_Data(0x00);
-	}
-	if (!gpio_get(TIME_SELECT_PIN)) {
-	  sleep_ms(20);
-	  if (!gpio_get(TIME_SELECT_PIN)) {
-	    timeToggle = true;
-	    startToggle = false;
-	    break;
-          }
-        }
-        if (!gpio_get(ANGLE_SELECT_PIN)) {
-	  sleep_ms(20);
-	  if (!gpio_get(ANGLE_SELECT_PIN)) {
-	    angleToggle = true;
-	    startToggle = false;
-	    break;
-	  }
-        }
-      }
-    }
-    sleep_ms(200);
+			int offsetFixed = offsetAmount;
+			float secondsShift = seconds;
+			switch (offsetLevel) {
+				case 0: break;
+				case 1: secondsShift *= 0.90f; break;
+				case 2: secondsShift *= 0.75f; break;
+				case 3: secondsShift *= 0.50f; break;
+			}
+    	timer = (now + (secondsShift * 1000.0f) + offsetFixed);
+    	while (to_ms_since_boot(get_absolute_time()) < (now + (secondsShift * 1000) + offsetFixed)) {
+				countdown = timer - to_ms_since_boot(get_absolute_time());
+				if (countdown > 999999) {
+	  			for (int i = 0; i < 4; i++) {
+	    			digits[i] = 9;
+	  			}
+				}
+				else {
+	  			digits[0] = ((countdown % 1000000) / 100000);
+	  			digits[1] = ((countdown % 100000) / 10000);
+					digits[2] = ((countdown % 10000) / 1000);
+	  			digits[3] = ((countdown % 1000) / 100);
+				}
+				for (int i = 0; i < 4; i++) {
+	  			select_Digit(i);
+	  			digitValue = digits[i];
+	  			if (i == 2) 
+	    			write_Data(num[digitValue] | 0x80);
+	  			else 
+	    			write_Data(num[digitValue]);
+	  			sleep_ms(5);
+	  			write_Data(0x00);      
+				}
+				//superfluous for below?
+				for (int i = 0; i < 4; i++) {
+	  			select_Digit(i);
+	  			write_Data(0x00);
+				}
+				if (!gpio_get(TIME_SELECT_PIN)) {
+	  			sleep_ms(20);
+	  			if (!gpio_get(TIME_SELECT_PIN)) {
+	    			timeToggle = true;
+	    			startToggle = false;
+	    			break;
+    			}
+    		}
+    		if (!gpio_get(ANGLE_SELECT_PIN)) {
+	  			sleep_ms(20);
+	  			if (!gpio_get(ANGLE_SELECT_PIN)) {
+	    			angleToggle = true;
+	    			startToggle = false;
+	    			break;
+	  			}
+    		}
+  		}
+		}
+  	sleep_ms(200);
 
-    /* Time delay select loop */
-    while (timeToggle) {
-      seconds = map(analog_Read(TIME_ANALOG), 0, 4095, 60, 0);
-      digits[1] = ((seconds % 1000) / 100);
-      digits[2] = ((seconds % 100) / 10);
-      digits[3] = (seconds % 10);
-      for (int i = 1; i < 4; i++) {
-	select_Digit(i);
-	digitValue = digits[i];
-	write_Data(num[digitValue]);
-	sleep_ms(5);
-	write_Data(0x00);      
-      }
-      if (!gpio_get(TIME_SELECT_PIN)) {
-	sleep_ms(20);
-	if (!gpio_get(TIME_SELECT_PIN)) 
-	  timeToggle = false;
-      }
-    }
-		
-    /* Servo arm angle select loop */
-    while (angleToggle) {
-      setAngle = map(analog_Read(SERVO_ANALOG), 0, 4095, MAXIMUM_ANGLE, MINIMUM_ANGLE);
-      servo_Position(SERVO_PIN, setAngle);
-      digits[1] = ((setAngle % 1000) / 100);
-      digits[2] = ((setAngle % 100) / 10);
-      digits[3] = (setAngle % 10);
-      for (int i = 1; i < 4; i++) {
-	select_Digit(i);
-	digitValue = digits[i];
-	write_Data(num[digitValue]);
-	sleep_ms(5);
-	write_Data(0x00);      
-      }
-      if (!gpio_get(ANGLE_SELECT_PIN)) {
-	sleep_ms(20);
-	if (!gpio_get(ANGLE_SELECT_PIN)) {
-	  angleToggle = false;
+  	/* Time delay select loop */
+  	while (timeToggle) {
+    	seconds = map(analog_Read(TIME_ANALOG), 0, 4095, 60, 0);
+    	digits[1] = (((int) seconds % 1000) / 100);
+    	digits[2] = (((int) seconds % 100) / 10);
+    	digits[3] = ((int) seconds % 10);
+    	for (int i = 1; i < 4; i++) {
+				select_Digit(i);
+				digitValue = digits[i];
+				write_Data(num[digitValue]);
+				sleep_ms(5);
+				write_Data(0x00);      
+    	}
+    	if (!gpio_get(TIME_SELECT_PIN)) {
+				sleep_ms(20);
+				if (!gpio_get(TIME_SELECT_PIN)) 
+	  			timeToggle = false;
+    	}
+  	}
+			
+  	/* Servo arm angle select loop */
+  	while (angleToggle) {
+    	setAngle = map(analog_Read(SERVO_ANALOG), 0, 4095, MAXIMUM_ANGLE, MINIMUM_ANGLE);
+    	servo_Position(SERVO_PIN, setAngle);
+    	digits[1] = ((setAngle % 1000) / 100);
+    	digits[2] = ((setAngle % 100) / 10);
+    	digits[3] = (setAngle % 10);
+    	for (int i = 1; i < 4; i++) {
+				select_Digit(i);
+				digitValue = digits[i];
+				write_Data(num[digitValue]);
+				sleep_ms(5);
+				write_Data(0x00);      
+    	}
+    	if (!gpio_get(ANGLE_SELECT_PIN)) {
+				sleep_ms(20);
+				if (!gpio_get(ANGLE_SELECT_PIN))
+	  			angleToggle = false;
+    	}
+  	}
 	}
-      }
-    }
-  }
 }
 
 /* Function Definitions */
@@ -407,7 +413,7 @@ void offset_Select(void) {
     if (!gpio_get(OFFSET_SELECT_PIN)) {
       sleep_ms(20);
       if (!gpio_get(OFFSET_SELECT_PIN)) {
-				sleep_ms(countdown);
+				sleep_ms(500);
 				if (offsetLevel < 3)
 					offsetLevel++;
 				else

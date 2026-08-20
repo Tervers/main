@@ -18,6 +18,7 @@ target_link_libraries(keyclicker
     hardware_adc
     hardware_pwm
 		pico_multicore
+		pico_rand
     pico_stdlib
     pico_time
 )
