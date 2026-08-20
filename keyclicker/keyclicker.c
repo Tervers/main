@@ -4,10 +4,10 @@
 #include "hardware/pwm.h"
 #include "pico/stdlib.h"
 #include "pico/time.h"
-//#include <pthread.h>
 #include "pico/multicore.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 /* Pin number defines */
@@ -51,7 +51,8 @@ int countdown = 0;
 int seconds = 0;
 uint32_t now = 0;
 uint32_t stop = 0;
-enum {OFF, LOW, MEDIUM, HIGH} offsetLevel;
+typedef enum {OFF, LOW, MEDIUM, HIGH} OL;
+OL offsetLevel = OFF;
 int offsetAmount = 0;
 bool filled = false;
 
@@ -106,9 +107,6 @@ void offset_Select(void);
 /* Start */
 int main(void) {
 
-  /* Initialize srand to generate random values */
-  srand((unsigned) time(NULL));
-
   /* Initialize Pins */
   stdio_init_all();
   adc_init();
@@ -138,6 +136,7 @@ int main(void) {
   for (int i = 0; i < 2; i++) {
     gpio_init(OFFSET_LED_PINS[i]);
     gpio_set_dir(OFFSET_LED_PINS[i], GPIO_OUT);
+		gpio_put(OFFSET_LED_PINS[i], 0);
   }
 
   /* Initialize servo */
@@ -150,6 +149,9 @@ int main(void) {
 
   /* Initialize offset thread */
 	multicore_launch_core1(offset_Select);
+
+  /* Initialize srand to generate random values */
+  srand((unsigned) time(NULL));
 
   /* Entire program loop */
   while(1) {
@@ -174,18 +176,58 @@ int main(void) {
 	}
       }
       now = to_ms_since_boot(get_absolute_time());
+			switch (offsetLevel) {
+	  		case 0: if (gpio_get(OFFSET_LED_PINS[2]) == 1)
+									gpio_put(OFFSET_LED_PINS[2], 0);
+								offsetAmount = 0;
+		  					break;
+	  		case 1: if (gpio_get(OFFSET_LED_PINS[0]) == 0)
+									gpio_put(OFFSET_LED_PINS[0], 1);
+								offsetAmount = (seconds * (rand() % 21) * 10);
+								break;
+	  		case 2: if (gpio_get(OFFSET_LED_PINS[0]) == 1)
+									gpio_put(OFFSET_LED_PINS[0], 0);
+								if (gpio_get(OFFSET_LED_PINS[1]) == 0)
+									gpio_put(OFFSET_LED_PINS[1], 1);
+								offsetAmount = (seconds * (rand() % 51) * 10);
+								break;
+	  		case 3: if (gpio_get(OFFSET_LED_PINS[1]) == 1)
+									gpio_put(OFFSET_LED_PINS[1], 0);
+								if (gpio_get(OFFSET_LED_PINS[2]) == 0)
+									gpio_put(OFFSET_LED_PINS[2], 1);
+      					// Variability based on 'Coupon Collector's Problem'
+								bool collection[5];
+								memset(collection, false, sizeof(collection));
+      					int attemptValue = 0;
+	      				int failures = 0;
+								filled = false;
+              	while (!filled) {
+									attemptValue = rand() % 5;
+									if (collection[attemptValue] == false)
+		  							collection[attemptValue] = true;
+									else
+		  							failures++;
+									for (int i = 0; i < 5; i++) {
+                  	if (collection[i] == false)
+		    							break;
+		  							else
+	            				filled = true;
+									}
+	      				}
+	      				offsetAmount = (seconds * failures * ((rand() % 100) + 1) * 10);
+								break;
+    	}
       timer = (now + (seconds * 1000) + offsetAmount);
       while (to_ms_since_boot(get_absolute_time()) < (now + (seconds * 1000) + offsetAmount)) {
 	countdown = timer - to_ms_since_boot(get_absolute_time());
-	if (countdown > 9999) {
+	if (countdown > 999999) {
 	  for (int i = 0; i < 4; i++) {
 	    digits[i] = 9;
 	  }
 	}
 	else {
 	  digits[0] = ((countdown % 1000000) / 100000);
-	  digits[1] = ((countdown % 100000) / 10000);
-	  digits[2] = ((countdown % 10000) / 1000);
+	  digits[1] = ((countdown % 100000) / 10000); digits[2] = ((countdown % 10000) / 1000);
 	  digits[3] = ((countdown % 1000) / 100);
 	}
 	for (int i = 0; i < 4; i++) {
@@ -365,53 +407,12 @@ void offset_Select(void) {
     if (!gpio_get(OFFSET_SELECT_PIN)) {
       sleep_ms(20);
       if (!gpio_get(OFFSET_SELECT_PIN)) {
-	sleep_ms(countdown);
-	switch (offsetLevel) {
-	  case 0: offsetLevel++;
-	          gpio_put(OFFSET_LED_PINS[offsetLevel], 1);
-		  break;
-	  case 1: case 2:
-		  gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
-	          gpio_put(OFFSET_LED_PINS[++offsetLevel], 1);
-		  break;
-	  case 3: gpio_put(OFFSET_LED_PINS[offsetLevel], 0);
-		  offsetLevel = 0;
-		  break;
-        }
-      }
-    }
-    switch (offsetLevel) {
-      case 0: offsetAmount = 0;
-	      break;
-      case 1: if (seconds == 0)
-                seconds = 1;
-	      offsetAmount = (seconds * (rand() % 21) * 10);
-	      break;
-      case 2: if (seconds == 0)
-                seconds = 1;
-	      offsetAmount = (seconds * (rand() % 51) * 10);
-	      break;
-      /* Variability based on 'Coupon Collector's Problem' */
-      case 3: if (seconds == 0)
-                seconds = 1;
-              int attemptValue = 0;
-	      int failures = 0;
-	      bool collection[5];
-              while (!filled) {
-		attemptValue = rand() % 5;
-		if (collection[attemptValue] == false)
-		  collection[attemptValue] == true;
-		else
-		  failures++;
-		for (int i = 0; i < 5; i++) {
-                  if (collection[i] == false)
-		    break;
-		  else
-	            filled = true;
+				sleep_ms(countdown);
+				if (offsetLevel < 3)
+					offsetLevel++;
+				else
+					offsetLevel = 0;
+			}
 		}
-	      }
-	      offsetAmount = (seconds * failures * ((rand() % 100) + 1) * 10);
-	      break;
-    }
   }
 }

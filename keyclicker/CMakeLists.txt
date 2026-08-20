@@ -14,11 +14,11 @@ add_executable(keyclicker
 )
 
 target_link_libraries(keyclicker
-    pico_stdlib
     hardware_gpio
     hardware_adc
     hardware_pwm
 		pico_multicore
+    pico_stdlib
     pico_time
 )
 
