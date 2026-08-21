@@ -88,29 +88,27 @@ struct circle {
 uint8_t num[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f};
 
 /* Prototypes */
-void select_Digit(uint8_t value);
-void write_Data(int value);
-void set_Digits(int value);
-void write_Display(int value, int a[]);
-void pwm_Set_Duty_H(uint slice_num, uint chan, int d);
-void servo_Init(uint gpio);
-void servo_On(Servo *s);
-void servo_Off(Servo *s);
-void servo_Position(uint gpio, int angle);
+//void servo_Init(uint gpio);
+//void servo_On(Servo *s);
+//void servo_Off(Servo *s);
+//void servo_Position(uint gpio, int angle);
+//void click(void);
+//void pwm_Set_Duty_H(uint slice_num, uint chan, int d);
+//uint32_t pwm_Get_Wrap(uint slice_num);
+//uint32_t pwm_Set_Freq_Duty(uint slice_num,uint chan, uint32_t f, int d);
+//bool angle_Button(void);
+//int set_Angle(int angle, int digits[]);
+//void write_Data(int value);
+//void shift_Out(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t value);
+//void select_Digit(uint8_t value);
+//void update_Display(int digits[], DP decimalPoint);
 uint16_t analog_Read(uint p);
 long map(long x, long in_min, long in_max, long out_min, long out_max);
-uint32_t pwm_Get_Wrap(uint slice_num);
-uint32_t pwm_Set_Freq_Duty(uint slice_num,uint chan, uint32_t f, int d);
-void shift_Out(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t value);
-void offset_Select(void);
-void click(void);
-int calc_Offset(OL offsetLevel);
-void update_Display(int digits[], DP decimalPoint);
-bool time_Button(void);
-bool angle_Button(void);
-int set_Seconds(int seconds, int digits[]);
-int set_Angle(int angle, int digits[]);
-void set_Countdown(int countdown, int digits[]);
+//void offset_Select(void);
+//bool time_Button(void);
+//int set_Seconds(int seconds, int digits[]);
+//int calc_Offset(OL offsetLevel);
+//void set_Countdown(int countdown, int digits[]);
 
 /* Start */
 int main(void) {
