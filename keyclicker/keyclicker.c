@@ -11,9 +11,9 @@
 #include <string.h>
 
 /* Pin number defines */
+#define LATCH_PIN 11
 #define CLOCK_PIN 12
 #define DATA_PIN 13
-#define LATCH_PIN 11
 #define TIME_SELECT_PIN 20
 #define SERVO_PIN 21
 #define ANGLE_SELECT_PIN 22
@@ -43,7 +43,7 @@ typedef struct {
 } Servo;
 Servo mainServo;
 int pos = 0;
-int setAngle = 0;
+int angle = 0;
 
 /* Time control values */
 int timer = 0;
@@ -51,8 +51,8 @@ int countdown = 0;
 int seconds = 0;
 uint32_t now = 0;
 uint32_t stop = 0;
-typedef enum {OFF, LOW, MEDIUM, HIGH} offsetLevel;
-offsetLevel OL = OFF;
+typedef enum {OFF, LOW, MEDIUM, HIGH} OL;
+OL offsetLevel = OFF;
 bool filled = false;
 
 /* Display control values */
@@ -60,7 +60,6 @@ int digitValue;
 int digits[4];
 
 /* Loop control values */
-bool startToggle = false;
 bool timeToggle = false;
 bool angleToggle = false;
 
@@ -103,8 +102,13 @@ uint32_t pwm_Set_Freq_Duty(uint slice_num,uint chan, uint32_t f, int d);
 void shift_Out(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t value);
 void offset_Select(void);
 void click(void);
-int calc_Offset(offsetLevel OL);
-void display_Countdown(int digits[], int countdown);
+int calc_Offset(OL offsetLevel);
+void update_Display(int digits[]);
+void update_Display_Tenths(int digits[]);
+bool time_Button(void);
+bool angle_Button(void);
+int set_Seconds(int seconds, int digits[]);
+int set_Angle(int angle, int digits[]);
 
 /* Start */
 int main(void) {
@@ -146,7 +150,7 @@ int main(void) {
   servo_On(&mainServo);
 
   /* Initialize potentiometer positions */
-  setAngle = map(analog_Read(SERVO_ANALOG), 0, 4095, MAXIMUM_ANGLE, MINIMUM_ANGLE);
+  angle = map(analog_Read(SERVO_ANALOG), 0, 4095, MAXIMUM_ANGLE, MINIMUM_ANGLE);
   seconds = map(analog_Read(TIME_ANALOG), 0, 4095, 60, 0);
 
   /* Initialize offset thread */
@@ -159,9 +163,9 @@ int main(void) {
   	while (!timeToggle && !angleToggle) {
 			click();
     	now = to_ms_since_boot(get_absolute_time());
-			int offsetAmount = calc_Offset(OL);
+			int offsetAmount = calc_Offset(offsetLevel);
 			float secondsShift = seconds;
-			switch (OL) {
+			switch (offsetLevel) {
 				case 0: break;
 				case 1: secondsShift *= 0.90f; break;
 				case 2: secondsShift *= 0.75f; break;
@@ -170,71 +174,38 @@ int main(void) {
     	timer = (now + (secondsShift * 1000.0f) + offsetAmount);
     	while (to_ms_since_boot(get_absolute_time()) < (now + (secondsShift * 1000) + offsetAmount)) {
 				countdown = timer - to_ms_since_boot(get_absolute_time());
-				display_Countdown(digits, countdown);
-				//superfluous for below?
-				//for (int i = 0; i < 4; i++) {
-	  		//	select_Digit(i);
-	  		//	write_Data(0x00);
-				//}
-				if (!gpio_get(TIME_SELECT_PIN)) {
-	  			sleep_ms(20);
-	  			if (!gpio_get(TIME_SELECT_PIN)) {
-	    			timeToggle = true;
-	    			startToggle = false;
-	    			break;
-    			}
-    		}
-    		if (!gpio_get(ANGLE_SELECT_PIN)) {
-	  			sleep_ms(20);
-	  			if (!gpio_get(ANGLE_SELECT_PIN)) {
-	    			angleToggle = true;
-	    			startToggle = false;
-	    			break;
+				if (countdown > 999999) {
+	  			for (int i = 0; i < 4; i++) {
+	    			digits[i] = 9;
 	  			}
-    		}
+				}
+				else {
+	  			digits[0] = ((countdown % 1000000) / 100000);
+	  			digits[1] = ((countdown % 100000) / 10000);
+					digits[2] = ((countdown % 10000) / 1000);
+	  			digits[3] = ((countdown % 1000) / 100);
+				}
+				update_Display_Tenths(digits);
   		}
+				if (time_Button())
+					break;
+				if (angle_Button())
+					break;
 		}
   	sleep_ms(200);
 
   	/* Time delay select loop */
   	while (timeToggle) {
-    	seconds = map(analog_Read(TIME_ANALOG), 0, 4095, 60, 0);
-    	digits[1] = (((int) seconds % 1000) / 100);
-    	digits[2] = (((int) seconds % 100) / 10);
-    	digits[3] = ((int) seconds % 10);
-    	for (int i = 1; i < 4; i++) {
-				select_Digit(i);
-				digitValue = digits[i];
-				write_Data(num[digitValue]);
-				sleep_ms(5);
-				write_Data(0x00);      
-    	}
-    	if (!gpio_get(TIME_SELECT_PIN)) {
-				sleep_ms(20);
-				if (!gpio_get(TIME_SELECT_PIN)) 
-	  			timeToggle = false;
-    	}
+			seconds = set_Seconds(seconds, digits);
+			update_Display(digits);
+			time_Button();
   	}
 			
   	/* Servo arm angle select loop */
   	while (angleToggle) {
-    	setAngle = map(analog_Read(SERVO_ANALOG), 0, 4095, MAXIMUM_ANGLE, MINIMUM_ANGLE);
-    	servo_Position(SERVO_PIN, setAngle);
-    	digits[1] = ((setAngle % 1000) / 100);
-    	digits[2] = ((setAngle % 100) / 10);
-    	digits[3] = (setAngle % 10);
-    	for (int i = 1; i < 4; i++) {
-				select_Digit(i);
-				digitValue = digits[i];
-				write_Data(num[digitValue]);
-				sleep_ms(5);
-				write_Data(0x00);      
-    	}
-    	if (!gpio_get(ANGLE_SELECT_PIN)) {
-				sleep_ms(20);
-				if (!gpio_get(ANGLE_SELECT_PIN))
-	  			angleToggle = false;
-    	}
+			angle = set_Angle(angle, digits);
+			update_Display(digits);
+			angle_Button();
   	}
 	}
 }
@@ -339,17 +310,17 @@ void offset_Select(void) {
       sleep_ms(20);
       if (!gpio_get(OFFSET_SELECT_PIN)) {
 				sleep_ms(500);
-				if (OL < 3)
-					OL++;
+				if (offsetLevel < 3)
+					offsetLevel++;
 				else
-					OL = 0;
+					offsetLevel = 0;
 			}
 		}
   }
 }
 
 void click(void) {
-  for (int i = 0, pos = setAngle; pos < setAngle + 6; pos += 1, i++) {
+  for (int i = 0, pos = angle; pos < angle + 6; pos += 1, i++) {
 		servo_Position(SERVO_PIN, pos);
 		for (int j = 0; j < 4; j++) {
 	  	select_Digit(sections[i].digit);
@@ -357,7 +328,7 @@ void click(void) {
 	  	sleep_ms(5);
 		}
   }
-  for (int i = 6, pos = setAngle; pos > setAngle - 6; pos -= 1, i++) {
+  for (int i = 6, pos = angle; pos > angle - 6; pos -= 1, i++) {
 		servo_Position(SERVO_PIN, pos);
 		for (int j = 0; j < 4; j++) {
 	  	select_Digit(sections[i].digit);
@@ -367,8 +338,8 @@ void click(void) {
   }
 }
 
-int calc_Offset(offsetLevel OL) {
-			switch (OL) {
+int calc_Offset(OL offsetLevel) {
+			switch (offsetLevel) {
 	  		case 0: if (gpio_get(OFFSET_LED_PINS[2]) == 1)
 									gpio_put(OFFSET_LED_PINS[2], 0);
 								return 0;
@@ -406,19 +377,17 @@ int calc_Offset(offsetLevel OL) {
 	      				return (seconds * failures * ((get_rand_32() % 100) + 1) * 10);
   }
 }
+void update_Display(int digits[]) {
+    	for (int i = 1; i < 4; i++) {
+				select_Digit(i);
+				digitValue = digits[i];
+				write_Data(num[digitValue]);
+				sleep_ms(5);
+				write_Data(0x00);      
+    	}
+}
 
-void display_Countdown(int digits[], int countdown) {
-				if (countdown > 999999) {
-	  			for (int i = 0; i < 4; i++) {
-	    			digits[i] = 9;
-	  			}
-				}
-				else {
-	  			digits[0] = ((countdown % 1000000) / 100000);
-	  			digits[1] = ((countdown % 100000) / 10000);
-					digits[2] = ((countdown % 10000) / 1000);
-	  			digits[3] = ((countdown % 1000) / 100);
-				}
+void update_Display_Tenths(int digits[]) {
 				for (int i = 0; i < 4; i++) {
 	  			select_Digit(i);
 	  			digitValue = digits[i];
@@ -429,4 +398,41 @@ void display_Countdown(int digits[], int countdown) {
 	  			sleep_ms(5);
 	  			write_Data(0x00);      
 				}
+}
+
+bool time_Button(void) {
+				if (!gpio_get(TIME_SELECT_PIN)) {
+	  			sleep_ms(20);
+	  			if (!gpio_get(TIME_SELECT_PIN)) {
+	    			timeToggle = !timeToggle;
+						return true;
+    			}
+    		}
+}
+
+bool angle_Button(void) {
+				if (!gpio_get(ANGLE_SELECT_PIN)) {
+	  			sleep_ms(20);
+	  			if (!gpio_get(ANGLE_SELECT_PIN)) {
+	    			angleToggle = !angleToggle;
+						return true;
+    			}
+    		}
+}
+
+int set_Seconds(int seconds, int digits[]) {
+    	seconds = map(analog_Read(TIME_ANALOG), 0, 4095, 60, 0);
+    	digits[1] = ((seconds % 1000) / 100);
+    	digits[2] = ((seconds % 100) / 10);
+    	digits[3] = (seconds % 10);
+	return seconds;
+}
+
+int set_Angle(int angle, int digits[]) {
+    	angle = map(analog_Read(SERVO_ANALOG), 0, 4095, MAXIMUM_ANGLE, MINIMUM_ANGLE);
+    	servo_Position(SERVO_PIN, angle);
+    	digits[1] = ((angle % 1000) / 100);
+    	digits[2] = ((angle % 100) / 10);
+    	digits[3] = (angle % 10);
+			return angle;
 }
