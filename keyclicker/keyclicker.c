@@ -58,6 +58,8 @@ bool filled = false;
 /* Display control values */
 int digitValue;
 int digits[4];
+typedef enum {THOUSANDTHS, HUNDREDTHS, TENTHS, NONE} DP;
+DP decimalPoint = NONE;
 
 /* Loop control values */
 bool timeToggle = false;
@@ -103,12 +105,12 @@ void shift_Out(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t valu
 void offset_Select(void);
 void click(void);
 int calc_Offset(OL offsetLevel);
-void update_Display(int digits[]);
-void update_Display_Tenths(int digits[]);
+void update_Display(int digits[], DP decimalPoint);
 bool time_Button(void);
 bool angle_Button(void);
 int set_Seconds(int seconds, int digits[]);
 int set_Angle(int angle, int digits[]);
+void set_Countdown(int countdown, int digits[]);
 
 /* Start */
 int main(void) {
@@ -162,7 +164,6 @@ int main(void) {
   	/* Main keyclicker loop */
   	while (!timeToggle && !angleToggle) {
 			click();
-    	now = to_ms_since_boot(get_absolute_time());
 			int offsetAmount = calc_Offset(offsetLevel);
 			float secondsShift = seconds;
 			switch (offsetLevel) {
@@ -171,42 +172,32 @@ int main(void) {
 				case 2: secondsShift *= 0.75f; break;
 				case 3: secondsShift *= 0.50f; break;
 			}
+    	now = to_ms_since_boot(get_absolute_time());
     	timer = (now + (secondsShift * 1000.0f) + offsetAmount);
-    	while (to_ms_since_boot(get_absolute_time()) < (now + (secondsShift * 1000) + offsetAmount)) {
+    	while (to_ms_since_boot(get_absolute_time()) < timer) {
 				countdown = timer - to_ms_since_boot(get_absolute_time());
-				if (countdown > 999999) {
-	  			for (int i = 0; i < 4; i++) {
-	    			digits[i] = 9;
-	  			}
-				}
-				else {
-	  			digits[0] = ((countdown % 1000000) / 100000);
-	  			digits[1] = ((countdown % 100000) / 10000);
-					digits[2] = ((countdown % 10000) / 1000);
-	  			digits[3] = ((countdown % 1000) / 100);
-				}
-				update_Display_Tenths(digits);
+				set_Countdown(countdown, digits);
+				update_Display(digits, decimalPoint = TENTHS);
+				if (time_Button() || angle_Button())
+					break;
   		}
-				if (time_Button())
-					break;
-				if (angle_Button())
-					break;
 		}
   	sleep_ms(200);
 
   	/* Time delay select loop */
   	while (timeToggle) {
 			seconds = set_Seconds(seconds, digits);
-			update_Display(digits);
+			update_Display(digits, decimalPoint = NONE);
 			time_Button();
   	}
 			
   	/* Servo arm angle select loop */
   	while (angleToggle) {
 			angle = set_Angle(angle, digits);
-			update_Display(digits);
+			update_Display(digits, decimalPoint = NONE);
 			angle_Button();
   	}
+		sleep_ms(200);
 	}
 }
 
@@ -377,24 +368,30 @@ int calc_Offset(OL offsetLevel) {
 	      				return (seconds * failures * ((get_rand_32() % 100) + 1) * 10);
   }
 }
-void update_Display(int digits[]) {
-    	for (int i = 1; i < 4; i++) {
-				select_Digit(i);
-				digitValue = digits[i];
-				write_Data(num[digitValue]);
-				sleep_ms(5);
-				write_Data(0x00);      
-    	}
-}
 
-void update_Display_Tenths(int digits[]) {
+void update_Display(int digits[], DP decimalPoint) {
 				for (int i = 0; i < 4; i++) {
 	  			select_Digit(i);
 	  			digitValue = digits[i];
-	  			if (i == 2) 
-	    			write_Data(num[digitValue] | 0x80);
-	  			else 
-	    			write_Data(num[digitValue]);
+					switch(decimalPoint) {
+						case 0: if (i == 0)
+											write_Data(num[digitValue] | 0x80);
+										else
+											write_Data(num[digitValue]);
+										break;
+						case 1: if (i == 1)
+											write_Data(num[digitValue] | 0x80);
+										else
+											write_Data(num[digitValue]);
+										break;
+						case 2: if (i == 2)
+											write_Data(num[digitValue] | 0x80);
+										else
+											write_Data(num[digitValue]);
+										break;
+						case 3: write_Data(num[digitValue]);
+										break;
+					}
 	  			sleep_ms(5);
 	  			write_Data(0x00);      
 				}
@@ -408,6 +405,8 @@ bool time_Button(void) {
 						return true;
     			}
     		}
+					else
+						return false;
 }
 
 bool angle_Button(void) {
@@ -418,6 +417,8 @@ bool angle_Button(void) {
 						return true;
     			}
     		}
+					else
+						return false;
 }
 
 int set_Seconds(int seconds, int digits[]) {
@@ -435,4 +436,18 @@ int set_Angle(int angle, int digits[]) {
     	digits[2] = ((angle % 100) / 10);
     	digits[3] = (angle % 10);
 			return angle;
+}
+
+void set_Countdown(int countdown, int digits[]) {
+				if (countdown > 999999) {
+	  			for (int i = 0; i < 4; i++) {
+	    			digits[i] = 9;
+	  			}
+				}
+				else {
+	  			digits[0] = ((countdown % 1000000) / 100000);
+	  			digits[1] = ((countdown % 100000) / 10000);
+					digits[2] = ((countdown % 10000) / 1000);
+	  			digits[3] = ((countdown % 1000) / 100);
+				}
 }
