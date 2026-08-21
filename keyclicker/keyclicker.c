@@ -9,20 +9,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include <time.h>
 
 /* Pin number defines */
-#define ANGLE_SELECT_PIN 13
-#define DATA_PIN 18
-#define TIME_SELECT_PIN 19
-#define LATCH_PIN 20
-#define CLOCK_PIN 21
-#define SERVO_PIN 22
+#define CLOCK_PIN 12
+#define DATA_PIN 13
+#define LATCH_PIN 11
+#define TIME_SELECT_PIN 20
+#define SERVO_PIN 21
+#define ANGLE_SELECT_PIN 22
 #define SERVO_ANALOG 26
-#define TIME_ANALOG 28
-#define OFFSET_SELECT_PIN 12
-const int DISPLAY_PINS[] = {17, 16, 15, 14};
-const int OFFSET_LED_PINS[] = {9, 10, 11};
+#define TIME_ANALOG 27
+#define OFFSET_SELECT_PIN 3
+const int DISPLAY_PINS[] = {9, 8, 7, 6};
+const int OFFSET_LED_PINS[] = {0, 1, 2};
 
 /* Servo arm angle restrictions */
 #define MINIMUM_ANGLE 10
