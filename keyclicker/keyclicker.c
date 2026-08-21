@@ -353,7 +353,7 @@ uint16_t analog_Read(uint p) {
     result = adc_read();
   }
   else if (p == TIME_ANALOG) {
-    adc_select_input(2);
+    adc_select_input(1);
     result = adc_read();
   }
   return result;
