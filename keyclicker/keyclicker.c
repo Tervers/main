@@ -51,9 +51,8 @@ int countdown = 0;
 int seconds = 0;
 uint32_t now = 0;
 uint32_t stop = 0;
-typedef enum {OFF, LOW, MEDIUM, HIGH} OL;
-OL offsetLevel = OFF;
-float offsetAmount = 0.0f;
+typedef enum {OFF, LOW, MEDIUM, HIGH} offsetLevel;
+offsetLevel OL = OFF;
 bool filled = false;
 
 /* Display control values */
@@ -103,6 +102,9 @@ uint32_t pwm_Get_Wrap(uint slice_num);
 uint32_t pwm_Set_Freq_Duty(uint slice_num,uint chan, uint32_t f, int d);
 void shift_Out(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t value);
 void offset_Select(void);
+void click(void);
+int calc_Offset(offsetLevel OL);
+void display_Countdown(int digits[], int countdown);
 
 /* Start */
 int main(void) {
@@ -155,101 +157,25 @@ int main(void) {
 
   	/* Main keyclicker loop */
   	while (!timeToggle && !angleToggle) {
-    	for (int i = 0, pos = setAngle; pos < setAngle + 6; pos += 1, i++) {
-				servo_Position(SERVO_PIN, pos);
-				for (int j = 0; j < 4; j++) {
-	  			select_Digit(sections[i].digit);
-	  			write_Data(sections[i].shape);
-	  			sleep_ms(5);
-				}
-    	}
-    	for (int i = 6, pos = setAngle; pos > setAngle - 6; pos -= 1, i++) {
-				servo_Position(SERVO_PIN, pos);
-				for (int j = 0; j < 4; j++) {
-	  			select_Digit(sections[i].digit);
-	  			write_Data(sections[i].shape);
-	  			sleep_ms(5);
-				}
-    	}
+			click();
     	now = to_ms_since_boot(get_absolute_time());
-			switch (offsetLevel) {
-	  		case 0: if (gpio_get(OFFSET_LED_PINS[2]) == 1)
-									gpio_put(OFFSET_LED_PINS[2], 0);
-								offsetAmount = 0;
-		  					break;
-	  		case 1: if (gpio_get(OFFSET_LED_PINS[0]) == 0)
-									gpio_put(OFFSET_LED_PINS[0], 1);
-								offsetAmount = (seconds * (get_rand_32() % 21) * 10);
-								break;
-	  		case 2: if (gpio_get(OFFSET_LED_PINS[0]) == 1)
-									gpio_put(OFFSET_LED_PINS[0], 0);
-								if (gpio_get(OFFSET_LED_PINS[1]) == 0)
-									gpio_put(OFFSET_LED_PINS[1], 1);
-								offsetAmount = (seconds * (get_rand_32() % 51) * 10);
-								break;
-	  		case 3: if (gpio_get(OFFSET_LED_PINS[1]) == 1)
-									gpio_put(OFFSET_LED_PINS[1], 0);
-								if (gpio_get(OFFSET_LED_PINS[2]) == 0)
-									gpio_put(OFFSET_LED_PINS[2], 1);
-      					// Variability based on 'Coupon Collector's Problem'
-								bool collection[5];
-								memset(collection, false, sizeof(collection));
-      					int attemptValue = 0;
-	      				int failures = 0;
-								filled = false;
-              	while (!filled) {
-									attemptValue = get_rand_32() % 5;
-									if (collection[attemptValue] == false)
-		  							collection[attemptValue] = true;
-									else
-		  							failures++;
-									for (int i = 0; i < 5; i++) {
-                  	if (collection[i] == false)
-		    							break;
-		  							else
-	            				filled = true;
-									}
-	      				}
-	      				offsetAmount = (seconds * failures * ((get_rand_32() % 100) + 1) * 10);
-								break;
-    	}
-			int offsetFixed = offsetAmount;
+			int offsetAmount = calc_Offset(OL);
 			float secondsShift = seconds;
-			switch (offsetLevel) {
+			switch (OL) {
 				case 0: break;
 				case 1: secondsShift *= 0.90f; break;
 				case 2: secondsShift *= 0.75f; break;
 				case 3: secondsShift *= 0.50f; break;
 			}
-    	timer = (now + (secondsShift * 1000.0f) + offsetFixed);
-    	while (to_ms_since_boot(get_absolute_time()) < (now + (secondsShift * 1000) + offsetFixed)) {
+    	timer = (now + (secondsShift * 1000.0f) + offsetAmount);
+    	while (to_ms_since_boot(get_absolute_time()) < (now + (secondsShift * 1000) + offsetAmount)) {
 				countdown = timer - to_ms_since_boot(get_absolute_time());
-				if (countdown > 999999) {
-	  			for (int i = 0; i < 4; i++) {
-	    			digits[i] = 9;
-	  			}
-				}
-				else {
-	  			digits[0] = ((countdown % 1000000) / 100000);
-	  			digits[1] = ((countdown % 100000) / 10000);
-					digits[2] = ((countdown % 10000) / 1000);
-	  			digits[3] = ((countdown % 1000) / 100);
-				}
-				for (int i = 0; i < 4; i++) {
-	  			select_Digit(i);
-	  			digitValue = digits[i];
-	  			if (i == 2) 
-	    			write_Data(num[digitValue] | 0x80);
-	  			else 
-	    			write_Data(num[digitValue]);
-	  			sleep_ms(5);
-	  			write_Data(0x00);      
-				}
+				display_Countdown(digits, countdown);
 				//superfluous for below?
-				for (int i = 0; i < 4; i++) {
-	  			select_Digit(i);
-	  			write_Data(0x00);
-				}
+				//for (int i = 0; i < 4; i++) {
+	  		//	select_Digit(i);
+	  		//	write_Data(0x00);
+				//}
 				if (!gpio_get(TIME_SELECT_PIN)) {
 	  			sleep_ms(20);
 	  			if (!gpio_get(TIME_SELECT_PIN)) {
@@ -413,11 +339,94 @@ void offset_Select(void) {
       sleep_ms(20);
       if (!gpio_get(OFFSET_SELECT_PIN)) {
 				sleep_ms(500);
-				if (offsetLevel < 3)
-					offsetLevel++;
+				if (OL < 3)
+					OL++;
 				else
-					offsetLevel = 0;
+					OL = 0;
 			}
 		}
   }
+}
+
+void click(void) {
+  for (int i = 0, pos = setAngle; pos < setAngle + 6; pos += 1, i++) {
+		servo_Position(SERVO_PIN, pos);
+		for (int j = 0; j < 4; j++) {
+	  	select_Digit(sections[i].digit);
+	  	write_Data(sections[i].shape);
+	  	sleep_ms(5);
+		}
+  }
+  for (int i = 6, pos = setAngle; pos > setAngle - 6; pos -= 1, i++) {
+		servo_Position(SERVO_PIN, pos);
+		for (int j = 0; j < 4; j++) {
+	  	select_Digit(sections[i].digit);
+	  	write_Data(sections[i].shape);
+	  	sleep_ms(5);
+		}
+  }
+}
+
+int calc_Offset(offsetLevel OL) {
+			switch (OL) {
+	  		case 0: if (gpio_get(OFFSET_LED_PINS[2]) == 1)
+									gpio_put(OFFSET_LED_PINS[2], 0);
+								return 0;
+	  		case 1: if (gpio_get(OFFSET_LED_PINS[0]) == 0)
+									gpio_put(OFFSET_LED_PINS[0], 1);
+								return (seconds * (get_rand_32() % 21) * 10);
+	  		case 2: if (gpio_get(OFFSET_LED_PINS[0]) == 1)
+									gpio_put(OFFSET_LED_PINS[0], 0);
+								if (gpio_get(OFFSET_LED_PINS[1]) == 0)
+									gpio_put(OFFSET_LED_PINS[1], 1);
+								return (seconds * (get_rand_32() % 51) * 10);
+	  		case 3: if (gpio_get(OFFSET_LED_PINS[1]) == 1)
+									gpio_put(OFFSET_LED_PINS[1], 0);
+								if (gpio_get(OFFSET_LED_PINS[2]) == 0)
+									gpio_put(OFFSET_LED_PINS[2], 1);
+      					// Variability based on 'Coupon Collector's Problem'
+								bool collection[5];
+								memset(collection, false, sizeof(collection));
+      					int attemptValue = 0;
+	      				int failures = 0;
+								filled = false;
+              	while (!filled) {
+									attemptValue = get_rand_32() % 5;
+									if (collection[attemptValue] == false)
+		  							collection[attemptValue] = true;
+									else
+		  							failures++;
+									for (int i = 0; i < 5; i++) {
+                  	if (collection[i] == false)
+		    							break;
+		  							else
+	            				filled = true;
+									}
+	      				}
+	      				return (seconds * failures * ((get_rand_32() % 100) + 1) * 10);
+  }
+}
+
+void display_Countdown(int digits[], int countdown) {
+				if (countdown > 999999) {
+	  			for (int i = 0; i < 4; i++) {
+	    			digits[i] = 9;
+	  			}
+				}
+				else {
+	  			digits[0] = ((countdown % 1000000) / 100000);
+	  			digits[1] = ((countdown % 100000) / 10000);
+					digits[2] = ((countdown % 10000) / 1000);
+	  			digits[3] = ((countdown % 1000) / 100);
+				}
+				for (int i = 0; i < 4; i++) {
+	  			select_Digit(i);
+	  			digitValue = digits[i];
+	  			if (i == 2) 
+	    			write_Data(num[digitValue] | 0x80);
+	  			else 
+	    			write_Data(num[digitValue]);
+	  			sleep_ms(5);
+	  			write_Data(0x00);      
+				}
 }
