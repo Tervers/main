@@ -1,6 +1,27 @@
 #ifndef ANGLE_H
 #define ANGLE_H
 
+/* Servo arm angle restrictions */
+#define MINIMUM_ANGLE 10
+#define MAXIMUM_ANGLE 170
+
+/* Servo control values */
+extern bool angleToggle;
+
+extern int pos;
+extern int angle;
+
+typedef struct {
+  uint gpio;
+  uint slice;
+  uint chan;
+  uint speed;
+  uint resolution;
+  bool on;
+  bool invert;
+} Servo;
+extern Servo mainServo;
+
 void servo_Init(uint gpio);
 void servo_On(Servo *s);
 void servo_Off(Servo *s);
