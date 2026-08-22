@@ -11,9 +11,19 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(keyclicker
     keyclicker.c
+		angle.c
+		calculations.c
+		display.c
+		gpioF.c
+		timeF.c
 )
 
 target_link_libraries(keyclicker
+		angle
+		calculations
+		display
+		gpioF
+		timeF
     hardware_gpio
     hardware_adc
     hardware_pwm

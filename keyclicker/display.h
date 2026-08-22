@@ -13,7 +13,7 @@ struct circle {
 	int digit;
 	uint8_t shape;
 } sections[];
-extern circle sections;
+extern struct circle sections[];
 
 void write_Data(int value);
 void shift_Out(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t value);

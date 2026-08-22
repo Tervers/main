@@ -1,6 +1,6 @@
 #include "angle.h"
 #include "gpioF.h"
-#include "pico/pwm.h"
+#include "hardware/pwm.h"
 #include "hardware/gpio.h"
 
 /* Servo control values */

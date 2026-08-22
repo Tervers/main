@@ -86,7 +86,7 @@ int main(void) {
   	/* Main keyclicker loop */
   	while (!timeToggle && !angleToggle) {
 			click();
-			int offsetAmount = calc_Offset(offsetLevel);
+			int offsetAmount = calc_Offset(offsetLevel, seconds);
 			float secondsShift = seconds;
 			switch (offsetLevel) {
 				case 0: break;
