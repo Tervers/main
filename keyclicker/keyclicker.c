@@ -88,6 +88,8 @@ struct circle {
 uint8_t num[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f};
 
 /* Prototypes */
+
+/* angle.h */
 //void servo_Init(uint gpio);
 //void servo_On(Servo *s);
 //void servo_Off(Servo *s);
@@ -98,12 +100,20 @@ uint8_t num[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f};
 //uint32_t pwm_Set_Freq_Duty(uint slice_num,uint chan, uint32_t f, int d);
 //bool angle_Button(void);
 //int set_Angle(int angle, int digits[]);
+
+/* display.h */
 //void write_Data(int value);
 //void shift_Out(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t value);
 //void select_Digit(uint8_t value);
 //void update_Display(int digits[], DP decimalPoint);
-uint16_t analog_Read(uint p);
-long map(long x, long in_min, long in_max, long out_min, long out_max);
+
+/* gpioF.h */
+//uint16_t analog_Read(uint p);
+
+/* calculations.h */
+//long map(long x, long in_min, long in_max, long out_min, long out_max);
+
+/* timeF.h */
 //void offset_Select(void);
 //bool time_Button(void);
 //int set_Seconds(int seconds, int digits[]);
@@ -175,7 +185,7 @@ int main(void) {
     	while (to_ms_since_boot(get_absolute_time()) < timer) {
 				countdown = timer - to_ms_since_boot(get_absolute_time());
 				set_Countdown(countdown, digits);
-				update_Display(digits, decimalPoint = TENTHS);
+				update_Display(digits, decimalPoint = TENTHS);   //TENTHS instead of decimalPoint = TENTHS?
 				if (time_Button() || angle_Button())
 					break;
   		}
@@ -185,7 +195,7 @@ int main(void) {
   	/* Time delay select loop */
   	while (timeToggle) {
 			seconds = set_Seconds(seconds, digits);
-			update_Display(digits, decimalPoint = NONE);
+			update_Display(digits, decimalPoint = NONE);   //NONE instead of decimalPoint = NONE?
 			time_Button();
   	}
 			
