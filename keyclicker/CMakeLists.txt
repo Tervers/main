@@ -11,11 +11,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(keyclicker
     keyclicker.c
-		angle.c
-		calculations.c
-		display.c
-		gpioF.c
-		timeF.c
+		sources/angle.c
+		sources/calculations.c
+		sources/display.c
+		sources/gpioF.c
+		sources/timeF.c
 )
 
 target_link_libraries(keyclicker
