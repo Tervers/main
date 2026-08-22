@@ -1,3 +1,5 @@
+/*** Includes ***/
+
 #include "timeF.h"
 #include "gpioF.h"
 #include "hardware/gpio.h"
@@ -5,11 +7,16 @@
 #include "pico/stdlib.h"
 #include <string.h>
 
-typedef enum {OFF, LOW, MEDIUM, HIGH} OL;
-OL offsetLevel = OFF;
+
+/*** Variables ***/
 
 bool filled = false;
 bool timeToggle = false;
+
+OL offsetLevel = OFF;
+
+
+/*** Functions Definitions ***/
 
 void offset_Select(void) {
   while(1) {

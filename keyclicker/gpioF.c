@@ -1,5 +1,10 @@
+/*** Includes ***/
+
 #include "gpioF.h"
 #include "hardware/adc.h"
+
+
+/*** Function Definitions ***/
 
 uint16_t analog_Read(uint p) {
   uint16_t result = 0;

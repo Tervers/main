@@ -1,21 +1,19 @@
-#include "angle.h"
-#include "gpioF.h"
-#include "hardware/pwm.h"
-#include "hardware/gpio.h"
+/*** Includes ***/
 
-/* Servo control values */
-typedef struct {
-  uint gpio;
-  uint slice;
-  uint chan;
-  uint speed;
-  uint resolution;
-  bool on;
-  bool invert;
-} Servo;
+#include "angle.h"
+
+
+/*** Variables ***/
+
 Servo mainServo;
+
 int pos = 0;
 int angle = 0;
+
+bool angleToggle = false;
+
+
+/*** Function Definitions ***/
 
 void pwm_Set_Duty_H(uint slice_num, uint chan, int d) {  // d is 0-10000
   pwm_set_chan_level(slice_num, chan, pwm_Get_Wrap(slice_num) * d / 10000);

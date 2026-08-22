@@ -19,11 +19,6 @@ add_executable(keyclicker
 )
 
 target_link_libraries(keyclicker
-		angle
-		calculations
-		display
-		gpioF
-		timeF
     hardware_gpio
     hardware_adc
     hardware_pwm

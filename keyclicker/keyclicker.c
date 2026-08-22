@@ -6,25 +6,19 @@
 #include "timeF.h"
 #include "hardware/adc.h"
 #include "hardware/gpio.h"
-//#include "hardware/pwm.h"
 #include "pico/multicore.h"
-//#include "pico/rand.h"
 #include "pico/stdlib.h"
-//#include "pico/time.h"
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <string.h>
 
 /* Pin number defines */
-#define LATCH_PIN 11
-#define CLOCK_PIN 12
-#define DATA_PIN 13
-#define TIME_SELECT_PIN 20
-#define SERVO_PIN 21
-#define ANGLE_SELECT_PIN 22
-#define SERVO_ANALOG 26
-#define TIME_ANALOG 27
-#define OFFSET_SELECT_PIN 3
+const int LATCH_PIN = 11;
+const int CLOCK_PIN = 12;
+const int DATA_PIN = 13;
+const int TIME_SELECT_PIN = 20;
+const int SERVO_PIN = 21;
+const int ANGLE_SELECT_PIN = 22;
+const int SERVO_ANALOG = 26;
+const int TIME_ANALOG = 27;
+const int OFFSET_SELECT_PIN = 3;
 const int DISPLAY_PINS[] = {9, 8, 7, 6};
 const int OFFSET_LED_PINS[] = {0, 1, 2};
 
@@ -99,7 +93,7 @@ int main(void) {
     	while (to_ms_since_boot(get_absolute_time()) < timer) {
 				countdown = timer - to_ms_since_boot(get_absolute_time());
 				set_Countdown(countdown, digits);
-				update_Display(digits, decimalPoint = TENTHS);   //TENTHS instead of decimalPoint = TENTHS?
+				update_Display(digits, TENTHS);   //TENTHS instead of decimalPoint = TENTHS?
 				if (time_Button() || angle_Button())
 					break;
   		}
@@ -109,7 +103,7 @@ int main(void) {
   	/* Time delay select loop */
   	while (timeToggle) {
 			seconds = set_Seconds(seconds, digits);
-			update_Display(digits, decimalPoint = NONE);   //NONE instead of decimalPoint = NONE?
+			update_Display(digits, NONE);   //NONE instead of decimalPoint = NONE?
 			time_Button();
 			if (!timeToggle)
 				sleep_ms(200);
@@ -118,7 +112,7 @@ int main(void) {
   	/* Servo arm angle select loop */
   	while (angleToggle) {
 			angle = set_Angle(angle, digits);
-			update_Display(digits, decimalPoint = NONE);
+			update_Display(digits, NONE);
 			angle_Button();
 			if (!angleToggle)
 				sleep_ms(200);
