@@ -93,7 +93,7 @@ int main(void) {
     	while (to_ms_since_boot(get_absolute_time()) < timer) {
 				countdown = timer - to_ms_since_boot(get_absolute_time());
 				set_Countdown(countdown, digits);
-				update_Display(digits, TENTHS);   //TENTHS instead of decimalPoint = TENTHS?
+				update_Display(digits, TENTHS);
 				if (time_Button() || angle_Button())
 					break;
   		}
@@ -103,7 +103,7 @@ int main(void) {
   	/* Time delay select loop */
   	while (timeToggle) {
 			seconds = set_Seconds(seconds, digits);
-			update_Display(digits, NONE);   //NONE instead of decimalPoint = NONE?
+			update_Display(digits, NONE);
 			time_Button();
 			if (!timeToggle)
 				sleep_ms(200);
