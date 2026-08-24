@@ -19,8 +19,8 @@ const int CLOCK_PIN = 12;
 const int DATA_PIN = 13;
 const int TIME_SELECT_PIN = 20;
 const int ANGLE_SELECT_PIN = 21;
-const int SERVO_ANALOG = 26;
-const int TIME_ANALOG = 27;
+const int TIME_ANALOG = 26;
+const int SERVO_ANALOG = 27;
 
 /* Time control values */
 int timer = 0;
