@@ -10,17 +10,17 @@
 #include "pico/stdlib.h"
 
 /* Pin number defines */
+const int SERVO_PIN = 0;
+const int OFFSET_LED_PINS[] = {1, 2, 3};
+const int OFFSET_SELECT_PIN = 4;
+const int DISPLAY_PINS[] = {9, 8, 7, 6};
 const int LATCH_PIN = 11;
 const int CLOCK_PIN = 12;
 const int DATA_PIN = 13;
 const int TIME_SELECT_PIN = 20;
 const int ANGLE_SELECT_PIN = 21;
-const int SERVO_PIN = 22;
 const int SERVO_ANALOG = 26;
 const int TIME_ANALOG = 27;
-const int OFFSET_SELECT_PIN = 3;
-const int DISPLAY_PINS[] = {9, 8, 7, 6};
-const int OFFSET_LED_PINS[] = {0, 1, 2};
 
 /* Time control values */
 int timer = 0;
