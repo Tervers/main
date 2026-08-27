@@ -57,7 +57,7 @@ int main(void) {
     gpio_init(DISPLAY_PINS[i]);
     gpio_set_dir(DISPLAY_PINS[i], GPIO_OUT);
   }
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < 3; i++) {
     gpio_init(OFFSET_LED_PINS[i]);
     gpio_set_dir(OFFSET_LED_PINS[i], GPIO_OUT);
 		gpio_put(OFFSET_LED_PINS[i], 0);

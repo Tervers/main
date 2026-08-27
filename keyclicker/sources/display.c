@@ -13,7 +13,6 @@ bool MSBFIRST = 1;
 int digitValue;
 int digits[4];
 uint8_t num[] = {0xfc, 0x60, 0xda, 0xf2, 0x66, 0xb6, 0xbe, 0xe0, 0xfe, 0xf6};
-//uint8_t num[] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0x7f, 0x6f};
 
 DP decimalPoint = NONE;
 
@@ -60,17 +59,17 @@ void update_Display(int digits[], DP decimalPoint) {
     digitValue = digits[i];
     switch(decimalPoint) {
       case 0: if (i == 0)
-                write_Data(num[digitValue] | 0x80);
+                write_Data(num[digitValue] | 0x01);
               else
                 write_Data(num[digitValue]);
               break;
       case 1: if (i == 1)
-                write_Data(num[digitValue] | 0x80);
+                write_Data(num[digitValue] | 0x01);
               else
                 write_Data(num[digitValue]);
                   break;
       case 2: if (i == 2)
-                write_Data(num[digitValue] | 0x80);
+                write_Data(num[digitValue] | 0x01);
               else
                 write_Data(num[digitValue]);
               break;
