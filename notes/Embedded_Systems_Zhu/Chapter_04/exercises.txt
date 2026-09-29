@@ -1,0 +1,27 @@
+; 4. Translate this C statement into an assembly program. 16-bit signed integers
+;    x, y, and z are stored in 32-bit registers r0, r1, and r2, respectively.
+;    x = x * y + z - x;
+
+SXTH r3, r0
+SXTH r4, r1
+SXTH r5, r2       ; sign extension possibly unnecessary
+MLA r6, r3, r4, r5
+SUBS r7, r6, r3   ; wrong, answer should be stored in x at r0
+
+
+; 5. Translate this C statement into an assembly program, assuming 16-bit un-
+;    signed integers x and y are stored in register r0, and r1, respectively.
+;    x = x % y;
+
+UXTH r2, r0 ; x
+UXTH r3, r1 ; y
+UDIV r4, r2, r3 ; floor
+UMUL r5, r3, r4 ; floor * y
+SUB r0, r2, r5
+
+
+; 6. Write an assembly program that calculates this polynomial, assuming signed
+;    integers x and y are stored in r0, and r1, respectively.
+;    y = 3x^3 - 7x^2 + 10x - 11
+
+
