@@ -50,4 +50,24 @@ STR r2, [r3]
 A rotate left instruction by n-bits can just be performed with a rotate right
 by 32 - n bits.
 
-; 9. 
+; 9. Explain the difference between the Barrel shifter's role in the following
+		 instructions:
+			(1) ANDS rl, r2, r3, LSL #3
+			(2) ADDS rl, r2, r3, LSL #3
+
+The Barrel shifter will shift r3 3 bits to the left before performing ANDS
+against r2, and the barrel shifter will do the same with ADDS in the same order.
+
+; 10. Write an assembly program that reverses the byte order of a register with-
+out using the REV instruction.
+
+LDR r0, =data
+LDR r1, [r0]
+UBFX r2, r1, #0, #8    ; first byte extracted
+UBFX r3, r1, #8, #8    ; second byte extracted
+UBFX r4, r1, #16, #8   ; third byte extracted
+UBFX r5, r1, #24, #8   ; forth byte extracted
+ORR r6, r2, r1, LSL #8 ; shift a byte left, insert second byte
+ORR r6, r3, r1, LSL #8 ; shift a byte left, insert third byte
+ORR r6, r4, r1, LSL #8 ; shift a byte left, insert fourth byte
+STR r1, [r0]
