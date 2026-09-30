@@ -76,11 +76,12 @@ LDR r1, [r0]
 UBFX r2, r1, #0, #8    ; first byte extracted
 UBFX r3, r1, #8, #8    ; second byte extracted
 UBFX r4, r1, #16, #8   ; third byte extracted
-UBFX r5, r1, #24, #8   ; forth byte extracted
-ORR r6, r6, r2, LSL #8
-ORR r6, r6, r3, LSL #8 ; shift a byte left, insert second byte
-ORR r6, r6, r4, LSL #8 ; shift a byte left, insert third byte
-ORR r6, r6, r5, LSL #8 ; shift a byte left, insert fourth byte
+UBFX r5, r1, #24, #8   ; fourth byte extracted
+MOV r6, #0						 ; ensure r6 is clear
+ORR r6, r6, r2				 ; insert first byte
+ORR r6, r6, r3, LSL #8 ; shift data one byte left, insert second byte
+ORR r6, r6, r4, LSL #8 ; shift data one byte left, insert third byte
+ORR r6, r6, r5, LSL #8 ; shift data one byte left, insert fourth byte
 STR r6, [r0]
 
 
@@ -93,5 +94,23 @@ STR r6, [r0]
 
 ; 12. Implement the BIC (bitwise clear) instruction by using other assembly
 ;     instructions.
+
+LDR r0, =x
+LDR r1, =y
+LDR r2, [r0]
+LDR r3, [r1]
+MVN r3, r3
+AND r2, r3
+STR r2, [r0]
+
+
+
+; 13. Suppose Mask = 0x00000F0F and P = 0xABCDABCD. What are the results of the
+      following bitwise operations?
+			(1) Q = P & Mask;
+      (2) Q = p I Mask;
+      (3) Q = P " Mask;
+			(4) Q = -Mask;
+			(5) Q = P & -Mask;
 
 
