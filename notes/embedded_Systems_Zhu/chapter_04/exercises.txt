@@ -9,6 +9,7 @@ MLA r6, r3, r4, r5
 SUBS r7, r6, r3   ; wrong, answer should be stored in x at r0
 
 
+
 ; 5. Translate this C statement into an assembly program, assuming 16-bit un-
 ;    signed integers x and y are stored in register r0, and r1, respectively.
 ;    x = x % y;
@@ -18,6 +19,7 @@ UXTH r3, r1 ; y
 UDIV r4, r2, r3 ; floor
 UMUL r5, r3, r4 ; floor * y
 SUB r0, r2, r5
+
 
 
 ; 6. Write an assembly program that calculates this polynomial, assuming signed
@@ -34,6 +36,8 @@ MLS r3, r2, r4, r3  ; r3 = 3x^3 - 7x^2
 MLA r3, r5, r0, r3  ; r3 = 3x^3 - 7x^2 + 10x
 SUBS r1, r3, #11    ; r1 = 3x^3 - 7x^2 + 10x - 11
 
+
+
 ; 7. Write an assembly program that calculates the remainder of the division 
 ;    between two unsigned 32-bit integers.
 
@@ -44,22 +48,28 @@ UDIV r3, r0, r1     ; r3 = a / b = 19 / 7
 MLS r2, r3, r1, r0  ; r2 = 19 - 14 = 5
 STR r2, [r3]
 
+
+
 ; 8. Explain why Cortex-M processors do not provide any left rotation instruci-
 ;    tions. They only offer ROR (rotate right) and RRX (rotate right extended).
 
 A rotate left instruction by n-bits can just be performed with a rotate right
 by 32 - n bits.
 
+
+
 ; 9. Explain the difference between the Barrel shifter's role in the following
-		 instructions:
+;    instructions:
 			(1) ANDS rl, r2, r3, LSL #3
 			(2) ADDS rl, r2, r3, LSL #3
 
 The Barrel shifter will shift r3 3 bits to the left before performing ANDS
 against r2, and the barrel shifter will do the same with ADDS in the same order.
 
+
+
 ; 10. Write an assembly program that reverses the byte order of a register with-
-out using the REV instruction.
+;     out using the REV instruction.
 
 LDR r0, =data
 LDR r1, [r0]
@@ -67,7 +77,21 @@ UBFX r2, r1, #0, #8    ; first byte extracted
 UBFX r3, r1, #8, #8    ; second byte extracted
 UBFX r4, r1, #16, #8   ; third byte extracted
 UBFX r5, r1, #24, #8   ; forth byte extracted
-ORR r6, r2, r1, LSL #8 ; shift a byte left, insert second byte
-ORR r6, r3, r1, LSL #8 ; shift a byte left, insert third byte
-ORR r6, r4, r1, LSL #8 ; shift a byte left, insert fourth byte
-STR r1, [r0]
+ORR r6, r6, r2, LSL #8
+ORR r6, r6, r3, LSL #8 ; shift a byte left, insert second byte
+ORR r6, r6, r4, LSL #8 ; shift a byte left, insert third byte
+ORR r6, r6, r5, LSL #8 ; shift a byte left, insert fourth byte
+STR r6, [r0]
+
+
+
+; 11. Write an assembly program that swaps the upper halfword and the lower half-
+;     word of a register.
+
+
+
+
+; 12. Implement the BIC (bitwise clear) instruction by using other assembly
+;     instructions.
+
+
