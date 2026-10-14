@@ -1,3 +1,4 @@
 // open directory (possibly program) in new terminal window
 xfce4-terminal --default-working-directory=
 
+./yt-dlp_linux --download-archive archive.txt --no-overwrites -x --audio-format mp3 --audio-quality 0
